@@ -3,7 +3,7 @@ import {TextInput, Button, View, Alert, ScrollView, Text} from 'react-native';
 
 const TopBar = () => (
     <View style={{flex: 1, flexDirection: 'row'}}>
-    <ScrollView>
+    <ScrollView> 
       <Text>Home</Text>
       <Text>Go To Date...</Text>
       <Text>Add Event</Text>
