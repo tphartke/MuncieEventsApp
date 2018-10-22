@@ -1,5 +1,6 @@
 import React from 'react';
-import { FlatList, ActivityIndicator, Text, View, WebView  } from 'react-native';
+import {ActivityIndicator, Text, View, FlatList} from 'react-native';
+import TopBar from './pages/top_bar';
 
 export default class FetchExample extends React.Component {
 
@@ -37,9 +38,9 @@ export default class FetchExample extends React.Component {
         </View>
       )
     }
-
     return(
       <View style={{flex: 10, paddingTop:20}}>
+        <TopBar />
         <FlatList
           data={this.state.dataSource}
           renderItem={({item}) => 
@@ -47,7 +48,7 @@ export default class FetchExample extends React.Component {
           }
           keyExtractor={({id}, index) => id}
         />
-      </View>
+</View>
     );
   }
 }
