@@ -12,12 +12,10 @@ const TopBar = () => (
       <Text>Contact</Text>
       <Text>About</Text>
     </ScrollView>
-
     <TextInput 
         placeholder='Search'
         style={{borderColor: 'black', borderWidth: 1}}
     />
-
     <Button
       title="Advanced Search"
       onPress={Alert.alert('You tapped the button!')}
