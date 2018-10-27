@@ -35,17 +35,19 @@ export default class FetchExample extends React.Component {
   }
 
   getTimeFromAPI(dateTime){
+    //time format is yyyy-mm-ddThh:mm:ss-04:00
     var date = String(dateTime).split("T");
     var times = date[1].split("-");
     var timeUnformatted = times[0].split(":");
     var hours = timeUnformatted[0];
     var minutes = timeUnformatted[1];
-    var modifier = "AM"
+    var modifier = "AM";
     if(hours > 12){
       hours -= 12;
       modifier = "PM";
     }
-    var finalTime = hours + ":" + minutes + " " + modifier
+    hours = this.filterOutZeroPadding(hours);
+    var finalTime = hours + ":" + minutes + modifier;
     return finalTime;
   }
 
@@ -53,23 +55,9 @@ export default class FetchExample extends React.Component {
     return date === this.state.lastUsedDate;
   }
 
-  generateListItem(item){   
-    var date = null;
-    var title = item.attributes.title;
-    var startTimeText = this.getTimeFromAPI(item.attributes.time_start);
-    var endTimeText = "";
-    var locationText = item.attributes.location;
-
-    if(!this.isLastUsedDate(item.attributes.date)){
-      date = this.formatDate(item.attributes.date) + "\n";
-      this.state ={lastUsedDate: item.attributes.date}
-    }
-
-    if(!(item.attributes.time_end == null)){
-        endTimeText = " to " + this.getTimeFromAPI(item.attributes.time_end);
-    }
-
-    var listText = title + '\n' + startTimeText + endTimeText + " @ " + locationText;
+  generateListItemView(item){   
+    var date = this.generateListItemDate(item);
+    var listText = this.generateListItemText(item);
 
     return(
       <View>
@@ -85,13 +73,69 @@ export default class FetchExample extends React.Component {
     )
   }
 
+  generateListItemDate(item){
+    var date = null;
+    if(!this.isLastUsedDate(item.attributes.date)){
+      date = this.formatDate(item.attributes.date) + "\n";
+      this.state = {lastUsedDate: item.attributes.date};
+    }
+    return date;
+  }
+
+  generateListItemText(item) {
+    var title = item.attributes.title;
+    var startTimeText = this.getTimeFromAPI(item.attributes.time_start);
+    var endTimeText = "";
+    var locationText = item.attributes.location;
+    if (item.attributes.time_end != null) {
+      endTimeText = " to " + this.getTimeFromAPI(item.attributes.time_end);
+    }
+    var listText = title + '\n' + startTimeText + endTimeText + " @ " + locationText;
+    return listText;
+  }
+
   formatDate(date){
+    //date formate is yyyy-mm-dd
     var dates = date.split("-");
     var year = dates[0];
-    var day = dates[2];
+    var day = this.formatDayNumber(dates[2]);
     var month = this.getShorthandMonthByNumber(dates[1]);
 
     return month + " " + day + ", " + year;
+  }
+
+  formatDayNumber(dayNumber){
+    dayNumber = this.filterOutZeroPadding(dayNumber);
+    var daySuffix = this.deriveDayNumberSuffix(dayNumber);
+    const formattedDayNumber = dayNumber + daySuffix;
+    return formattedDayNumber;
+  }
+
+  deriveDayNumberSuffix(dayNumber) {
+    const lastDigitLocation = String(dayNumber).length - 1;
+    const dayNumberLastDigit = String(dayNumber).charAt(lastDigitLocation);
+    var daySuffix = "th";
+    switch (dayNumberLastDigit) {
+      case ("1"):
+        if (dayNumber != "11") {
+          daySuffix = "st";
+        }
+        break;
+      case ("2"):
+        daySuffix = "nd";
+        break;
+      case ("3"):
+        daySuffix = "rd";
+        break;
+    }
+    return daySuffix;
+  }
+
+  filterOutZeroPadding(dateOrTimeNumber) {
+    if (String(dateOrTimeNumber).charAt(0) == "0") {
+      dateOrTimeNumber = String(dateOrTimeNumber).substring(1);
+    }
+    return dateOrTimeNumber;
   }
 
   getShorthandMonthByNumber(month){
@@ -141,7 +185,7 @@ export default class FetchExample extends React.Component {
         <FlatList
           data={this.state.dataSource}
           renderItem={({item}) => 
-            this.generateListItem(item)
+            this.generateListItemView(item)
           }
           keyExtractor={({id}, index) => id}
         />
