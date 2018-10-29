@@ -1,5 +1,6 @@
 import React from 'react';
-import {TextInput, Button, View, Alert, ScrollView, Text} from 'react-native';
+import {TextInput, Button, View, ScrollView, Text} from 'react-native';
+import AppNavigator from '../navigation/AppNavigator';
 
 const TopBar = () => (
     <View style={{flex: 1, flexDirection: 'row'}}>
@@ -15,11 +16,6 @@ const TopBar = () => (
     <TextInput 
         placeholder='Search'
         style={{borderColor: 'black', borderWidth: 1}}
-    />
-    <Button
-      title="Advanced Search"
-      onPress={Alert.alert('You tapped the button!')}
-      style={{borderColor: 'black', backgroundColor: 'orange'}}
     />
   </View>
 );
