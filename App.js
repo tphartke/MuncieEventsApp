@@ -112,18 +112,18 @@ export default class FetchExample extends React.Component {
     const lastDigitLocation = String(dayNumber).length - 1;
     const dayNumberLastDigit = String(dayNumber).charAt(lastDigitLocation);
     var daySuffix = "th";
-    switch (dayNumberLastDigit) {
-      case ("1"):
-        if (dayNumber != "11") {
+    if((dayNumber != "11") & (dayNumber != "12") & (dayNumber != "13")){
+      switch (dayNumberLastDigit) {
+        case ("1"):
           daySuffix = "st";
-        }
-        break;
-      case ("2"):
-        daySuffix = "nd";
-        break;
-      case ("3"):
-        daySuffix = "rd";
-        break;
+          break;
+        case ("2"):
+          daySuffix = "nd";
+          break;
+        case ("3"):
+          daySuffix = "rd";
+          break;
+      }
     }
     return daySuffix;
   }
