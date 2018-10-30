@@ -1,10 +1,9 @@
 import React from 'react';
-import {TextInput, Button, View, ScrollView, Text} from 'react-native';
-import AppNavigator from '../navigation/AppNavigator';
+import {TextInput, View, ScrollView, Text} from 'react-native';
 
 const TopBar = () => (
-    <View style={{flex: 1, flexDirection: 'row'}}>
-    <ScrollView>  
+    <View style={{height: 50, flexDirection: 'row', backgroundColor: '#aaa'}}>
+    <ScrollView style={{flex: 3}}>  
       <Text>Home</Text>
       <Text>Go To Date...</Text>
       <Text>Add Event</Text>
@@ -15,7 +14,7 @@ const TopBar = () => (
     </ScrollView>
     <TextInput 
         placeholder='Search'
-        style={{borderColor: 'black', borderWidth: 1}}
+        style={{borderColor: 'black', borderWidth: 1, flex: 5, backgroundColor: '#fff'}}
     />
   </View>
 );
