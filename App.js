@@ -3,8 +3,6 @@ import {ActivityIndicator, Text, View, FlatList} from 'react-native';
 import TopBar from './pages/top_bar';
 
 export default class FetchExample extends React.Component {
-
-
   constructor(props){
     super(props);
     this.state ={ isLoading: true}
@@ -167,7 +165,6 @@ export default class FetchExample extends React.Component {
   }
 
   render(){
-
     if(this.state.isLoading){
       return(
         <View style={{flex: 1, padding: 20}}>
@@ -176,19 +173,19 @@ export default class FetchExample extends React.Component {
       )
     }
     return(
-      <View style={{flex: 10, paddingTop:20}}>
+        <View style={{paddingTop:20}}>
         <TopBar />
-        <Text style={{textAlign:"center", fontSize:30, fontWeight:"bold"}}>
-          Events:
-        </Text>
-        <FlatList
-          data={this.state.dataSource}
-          renderItem={({item}) => 
-            this.generateListItemView(item)
-          }
-          keyExtractor={({id}, index) => id}
-        />
-    </View>
+          <Text style={{textAlign:"center", fontSize:30, fontWeight:"bold", backgroundColor: '#aaa'}}>
+            Events:
+          </Text>
+          <FlatList
+            data={this.state.dataSource}
+            renderItem={({item}) => 
+              this.generateListItemView(item)
+            }
+            keyExtractor={({id}, index) => id}
+          />
+      </View>
     );
   }
 }
