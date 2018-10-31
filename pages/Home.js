@@ -1,7 +1,6 @@
 import React from 'react';
-import {Text, View, FlatList} from 'react-native';
+import {Text, View, FlatList, Button} from 'react-native';
 import TopBar from './top_bar';
-
 
 export default class HomeScreen extends React.Component{  
     constructor(props){
@@ -12,9 +11,6 @@ export default class HomeScreen extends React.Component{
       componentDidMount(){
         this.fetchAPIData();
       }
-      static navigationOptions = {
-        title: 'Press Here',
-      };
       fetchAPIData(){
         return fetch('https://api.muncieevents.com/v1/events/future?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ')
           .then((response) => response.json())
@@ -175,18 +171,24 @@ export default class HomeScreen extends React.Component{
         }
         return (
             <View style={{paddingTop:20}}>
-            <TopBar />
-              <Text style={{textAlign:"center", fontSize:30, fontWeight:"bold", backgroundColor: '#ffa500'}}>
-                Events:
-              </Text>
-              <FlatList
-                data={this.state.dataSource}
-                renderItem={({item}) => 
-                  this.generateListItemView(item)
+                <TopBar />
+                <Button
+                title="Advanced Search"
+                onPress={() =>
+                    this.props.navigation.navigate('AdvancedSearch')
                 }
-                keyExtractor={({id}, index) => id}
-              />
-          </View>
+                />
+                <Text style={{textAlign:"center", fontSize:30, fontWeight:"bold", backgroundColor: '#ffa500'}}>
+                Events:
+                </Text>
+                <FlatList
+                    data={this.state.dataSource}
+                    renderItem={({item}) => 
+                        this.generateListItemView(item)
+                    }
+                    keyExtractor={({id}, index) => id}
+                />
+            </View>
         );
       }
 }
