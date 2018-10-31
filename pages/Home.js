@@ -28,6 +28,7 @@ export default class HomeScreen extends React.Component{
             console.error(error);
           });
       }
+
     getTimeFromAPI(dateTime){
         //time format is yyyy-mm-ddThh:mm:ss-04:00
         var date = String(dateTime).split("T");
@@ -160,6 +161,10 @@ export default class HomeScreen extends React.Component{
             return "Dec";
         }
       }
+
+      static navigationOptions = {
+        drawerLabel: 'Home',
+      };
     
       render(){
         if(this.state.isLoading){
@@ -171,13 +176,21 @@ export default class HomeScreen extends React.Component{
         }
         return (
             <View style={{paddingTop:20}}>
-                <TopBar />
-                <Button
-                title="Advanced Search"
+                <View style={{height: 50, flexDirection: 'row'}}>
+              <Button style={{flex: 1}}
+                title="Open"
                 onPress={() =>
-                    this.props.navigation.navigate('AdvancedSearch')
+                this.props.navigation.openDrawer()
                 }
+              />
+                <TopBar />
+                <Button style={{flex: 1}}
+                  title="Advanced Search"
+                  onPress={() =>
+                    this.props.navigation.navigate('AdvancedSearch')
+                  }
                 />
+                </View>
                 <Text style={{textAlign:"center", fontSize:30, fontWeight:"bold", backgroundColor: '#ffa500'}}>
                 Events:
                 </Text>

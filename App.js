@@ -1,10 +1,22 @@
 import HomeScreen from './pages/Home';
 import AdvancedSearch from './pages/AdvancedSearch';
-import {createStackNavigator} from 'react-navigation';
+import GoToDate from './pages/GoToDate';
+import AddEditEvents from './pages/AddEditEvents';
+import About from './pages/About';
+import Contact from './pages/Contact';
+import LogInRegister from './pages/LogInRegister';
+import Widgets from './pages/Widgets';
+import {createDrawerNavigator} from 'react-navigation';
 
-const App = createStackNavigator({
+const App = createDrawerNavigator({
     Home: { screen: HomeScreen },
     AdvancedSearch: { screen: AdvancedSearch },
+    GoToDate: {screen: GoToDate},
+    AddEditEvents: {screen: AddEditEvents},
+    About: {screen: About},
+    Contact: {screen: Contact},
+    LogInRegister: {screen: LogInRegister},
+    Widgets: {screen: Widgets},
   });
   
   export default App;

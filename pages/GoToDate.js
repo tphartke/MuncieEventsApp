@@ -2,7 +2,7 @@ import React from 'react';
 import {Text, View, Button} from 'react-native';
 import TopBar from './top_bar';
 
-export default class AdvancedSearch extends React.Component {
+export default class GoToDate extends React.Component {
     render() {
       return (
         <View>
@@ -21,7 +21,7 @@ export default class AdvancedSearch extends React.Component {
                   }
                 />
                 </View>
-            <Text> AdvancedSearch </Text>
+            <Text> Go To Date... </Text>
         </View>
       )
     }
