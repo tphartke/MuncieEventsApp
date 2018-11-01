@@ -7,21 +7,18 @@ export default class GoToDate extends React.Component {
       return (
         <View style={{paddingTop:20}}>
             <View style={{height: 50, flexDirection: 'row'}}>
-              <Button style={{flex: 1}}
-                title="Open"
+            <Button style={{flex: 1, backgroundColor: 'ffa500'}}
+                title="Menu"
                 onPress={() =>
                 this.props.navigation.openDrawer()
                 }
-              />
-                <TopBar />
-                <Button style={{flex: 1}}
-                  title="Advanced Search"
-                  onPress={() =>
-                    this.props.navigation.navigate('AdvancedSearchScreen')
-                  }
-                />
+              >
+              </Button>
+              <TopBar />
+              </View>
+                <View style={{paddingTop:30}}>
+                  <Text> Go To Date... </Text>
                 </View>
-            <Text> Go To Date... </Text>
         </View>
       )
     }

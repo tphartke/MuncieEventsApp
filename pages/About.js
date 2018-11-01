@@ -8,20 +8,16 @@ export default class About extends React.Component {
         <View style={{paddingTop:20}}>
             <View style={{height: 50, flexDirection: 'row'}}>
               <Button style={{flex: 1}}
-                title="Open"
+                title="Menu"
                 onPress={() =>
                 this.props.navigation.openDrawer()
                 }
               />
                 <TopBar />
-                <Button style={{flex: 1}}
-                  title="Advanced Search"
-                  onPress={() =>
-                    this.props.navigation.navigate('AdvancedSearchScreen')
-                  }
-                />
                 </View>
-            <Text> About </Text>
+                <View style={{paddingTop:30}}>
+                  <Text> About </Text>
+                </View>
         </View>
       )
     }
