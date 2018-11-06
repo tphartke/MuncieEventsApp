@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, FlatList, Button} from 'react-native';
+import {Text, View, FlatList, Button, TouchableHighlight} from 'react-native';
 import TopBar from './top_bar';
 
 export default class HomeScreen extends React.Component{  
@@ -59,11 +59,11 @@ export default class HomeScreen extends React.Component{
             <Text style={{fontWeight: 'bold', fontSize:20}}>
               {date}
             </Text>
-            <View style={{backgroundColor:'#ddd', borderColor:'black', borderWidth:1}}>
+            <TouchableHighlight onPress={() => this.goToFullView(item)} style={{backgroundColor:'#ddd', borderColor:'black', borderWidth:1}}>
               <Text>
                 {listText}
               </Text>
-            </View>
+            </TouchableHighlight>
           </View>
         )
       }
@@ -165,6 +165,12 @@ export default class HomeScreen extends React.Component{
       static navigationOptions = {
         drawerLabel: 'Home',
       };
+
+      goToFullView(eventEntry){
+        return this.props.navigation.navigate('Contact', {
+          event: eventEntry,
+        });
+      }
     
       render(){
         if(this.state.isLoading){
