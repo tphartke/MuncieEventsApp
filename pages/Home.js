@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, FlatList, Button, TouchableHighlight} from 'react-native';
+import {Text, View, FlatList, Button, TouchableHighlight, ActivityIndicator} from 'react-native';
 import TopBar from './top_bar';
 
 export default class HomeScreen extends React.Component{  
@@ -11,6 +11,7 @@ export default class HomeScreen extends React.Component{
       componentDidMount(){
         this.fetchAPIData();
       }
+
       fetchAPIData(){
         return fetch('https://api.muncieevents.com/v1/events/future?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ')
           .then((response) => response.json())
@@ -171,14 +172,35 @@ export default class HomeScreen extends React.Component{
           event: eventEntry,
         });
       }
+
+      getLoadingView(){
+        return(
+          <View style={{flex: 1, padding: 20}}>
+            <ActivityIndicator/>
+          </View>
+        );
+      }
+
+      getEventDataView(){
+        return(
+          <View style={{paddingTop: 20}}>
+                <Text style={{textAlign:"center", fontSize:30, fontWeight:"bold", backgroundColor: '#ffa500'}}>
+                Events:
+                </Text>
+                <FlatList
+                    data={this.state.dataSource}
+                    renderItem={({item}) => 
+                        this.generateListItemView(item)
+                    }
+                />
+                </View>
+        );
+      }
     
       render(){
-        if(this.state.isLoading){
-          return(
-            <View style={{flex: 1, padding: 20}}>
-              <ActivityIndicator/>
-            </View>
-          );
+        var contentView = this.getLoadingView();
+        if(!this.state.isLoading){
+          contentView = this.getEventDataView();
         }
         return (
           <View style={{paddingTop:20}}>
@@ -191,18 +213,7 @@ export default class HomeScreen extends React.Component{
             />
               <TopBar />
               </View>
-              <View style={{paddingTop: 20}}>
-                <Text style={{textAlign:"center", fontSize:30, fontWeight:"bold", backgroundColor: '#ffa500'}}>
-                Events:
-                </Text>
-                <FlatList
-                    data={this.state.dataSource}
-                    renderItem={({item}) => 
-                        this.generateListItemView(item)
-                    }
-                    keyExtractor={({id}, index) => id}
-                />
-                </View>
+              {contentView}
             </View>
         );
       }
