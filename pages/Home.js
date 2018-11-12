@@ -1,12 +1,14 @@
 import React from 'react';
 import {Text, View, FlatList, Button, TouchableHighlight, ActivityIndicator} from 'react-native';
 import TopBar from './top_bar';
+import DateAndTimeParser from "../DateAndTimeParser"
 
 export default class HomeScreen extends React.Component{  
     constructor(props){
         super(props);
         this.state ={ isLoading: true}
         this.state ={lastUsedDate: null}
+        this.dateAndTimeParser = new DateAndTimeParser();
       }
       componentDidMount(){
         this.fetchAPIData();
@@ -72,8 +74,8 @@ export default class HomeScreen extends React.Component{
       }
 
       generateEventEntryView(eventEntry){   
-        var date = this.extractEventEntryDate(eventEntry);
-        var listText = this.createEventEntryText(eventEntry);
+        var date = this.setDateText(eventEntry);
+        var listText = this.setEventEntryText(eventEntry);
     
         return(
           <View>
@@ -89,123 +91,30 @@ export default class HomeScreen extends React.Component{
         )
       }
 
-      createEventEntryText(eventEntry) {
+      setEventEntryText(eventEntry) {
         var title = eventEntry.attributes.title;
-        var startTimeText = this.extractTimeFromDate(eventEntry.attributes.time_start);
+        var startTimeText = this.dateAndTimeParser.extractTimeFromDate(eventEntry.attributes.time_start);
         var endTimeText = "";
         var locationText = eventEntry.attributes.location;
         if (eventEntry.attributes.time_end != null) {
-          endTimeText = " to " + this.extractTimeFromDate(eventEntry.attributes.time_end);
+          endTimeText = " to " + this.dateAndTimeParser.extractTimeFromDate(eventEntry.attributes.time_end);
         }
         var listText = title + '\n' + startTimeText + endTimeText + " @ " + locationText;
         return listText;
       }
 
-      extractEventEntryDate(eventEntry){
+      setDateText(eventEntry){
         var date = null;
         if(this.isNewDate(eventEntry.attributes.date)){
-          date = this.formatDate(eventEntry.attributes.date) + "\n";
+          date = this.dateAndTimeParser.formatDate(eventEntry.attributes.date) + "\n";
           this.state = {lastUsedDate: eventEntry.attributes.date};
         }
         return date;
       }
 
-      extractTimeFromDate(dateTime){
-        //time format is yyyy-mm-ddThh:mm:ss-04:00
-        var date = String(dateTime).split("T");
-        var times = date[1].split("-");
-        var timeUnformatted = times[0].split(":");
-        var hours = timeUnformatted[0];
-        var minutes = timeUnformatted[1];
-        var modifier = "AM";
-        if(hours > 12){
-          hours -= 12;
-          modifier = "PM";
-        }
-        hours = this.filterOutZeroPadding(hours);
-        var finalTime = hours + ":" + minutes + modifier;
-        return finalTime;
-      }
-
       isNewDate(date){
         return date != this.state.lastUsedDate;
       }
-
-      formatDate(date){
-        //date formate is yyyy-mm-dd
-        var dates = date.split("-");
-        var year = dates[0];
-        var day = this.formatDayNumber(dates[2]);
-        var month = this.getShorthandMonthByNumber(dates[1]);
-        return month + " " + day + ", " + year;
-      }
-
-      formatDayNumber(dayNumber){
-        dayNumber = this.filterOutZeroPadding(dayNumber);
-        var daySuffix = this.deriveDayNumberSuffix(dayNumber);
-        const formattedDayNumber = dayNumber + daySuffix;
-        return formattedDayNumber;
-      }
-   
-      filterOutZeroPadding(dateOrTimeNumber) {
-        if (String(dateOrTimeNumber).charAt(0) == "0") {
-          dateOrTimeNumber = String(dateOrTimeNumber).substring(1);
-        }
-        return dateOrTimeNumber;
-      }
-    
-      deriveDayNumberSuffix(dayNumber) {
-        const lastDigitLocation = String(dayNumber).length - 1;
-        const dayNumberLastDigit = String(dayNumber).charAt(lastDigitLocation);
-        var daySuffix = "th";
-        if((dayNumber != "11") & (dayNumber != "12") & (dayNumber != "13")){
-          switch (dayNumberLastDigit) {
-            case ("1"):
-              daySuffix = "st";
-              break;
-            case ("2"):
-              daySuffix = "nd";
-              break;
-            case ("3"):
-              daySuffix = "rd";
-              break;
-          }
-        }
-        return daySuffix;
-      }
-
-      getShorthandMonthByNumber(month){
-        switch(month){
-          case("01"):
-            return "Jan";
-          case("02"):
-            return "Feb";
-          case("03"):
-            return "Mar";
-          case("04"):
-            return "Apr";
-          case("05"):
-            return "May";
-          case("06"):
-            return "Jun";
-          case("07"):
-            return "Jul";
-          case("08"):
-            return "Aug";
-          case("09"):
-            return "Sep";
-          case("10"):
-            return "Oct"
-          case("11"):
-            return "Nov";
-          case("12"):
-            return "Dec";
-        }
-      }
-
-      static navigationOptions = {
-        drawerLabel: 'Home',
-      };
 
       goToFullView(eventEntry){
         return this.props.navigation.navigate('Contact', {
