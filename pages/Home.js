@@ -63,24 +63,24 @@ export default class HomeScreen extends React.Component{
             </Text>
             <FlatList
               data={this.state.dataSource}
-              renderItem={({eventEntry}) => 
-                this.generateEventEntryView(eventEntry)
+              renderItem={({item}) => 
+                this.generateEventEntryView(item)
               }
             />
           </View>
         );
       }
 
-      generateEventEntryView(item){   
-        var date = this.extractEventEntryDate(item);
-        var listText = this.createEventEntryText(item);
+      generateEventEntryView(eventEntry){   
+        var date = this.extractEventEntryDate(eventEntry);
+        var listText = this.createEventEntryText(eventEntry);
     
         return(
           <View>
             <Text style={{fontWeight: 'bold', fontSize:20}}>
               {date}
             </Text>
-            <TouchableHighlight onPress={() => this.goToFullView(item)} style={{backgroundColor:'#ddd', borderColor:'black', borderWidth:1}}>
+            <TouchableHighlight onPress={() => this.goToFullView(eventEntry)} style={{backgroundColor:'#ddd', borderColor:'black', borderWidth:1}}>
               <Text>
                 {listText}
               </Text>
@@ -101,7 +101,6 @@ export default class HomeScreen extends React.Component{
         return listText;
       }
 
-      
       extractEventEntryDate(eventEntry){
         var date = null;
         if(this.isNewDate(eventEntry.attributes.date)){
@@ -109,6 +108,23 @@ export default class HomeScreen extends React.Component{
           this.state = {lastUsedDate: eventEntry.attributes.date};
         }
         return date;
+      }
+
+      extractTimeFromDate(dateTime){
+        //time format is yyyy-mm-ddThh:mm:ss-04:00
+        var date = String(dateTime).split("T");
+        var times = date[1].split("-");
+        var timeUnformatted = times[0].split(":");
+        var hours = timeUnformatted[0];
+        var minutes = timeUnformatted[1];
+        var modifier = "AM";
+        if(hours > 12){
+          hours -= 12;
+          modifier = "PM";
+        }
+        hours = this.filterOutZeroPadding(hours);
+        var finalTime = hours + ":" + minutes + modifier;
+        return finalTime;
       }
 
       isNewDate(date){
