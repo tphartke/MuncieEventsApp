@@ -69,8 +69,8 @@ export default class HomeScreen extends React.Component{
       getEventDataView(){
         return(
           <View style={{paddingTop: 20}}>
-            <Text style={{textAlign:"center", fontSize:30, fontWeight:"bold", backgroundColor: '#ffa500'}}>
-              Events:
+            <Text style={{textAlign:"center", fontSize:30, fontWeight:"bold", color:'#efe0d5', backgroundColor: '#cb532b'}}>
+              EVENTS
             </Text>
             <FlatList
               data={this.state.dataSource}

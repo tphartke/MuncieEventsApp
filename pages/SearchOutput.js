@@ -104,9 +104,6 @@ export default class SearchOutput extends React.Component {
                         </View>
                     );
                 }
-            else{
-                return(<Text></Text>);
-            }
           }
     
           setEventEntryText(eventEntry) {
