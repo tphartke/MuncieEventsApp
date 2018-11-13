@@ -1,6 +1,5 @@
 import React from 'react';
-import {Text, View, FlatList, Button, TouchableHighlight, ActivityIndicator} from 'react-native';
-import TopBar from './top_bar';
+import {Text, View, FlatList, Button, TouchableHighlight, ActivityIndicator, TextInput} from 'react-native';
 import DateAndTimeParser from "../DateAndTimeParser"
 
 export default class HomeScreen extends React.Component{  
@@ -8,6 +7,7 @@ export default class HomeScreen extends React.Component{
         super(props);
         this.state ={ isLoading: true}
         this.state ={lastUsedDate: null}
+        this.state = {text: ''};
         this.dateAndTimeParser = new DateAndTimeParser();
       }
       componentDidMount(){
@@ -28,7 +28,16 @@ export default class HomeScreen extends React.Component{
                 this.props.navigation.openDrawer()
                 }
               />
-              <TopBar />
+              <View style={{height: 50, flexDirection: 'row'}}>
+                <TextInput
+                  placeholder='Search'
+                  value={this.state.text}
+                  style={{borderColor: 'black', borderWidth: 1, width: 320, backgroundColor: '#fff'}}
+                  onChangeText={(text) => this.setState({text})}
+                  onBlur={() => this.searchOnArbitraryString(this.state.text)}
+                  showLoading='true'
+                />
+              </View>
             </View>
             {contentView}
           </View>
@@ -121,4 +130,11 @@ export default class HomeScreen extends React.Component{
           event: eventEntry,
         });
       }
+
+      searchOnArbitraryString(input){
+        console.log('a'+input);
+        return this.props.navigation.navigate('SearchOutput', {
+          SearchInput: input,
+        });
+    }
 }

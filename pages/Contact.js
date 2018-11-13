@@ -17,10 +17,6 @@ export default class Contact extends React.Component {
                 <TopBar />
                 </View>
                 <View style={{paddingTop:30}}>
-                  <Text> 
-                    Contact
-                    {"\n"}
-                  </Text>
                   <Text style={{fontSize:30, fontWeight:'bold'}}>
                     {this.eventData.attributes.title}
                     {"\n"}
