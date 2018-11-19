@@ -37,6 +37,7 @@ export default class Contact extends React.Component {
                   <WebView
                     originWhitelist={['*']}
                     source={{ html: this.eventData.attributes.description }}
+                    style={{fontSize: 12, height: 100}}
                   />
                   <Text style={{fontSize:22, fontWeight:'bold'}}>
                   {"\n"}  
@@ -67,6 +68,7 @@ export default class Contact extends React.Component {
                   </Text>
                   
                   <Text>{this.getFormattedEndDate()}</Text>
+
             </View>
             </ScrollView>
         </View>
