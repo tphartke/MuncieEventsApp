@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, Button, navigation, WebView} from 'react-native';
+import {Text, View, Button, navigation, WebView, ScrollView} from 'react-native';
 import TopBar from './top_bar';
 import DateAndTimeParser from "../DateAndTimeParser"
 
@@ -9,22 +9,6 @@ export default class Contact extends React.Component {
         super(props);
         this.dateAndTimeParser = new DateAndTimeParser();
       }
-
-    GenerateStartTimes(eventData){
-        var startTimeText = this.dateAndTimeParser.extractTimeFromDate(eventEntry.attributes.time_start);
-        return startTimeText;
-    }
-
-    displayStartTimes(eventData){
-        var startDate = this.GenerateStartTimes(eventData);
-            return(
-                <View>
-                    <Text>
-                        {startDate}
-                    </Text>
-                </View>
-            )
-    }
         
     render() {
       return (
@@ -39,13 +23,13 @@ export default class Contact extends React.Component {
               <TopBar />
 
             </View>
+            <ScrollView>
             <View style={{flex:1, paddingTop:30}}>
-            <Button 
-              title = "Go back"
-              onPress={() => this.props.navigation.goBack()}
-              style={{flex:1}}
-            />
-
+                  <Button 
+                      title = "Go back"
+                      onPress={() => this.props.navigation.goBack()}
+                      style={{flex:1}}
+                  />
                   <Text style={{fontSize:35, fontWeight:'bold'}}>
                     {this.eventData.attributes.title}
                     {"\n"}
@@ -54,18 +38,12 @@ export default class Contact extends React.Component {
                     originWhitelist={['*']}
                     source={{ html: this.eventData.attributes.description }}
                   />
-
                   <Text style={{fontSize:22, fontWeight:'bold'}}>
                   {"\n"}  
                   Location
                   {"\n"}  
                   </Text>
-  
-                  <WebView
-                    originWhitelist={['*']}
-                    source={{ html: this.eventData.attributes.location }}
-                  />
-                  
+                  <Text>{this.eventData.attributes.location }</Text>
                   <Text style={{fontSize:22, fontWeight:'bold'}}>
                   {"\n"}  
                   Date
@@ -88,12 +66,18 @@ export default class Contact extends React.Component {
                   {"\n"}  
                   </Text>
                   
-                  <Text> {this.dateAndTimeParser.extractTimeFromDate(this.eventData.attributes.time_end)} </Text>
-                    
-                    
-
+                  <Text>{this.getFormattedEndDate()}</Text>
             </View>
+            </ScrollView>
         </View>
       )
     }
+    getFormattedEndDate(){
+      if(this.eventData.attributes.time_end){
+        return this.dateAndTimeParser.extractTimeFromDate(this.eventData.attributes.time_end);
+      }
+      else{
+        return 'N/A'
+      }
+}
 }

@@ -17,7 +17,7 @@ export default class DateParser extends React.Component{
         hours = this.filterOutZeroPadding(hours);
         var finalTime = hours + ":" + minutes + modifier;
         return finalTime;
-      }
+        }
 
       formatDate(date){
         //date formate is yyyy-mm-dd
