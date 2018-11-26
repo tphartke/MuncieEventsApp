@@ -56,19 +56,19 @@ export default class Contact extends React.Component {
           </View>
           <ScrollView>
             <View style={{flex:1, paddingTop:30}}>
-                <Button 
-                    title = "Go back"
-                    onPress={() => this.props.navigation.goBack()}
-                    style={{flex:1}}
-                />
-                <Text style={{fontSize:35, fontWeight:'bold'}}>
-                  {this.eventData.attributes.title}
-                  {"\n"}
-                </Text>
+              <Button 
+                title = "Go back"
+                onPress={() => this.props.navigation.goBack()}
+                style={{flex:1}}
+              />
+              <Text style={{fontSize:35, fontWeight:'bold'}}>
+                {this.eventData.attributes.title}
+                {"\n"}
+              </Text>
                     
-                {this.getTimeView()}
-                {this.getLocationView()}
-                {this.getDescriptionView()}       
+              {this.getTimeView()}
+              {this.getLocationView()}
+              {this.getDescriptionView()}       
             </View>
           </ScrollView>
         </View>
@@ -78,8 +78,8 @@ export default class Contact extends React.Component {
 
     onNavigationChange(event) {
       if (event.title) {
-          const htmlHeight = Number(event.title)
-          this.setState({height:htmlHeight});
+        const htmlHeight = Number(event.title)
+        this.setState({height:htmlHeight});
       }
    }
 
@@ -90,13 +90,12 @@ export default class Contact extends React.Component {
           {"\n"}  
           When
         </Text>
-
-      <Text> 
-        {this.dateAndTimeParser.formatDate(this.eventData.attributes.date)} {"\n"}
-        {this.dateAndTimeParser.extractTimeFromDate(this.eventData.attributes.time_start)}
-        {this.getFormattedEndDate()}
-      </Text>
-    </View>
+        <Text> 
+          {this.dateAndTimeParser.formatDate(this.eventData.attributes.date)} {"\n"}
+          {this.dateAndTimeParser.extractTimeFromDate(this.eventData.attributes.time_start)}
+          {this.getFormattedEndDate()}
+        </Text>
+      </View>
      );
    }
 
@@ -121,6 +120,7 @@ export default class Contact extends React.Component {
       <View>
         <Text style={{fontSize:22, fontWeight:'bold'}}>
           {"\n"}  
+          {this.eventData.attributes.description}
           Description 
         </Text>
         <WebView
@@ -136,20 +136,16 @@ export default class Contact extends React.Component {
    }
 
    getNullableAttribute(eventAttribute){
-     if(eventAttribute == null){
-       return "";
-     }
-     else{
-       return eventAttribute;
-     }
+    if(eventAttribute == null){
+      return "";
+    }
+    return eventAttribute;
    }
 
    getFormattedEndDate(){
     if(this.eventData.attributes.time_end){
       return " to " + this.dateAndTimeParser.extractTimeFromDate(this.eventData.attributes.time_end);
     }
-    else{
-      return ""
-    }
+    return "";
   }
 }

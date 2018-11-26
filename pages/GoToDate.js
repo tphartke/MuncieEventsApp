@@ -52,19 +52,23 @@ export default class GoToDate extends React.Component {
                 />)
       }
       else if(Platform.OS == 'android'){
-        try {
-          const {action, year, month, day} = await DatePickerAndroid.open({
-            date: new Date()
-          });
-          if(action == DatePickerAndroid.dateSetAction){
-            newDate = new Date(year, month, day);
-            this.setDate(newDate);
-          }
-          if (action !== DatePickerAndroid.dismissedAction) {
-          }
-        } catch ({code, message}) {
-          console.warn('Cannot open date picker', message);
+        this.getAndroidDatePicker();        
+      }
+    }
+
+    async getAndroidDatePicker(){
+      try {
+        const {action, year, month, day} = await DatePickerAndroid.open({
+          date: new Date()
+        });
+        if(action == DatePickerAndroid.dateSetAction){
+          newDate = new Date(year, month, day);
+          this.setDate(newDate);
         }
+        if (action !== DatePickerAndroid.dismissedAction) {
+        }
+      } catch ({code, message}) {
+        console.warn('Cannot open date picker', message);
       }
     }
 
