@@ -1,5 +1,5 @@
 import React from 'react';
-import {TextInput, View} from 'react-native';
+import {TextInput, View, Button} from 'react-native';
 
 export default class TopBar extends React.Component {
   constructor(props) {
@@ -17,6 +17,12 @@ export default class TopBar extends React.Component {
   return(
     <View style={{height: 50, flexDirection: 'row', backgroundColor: '#aaa', paddingTop:20}}>
       <View style={{height: 50, flexDirection: 'row'}}>
+        <Button style={{flex: 1}}
+          title="Menu"
+          onPress={() =>
+          this.openMenuDrawer()
+          }
+        />
         <TextInput
           placeholder='Search'
           style={{borderColor: 'black', borderWidth: 1, width: 320, backgroundColor: '#fff'}}
@@ -27,4 +33,8 @@ export default class TopBar extends React.Component {
     </View>
   );
   } 
+
+  openMenuDrawer(){
+    this.props.navigation.navigate('DrawerOpen');
+  }
 }
