@@ -61,11 +61,9 @@ export default class GoToDate extends React.Component {
         const {action, year, month, day} = await DatePickerAndroid.open({
           date: new Date()
         });
-        if(action == DatePickerAndroid.dateSetAction){
+        if (action !== DatePickerAndroid.dismissedAction) {
           newDate = new Date(year, month, day);
           this.setDate(newDate);
-        }
-        if (action !== DatePickerAndroid.dismissedAction) {
         }
       } catch ({code, message}) {
         console.warn('Cannot open date picker', message);

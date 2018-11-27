@@ -120,7 +120,6 @@ export default class Contact extends React.Component {
       <View>
         <Text style={{fontSize:22, fontWeight:'bold'}}>
           {"\n"}  
-          {this.eventData.attributes.description}
           Description 
         </Text>
         <WebView
