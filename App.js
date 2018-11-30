@@ -7,6 +7,7 @@ import Contact from './pages/Contact';
 import LogInRegister from './pages/LogInRegister';
 import Widgets from './pages/Widgets';
 import SearchOutput from './pages/SearchOutput'
+import ExpandedView from './pages/ExpandedView'
 import {createDrawerNavigator} from 'react-navigation';
 
 const App = createDrawerNavigator({
@@ -19,6 +20,7 @@ const App = createDrawerNavigator({
     LogInRegister: {screen: LogInRegister},
     Widgets: {screen: Widgets},
     SearchOutput: {screen: SearchOutput},
+    ExpandedView: {screen: ExpandedView}
   });
   
   export default App;

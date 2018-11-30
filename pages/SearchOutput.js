@@ -132,7 +132,7 @@ export default class SearchOutput extends React.Component {
           }
     
           goToFullView(eventEntry){
-            return this.props.navigation.navigate('Contact', {
+            return this.props.navigation.navigate('ExpandedView', {
               event: eventEntry,
             });
           }

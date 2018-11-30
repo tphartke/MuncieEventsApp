@@ -32,7 +32,7 @@ const style = `
   </style>
 `;
 
-export default class Contact extends React.Component {
+export default class ExpandedView extends React.Component {
     eventData = this.props.navigation.getParam('event', 'No event found');
     constructor(props){
         super(props);
