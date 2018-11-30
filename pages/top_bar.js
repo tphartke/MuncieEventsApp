@@ -16,20 +16,11 @@ export default class TopBar extends React.Component {
   render() {
   return(
     <View style={{height: 50, flexDirection: 'row', backgroundColor: '#aaa', paddingTop:20}}>
-      <View style={{height: 50, flexDirection: 'row'}}>
-        <Button style={{flex: 1}}
-          title="Menu"
-          onPress={() =>
-          this.openMenuDrawer()
-          }
-        />
         <TextInput
           placeholder='Search'
-          style={{borderColor: 'black', borderWidth: 1, width: 320, backgroundColor: '#fff'}}
-          onBlur={(text) => {this.setState({text}); this.searchOnArbitraryString(this.state.text);}}
           showLoading='true'
+          style= {{borderColor: 'black', borderWidth: 1, width: 320, backgroundColor: '#fff'}}
         />
-      </View>
     </View>
   );
   } 
