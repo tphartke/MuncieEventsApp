@@ -58,7 +58,7 @@ export default class GoToDate extends React.Component {
       else if(Platform.OS == 'android'){ 
         return(
           <Button
-              title="Pick Date"
+              title="Select Date"
               onPress={() => {this.getAndroidDatePicker();}}
           />
         )      
@@ -70,11 +70,12 @@ export default class GoToDate extends React.Component {
         const {action, year, month, day} = await DatePickerAndroid.open({
           date: new Date()
         });
-        if (action !== DatePickerAndroid.dismissedAction) {
+        if (action == DatePickerAndroid.dateSetAction) {
           newDate = new Date(year, month, day);
+          formattedDate = this.getAndroidFormattedDate(newDate);
+          console.log(formattedDate);
+          this.fetchAPIData(formattedDate);
           this.setDate(newDate);
-          console.log(this.getFormattedDate());
-          this.fetchAPIData(this.getFormattedDate());
         }
       } catch ({code, message}) {
         console.warn('Cannot open date picker', message);
@@ -96,6 +97,21 @@ export default class GoToDate extends React.Component {
       //pad day if needed for api
       if(this.state.chosenDate.getDate() < 10){
         day='0' + this.state.chosenDate.getDate().toString();
+      }
+      return year + '-' + month + '-' + day;
+    }
+
+    getAndroidFormattedDate(newDate){
+      day = newDate.getDate();
+      month = newDate.getMonth()+1;
+      year = newDate.getFullYear();
+      //pad month if needed for api
+      if(newDate.getMonth()+1 < 10){
+         month="0" + (newDate.getMonth()+1).toString();
+      }
+      //pad day if needed for api
+      if(newDate.getDate() < 10){
+        day='0' + newDate.getDate().toString();
       }
       return year + '-' + month + '-' + day;
     }
