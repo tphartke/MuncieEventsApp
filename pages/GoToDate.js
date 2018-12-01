@@ -6,7 +6,6 @@ import DateAndTimeParser from "../DateAndTimeParser"
 export default class GoToDate extends React.Component {
   constructor(props){
     super(props);
-    this.eventDates = [];
     this.state ={ isLoading: true}
     this.state ={lastUsedDate: null}
     this.state = {chosenDate: new Date()}
@@ -27,17 +26,15 @@ export default class GoToDate extends React.Component {
                 onPress={() =>
                 this.props.navigation.openDrawer()
                 }
-              >
-              </Button>
+              />
               <TopBar />
               </View>
+              <Text style={{textAlign:"center", fontSize:30, fontWeight:"bold", color:'#efe0d5', backgroundColor: '#cb532b'}}>
+                EVENTS
+              </Text>
                 <View style={{paddingTop:30}}>
                 </View>
                 {this.getDatePicker()}
-                <Button
-                  title="Search"
-                  onPress={() => {this.fetchAPIData(this.getFormattedDate());}}
-                />
               {contentView}
           </View>
       )
@@ -45,14 +42,26 @@ export default class GoToDate extends React.Component {
 
     getDatePicker(){
       if(Platform.OS == 'ios'){
-        return (<DatePickerIOS 
+        return (
+              <View>
+                <DatePickerIOS 
                   date={this.state.chosenDate}
                   onDateChange={this.setDate}
                   mode={'date'}
-                />)
+                />
+                <Button
+                  title="Search"
+                  onPress={() => {this.fetchAPIData(this.getFormattedDate());}}
+                />
+              </View>)
       }
-      else if(Platform.OS == 'android'){
-        this.getAndroidDatePicker();        
+      else if(Platform.OS == 'android'){ 
+        return(
+          <Button
+              title="Pick Date"
+              onPress={() => {this.getAndroidDatePicker();}}
+          />
+        )      
       }
     }
 
@@ -64,6 +73,8 @@ export default class GoToDate extends React.Component {
         if (action !== DatePickerAndroid.dismissedAction) {
           newDate = new Date(year, month, day);
           this.setDate(newDate);
+          console.log(this.getFormattedDate());
+          this.fetchAPIData(this.getFormattedDate());
         }
       } catch ({code, message}) {
         console.warn('Cannot open date picker', message);
@@ -114,9 +125,6 @@ export default class GoToDate extends React.Component {
     getEventDataView(){
       return(
         <View style={{paddingTop: 20}}>
-          <Text style={{textAlign:"center", fontSize:30, fontWeight:"bold", color:'#efe0d5', backgroundColor: '#cb532b'}}>
-            EVENTS
-          </Text>
           <FlatList
             data={this.state.dataSource}
             renderItem={({item}) => 
