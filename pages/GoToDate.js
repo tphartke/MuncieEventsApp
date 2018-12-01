@@ -73,7 +73,6 @@ export default class GoToDate extends React.Component {
         if (action == DatePickerAndroid.dateSetAction) {
           newDate = new Date(year, month, day);
           formattedDate = this.getAndroidFormattedDate(newDate);
-          console.log(formattedDate);
           this.fetchAPIData(formattedDate);
           this.setDate(newDate);
         }
