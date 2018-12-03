@@ -45,16 +45,7 @@ export default class Contact extends React.Component {
     render() {
       return (
         <View style={{flex:1, paddingTop:20}}>
-          <View style={{height: 50, flexDirection: 'row'}}>
-            <Button style={{flex: 1}}
-              title="Menu"
-              onPress={() =>
-              this.props.navigation.openDrawer()
-            }
-            />
-            <TopBar />
-
-          </View>
+          <TopBar />
           <ScrollView>
             <View style={{flex:1, paddingTop:30}}>
               <Button 

@@ -20,23 +20,15 @@ export default class GoToDate extends React.Component {
       }
       return (
         <View style={{paddingTop:20}}>
-            <View style={{height: 50, flexDirection: 'row'}}>
-            <Button style={{flex: 1, backgroundColor: 'ffa500'}}
-                title="Menu"
-                onPress={() =>
-                this.props.navigation.openDrawer()
-                }
-              />
-              <TopBar />
-              </View>
-              <Text style={{textAlign:"center", fontSize:30, fontWeight:"bold", color:'#efe0d5', backgroundColor: '#cb532b'}}>
-                EVENTS
-              </Text>
-                <View style={{paddingTop:30}}>
-                </View>
-                {this.getDatePicker()}
-              {contentView}
+          <TopBar />
+          <Text style={{textAlign:"center", fontSize:30, fontWeight:"bold", color:'#efe0d5', backgroundColor: '#cb532b'}}>
+            EVENTS
+          </Text>
+          <View style={{paddingTop:30}}>
           </View>
+          {this.getDatePicker()}
+          {contentView}
+        </View>
       )
     }
 

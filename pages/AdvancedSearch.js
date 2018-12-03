@@ -11,12 +11,6 @@ export default class AdvancedSearch extends React.Component {
       <View style={{paddingTop:20}}>
 
         <View style={{height: 50, flexDirection: 'row'}}>
-          <Button
-            title="Menu"
-            onPress={() =>
-            this.props.navigation.openDrawer()
-            }
-          />
           <TopBar />
         </View>
 

@@ -1,7 +1,8 @@
 import React from 'react';
 import {TextInput, View, Button} from 'react-native';
+import{ withNavigation } from "react-navigation";
 
-export default class TopBar extends React.Component {
+class TopBar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {text: ''};
@@ -15,7 +16,13 @@ export default class TopBar extends React.Component {
 
   render() {
   return(
-    <View style={{height: 50, flexDirection: 'row', backgroundColor: '#aaa', paddingTop:20}}>
+    <View style={{height: 60, flexDirection: 'row', backgroundColor: '#aaa', paddingTop:20}}>
+      <Button style={{flex: 1}}
+        title="Menu"
+        onPress={() =>
+          this.props.navigation.openDrawer()
+        }
+      />
         <TextInput
           placeholder='Search'
           showLoading='true'
@@ -28,4 +35,6 @@ export default class TopBar extends React.Component {
   openMenuDrawer(){
     this.props.navigation.navigate('DrawerOpen');
   }
-}
+
+  }
+  export default withNavigation(TopBar);

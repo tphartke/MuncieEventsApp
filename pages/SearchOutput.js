@@ -28,12 +28,6 @@ export default class SearchOutput extends React.Component {
             return (
               <View style={{paddingTop:20}}>
                 <View style={{height: 50, flexDirection: 'row'}}>
-                  <Button
-                    title="Menu"
-                    onPress={() =>
-                    this.props.navigation.openDrawer()
-                    }
-                  />
                   <View style={{height: 50, flexDirection: 'row'}}>
                     <TextInput
                       placeholder='Search'

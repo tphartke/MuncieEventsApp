@@ -1,6 +1,7 @@
 import React from 'react';
 import {Text, View, FlatList, Button, TouchableHighlight, ActivityIndicator, TextInput} from 'react-native';
 import DateAndTimeParser from "../DateAndTimeParser"
+import TopBar from './top_bar';
 
 export default class HomeScreen extends React.Component{  
     constructor(props){
@@ -22,12 +23,7 @@ export default class HomeScreen extends React.Component{
         return (
           <View style={{paddingTop:20}}>
             <View style={{height: 50, flexDirection: 'row'}}>
-              <Button
-                title="Menu"
-                onPress={() =>
-                this.props.navigation.openDrawer()
-                }
-              />
+              <TopBar />
               <View style={{height: 50, flexDirection: 'row'}}>
                 <TextInput
                   placeholder='Search'
