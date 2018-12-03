@@ -23,11 +23,14 @@ class TopBar extends React.Component {
           this.props.navigation.openDrawer()
         }
       />
-        <TextInput
-          placeholder='Search'
-          showLoading='true'
-          style= {{borderColor: 'black', borderWidth: 1, width: 320, backgroundColor: '#fff'}}
-        />
+    <TextInput
+      placeholder='Search'
+      value={this.state.text}
+      style={{borderColor: 'black', borderWidth: 1, width: 320, backgroundColor: '#fff'}}
+      onChangeText={(text) => this.setState({text})}
+      onBlur={() => this.searchOnArbitraryString(this.state.text)}
+      showLoading='true'
+    />
     </View>
   );
   } 
@@ -35,6 +38,5 @@ class TopBar extends React.Component {
   openMenuDrawer(){
     this.props.navigation.navigate('DrawerOpen');
   }
-
-  }
-  export default withNavigation(TopBar);
+}
+export default withNavigation(TopBar);

@@ -1,6 +1,7 @@
 import React from 'react';
-import {Text, View, FlatList, Button, TouchableHighlight, ActivityIndicator, TextInput} from 'react-native';
-import DateAndTimeParser from "../DateAndTimeParser"
+import {Text, View, FlatList, TouchableHighlight, ActivityIndicator} from 'react-native';
+import DateAndTimeParser from "../DateAndTimeParser";
+import TopBar from './top_bar';
 
 export default class SearchOutput extends React.Component {
         constructor(props){
@@ -28,14 +29,7 @@ export default class SearchOutput extends React.Component {
             return (
               <View style={{paddingTop:20}}>
                 <View style={{height: 50, flexDirection: 'row'}}>
-                  <View style={{height: 50, flexDirection: 'row'}}>
-                    <TextInput
-                      placeholder='Search'
-                      style={{borderColor: 'black', borderWidth: 1, width: 320, backgroundColor: '#fff'}}
-                      onBlur={(text) => {this.setState({text}); this.searchOnArbitraryString(this.state.text);}}
-                      showLoading='true'
-                    />
-                  </View>
+                  <TopBar />
                 </View>
                 {contentView}
               </View>

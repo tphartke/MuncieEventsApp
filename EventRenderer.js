@@ -1,40 +1,18 @@
 import React from 'react';
-import {View, ActivityIndicator, Text, TouchableHighlight, FlatList} from 'react-native';
-import EventRender from "../EventRenderer"
-import TopBar from './top_bar';
-import DateAndTimeParser from "../DateAndTimeParser"
+import {Text, View, ActivityIndicator, FlatList, TouchableHighlight} from 'react-native'
+import{ withNavigation } from "react-navigation";
+import {DateParser} from "./DateAndTimeParser"
 
-export default class HomeScreen extends React.Component{  
+class EventRender extends React.Component{
     constructor(props){
         super(props);
         this.state ={ isLoading: true}
         this.state ={lastUsedDate: null}
         this.state = {text: ''};
-        this.eventRender = new EventRender();
-        this.dateAndTimeParser = new DateAndTimeParser();
+        this.dateAndTimeParser = new DateParser();
       }
 
-      componentDidMount(){
-        this.fetchAPIData('https://api.muncieevents.com/v1/events/future?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ');
-        this.setState({isLoading: false});
-      }
-
-      render(){
-        var contentView = this.getLoadingView();
-        if(!this.state.isLoading){
-          contentView = this.getEventDataView();
-        }
-        return (
-          <View style={{paddingTop:20}}>
-            <View style={{height: 50, flexDirection: 'row'}}>
-              <TopBar />
-            </View>
-            {contentView}
-          </View>
-        );
-      }
-
-      fetchAPIData(url){
+    fetchAPIData(url){
         return fetch(url)
           .then((response) => response.json())
           .then((responseJson) => {
@@ -120,4 +98,6 @@ export default class HomeScreen extends React.Component{
           event: eventEntry,
         });
       }
+
 }
+export default withNavigation(EventRender);
