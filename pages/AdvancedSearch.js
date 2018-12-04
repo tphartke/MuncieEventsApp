@@ -9,8 +9,7 @@ export default class AdvancedSearch extends React.Component {
   render(){
     return (
       <View style={{paddingTop:20}}>
-
-        <View style={{height: 50, flexDirection: 'row'}}>
+        <View>
           <TopBar />
         </View>
 

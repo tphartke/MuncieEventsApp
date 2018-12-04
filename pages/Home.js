@@ -26,7 +26,7 @@ export default class HomeScreen extends React.Component{
         }
         return (
           <View style={{paddingTop:20}}>
-            <View style={{height: 50, flexDirection: 'row'}}>
+            <View>
               <TopBar />
             </View>
             {contentView}
@@ -50,7 +50,7 @@ export default class HomeScreen extends React.Component{
 
       getEventDataView(){
         return(
-          <View style={{paddingTop: 20}}>
+          <View >
             <Text style={{textAlign:"center", fontSize:30, fontWeight:"bold", color:'#efe0d5', backgroundColor: '#cb532b'}}>
               EVENTS
             </Text>

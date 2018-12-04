@@ -6,12 +6,18 @@ import TopBar from './top_bar';
 export default class Contact extends React.Component {
     render() {
       return (
-        <View style={{flex:1, paddingTop:20}}>
-          <TopBar />
+        <View>
+          <View>
+            <TopBar />
+          </View>
+          <View style={{flex:1, paddingTop:20}}>
           <Text>
             Contact
           </Text>
         </View>
+
+        </View>
+
       )
     }
 }

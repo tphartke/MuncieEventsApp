@@ -44,7 +44,7 @@ export default class ExpandedView extends React.Component {
 
     render() {
       return (
-        <View style={{flex:1, paddingTop:20}}>
+        <View style={{paddingTop:20}}>
           <TopBar />
           <ScrollView>
             <View style={{flex:1, paddingTop:30}}>

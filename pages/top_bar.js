@@ -1,6 +1,8 @@
 import React from 'react';
 import {TextInput, View, Button} from 'react-native';
 import{ withNavigation } from "react-navigation";
+import Icon from 'react-native-vector-icons/Ionicons'
+import * as Animatable from 'react-native-animatable'
 
 class TopBar extends React.Component {
   constructor(props) {
@@ -16,7 +18,9 @@ class TopBar extends React.Component {
 
   render() {
   return(
-    <View style={{height: 60, flexDirection: 'row', backgroundColor: '#aaa', paddingTop:20}}>
+    <View style={{height: 65, backgroundColor: '#aaa', paddingTop: 10, paddingHorizontal: 10, flexDirection: 'row'}}>
+    <Animatable.View animation = "slideInRight" duration={500} style={{height: 45, flex: 1, flexDirection: 'row',  paddingHorizontal: 5, paddingLeft: 5, justifyContent: 'center',
+     borderColor: 'black', borderRadius: 10, borderWidth: 1, width: 320, backgroundColor: '#fff', alignItems: 'center'}}>
       <Button style={{flex: 1}}
         title="Menu"
         onPress={() =>
@@ -24,13 +28,16 @@ class TopBar extends React.Component {
         }
       />
     <TextInput
-      placeholder='Search'
-      value={this.state.text}
-      style={{borderColor: 'black', borderWidth: 1, width: 320, backgroundColor: '#fff'}}
+      placeholder=' Search'
+      value={this.state.text} 
+      style = {{flex:1, width: 50}}
       onChangeText={(text) => this.setState({text})}
       onBlur={() => this.searchOnArbitraryString(this.state.text)}
       showLoading='true'
     />
+     <Icon name = "ios-search" style = {{fontSize: 24}}/>
+      
+    </Animatable.View>
     </View>
   );
   } 

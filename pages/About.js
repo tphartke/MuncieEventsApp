@@ -6,14 +6,11 @@ export default class About extends React.Component {
     render() {
       return (
         <View style={{paddingTop:20}}>
-            <View style={{height: 50, flexDirection: 'row'}}>
-                <TopBar />
-                </View>
-                <View style={{paddingTop:30}}>
-                
-                  <Text style ={{textAlign:"center", fontSize:30, fontWeight:"bold", color:'#efe0d5', backgroundColor: '#cb532b'}}> About </Text>
-                  <ScrollView>
-                  <Text style ={{}}>
+          <TopBar />
+          <View>
+            <Text style ={{textAlign:"center", fontSize:30, fontWeight:"bold", color:'#efe0d5', backgroundColor: '#cb532b'}}> About </Text>
+            <ScrollView>
+            <Text style ={{}}>
 Muncie Events is a comprehensive event promotion tool provided to the city of Muncie, Indiana by the Muncie Arts and Culture Council and the Center for Business and Economic Research at Ball State University.
 </Text>
 <Text style={{paddingTop:5,paddingBottom:5}}>

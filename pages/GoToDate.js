@@ -19,15 +19,16 @@ export default class GoToDate extends React.Component {
         contentView = this.getEventDataView();
       }
       return (
-        <View style={{paddingTop:20}}>
+        <View>
           <TopBar />
-          <Text style={{textAlign:"center", fontSize:30, fontWeight:"bold", color:'#efe0d5', backgroundColor: '#cb532b'}}>
-            EVENTS
-          </Text>
-          <View style={{paddingTop:30}}>
-          </View>
+          <View>
+            <Text style={{textAlign:"center", fontSize:30, fontWeight:"bold", color:'#efe0d5', backgroundColor: '#cb532b', paddingTop: 10}}>
+              EVENTS
+            </Text>
+
           {this.getDatePicker()}
           {contentView}
+          </View>
         </View>
       )
     }
