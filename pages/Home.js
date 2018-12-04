@@ -1,8 +1,9 @@
 import React from 'react';
-import {View, ActivityIndicator, Text, TouchableHighlight, FlatList} from 'react-native';
+import {View, ActivityIndicator, Text, TouchableOpacity, FlatList} from 'react-native';
 import EventRender from "../EventRenderer"
 import TopBar from './top_bar';
 import DateAndTimeParser from "../DateAndTimeParser"
+import * as Animatable from 'react-native-animatable'
 
 export default class HomeScreen extends React.Component{  
     constructor(props){
@@ -77,16 +78,16 @@ export default class HomeScreen extends React.Component{
         var listText = this.setEventEntryText(eventEntry);
     
         return(
-          <View>
-            <Text style={{fontWeight: 'bold', fontSize:20}}>
+          <Animatable.View animation = "slideInRight" duration = {700}>
+            <Text style={{fontWeight: 'bold', fontSize:20, marginHorizontal: 5,}}>
               {date}
-            </Text>
-            <TouchableHighlight onPress={() => this.goToFullView(eventEntry)} style={{backgroundColor:'#ddd', borderColor:'black', borderWidth:1}}>
-              <Text>
+            </Text>           
+             <TouchableOpacity onPress={() => this.goToFullView(eventEntry)} style={{backgroundColor:'#ddd', fontSize: 14, borderColor:'black', borderWidth:1, paddingHorizontal: 10, borderRadius: 5, marginHorizontal: 5}}>
+               <Text>
                 {listText}
-              </Text>
-            </TouchableHighlight>
-          </View>
+               </Text>
+             </TouchableOpacity>
+             </Animatable.View>
         )
       }
 
