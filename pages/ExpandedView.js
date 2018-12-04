@@ -3,6 +3,7 @@ import {Text, View, Button, WebView, ScrollView} from 'react-native';
 import TopBar from './top_bar';
 import DateAndTimeParser from "../DateAndTimeParser"
 import { NavigationActions } from 'react-navigation';
+import * as Animatable from 'react-native-animatable'
 
 
 const script = `
@@ -44,7 +45,7 @@ export default class ExpandedView extends React.Component {
 
     render() {
       return (
-        <View style={{paddingTop:20}}>
+        <Animatable.View animation = 'slideInRight' duration = {600} style={{flex:1, paddingTop:20}}>
           <TopBar />
           <ScrollView>
             <View style={{flex:1, paddingTop:30}}>
@@ -63,7 +64,7 @@ export default class ExpandedView extends React.Component {
               {this.getDescriptionView()}       
             </View>
           </ScrollView>
-        </View>
+        </Animatable.View>
       )
     }
 
