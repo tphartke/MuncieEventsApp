@@ -1,6 +1,4 @@
-import React from 'react';
-
-export default class DateParser extends React.Component{
+export default class DateParser {
 
       extractTimeFromDate(dateTime){
         //time format is yyyy-mm-ddThh:mm:ss-04:00
