@@ -1,6 +1,7 @@
 import React from 'react';
 import {Text, View, Button, AsyncStorage, TextInput} from 'react-native';
 import TopBar from './top_bar';
+import CustomButton from "./CustomButton";
 
 export default class LogInRegister extends React.Component {
     constructor(props){
@@ -20,8 +21,18 @@ export default class LogInRegister extends React.Component {
       return (
         <View style={{paddingTop:20}}>
           <TopBar />         
-          <Button title="Log In" onPress={()=> this.logUserIn()} />
-          <Button title = "Log Out" onPress={()=> this.logUserOut()} />
+          <CustomButton 
+            text="Log In" 
+            onPress={()=> this.logUserIn()} 
+            buttonStyle={{width:400, height:25}}
+            textStyle={{fontSize:18}}
+          />
+          <CustomButton 
+            text = "Log Out" 
+            onPress={()=> this.logUserOut()} 
+            buttonStyle={{width:400, height:25}}
+            textStyle={{fontSize:18}}
+          />
           <Text>{logInMessage}</Text>
           <Text>{profileInfo}</Text>
         </View>

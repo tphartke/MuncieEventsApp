@@ -1,5 +1,5 @@
 import React from 'react';
-import {TextInput, View, Button} from 'react-native';
+import {TextInput, View} from 'react-native';
 import{ withNavigation } from "react-navigation";
 import CustomButton from "./CustomButton";
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -24,7 +24,6 @@ class TopBar extends React.Component {
     <Animatable.View animation = "slideInRight" duration={500} style={{height: 45, flex: 1, flexDirection: 'row',  paddingHorizontal: 5, paddingLeft: 5, justifyContent: 'center',
      borderColor: 'black', borderRadius: 10, borderWidth: 1, width: 320, backgroundColor: '#fff', alignItems: 'center'}}>
       <CustomButton
-        style={{width:50, height:50}}
         text="Menu"
         onPress={() =>
           this.props.navigation.openDrawer()

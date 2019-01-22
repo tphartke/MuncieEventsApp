@@ -1,7 +1,8 @@
 import React from 'react';
 import {Text, View, Button, Platform, DatePickerAndroid, DatePickerIOS, ActivityIndicator, FlatList, TouchableHighlight} from 'react-native';
 import TopBar from './top_bar';
-import DateAndTimeParser from "../DateAndTimeParser"
+import DateAndTimeParser from "../DateAndTimeParser";
+import CustomButton from "./CustomButton";
 
 export default class GoToDate extends React.Component {
   constructor(props){
@@ -42,17 +43,21 @@ export default class GoToDate extends React.Component {
                   onDateChange={this.setDate}
                   mode={'date'}
                 />
-                <Button
-                  title="Search"
+                <CustomButton
+                  text="Search"
                   onPress={() => {this.fetchAPIData(this.getFormattedDate());}}
-                />
+                  buttonStyle={{width:400, height:25}}
+                  textStyle={{fontSize:18}}
+                  />
               </View>)
       }
       else if(Platform.OS == 'android'){ 
         return(
-          <Button
-              title="Select Date"
+          <CustomButton
+              text="Select Date"
               onPress={() => {this.getAndroidDatePicker();}}
+              buttonStyle={{width:400, height:25}}
+              textStyle={{fontSize:18}}
           />
         )      
       }
