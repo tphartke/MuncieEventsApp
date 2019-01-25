@@ -122,4 +122,3 @@ class EventList extends React.Component {
       }
 } 
 export default withNavigation(EventList);
-
