@@ -58,7 +58,6 @@ class EventList extends React.Component {
             this.setState({apicall: this.props.apicall});
             this.fetchAPIData(this.props.apicall);
         }
-        console.log(this.state.apicall);
         var contentView = this.getLoadingView();
         if(!this.state.isLoading){
           contentView = this.getEventDataView(this.state.dataSource);

@@ -2,6 +2,7 @@ import React from 'react';
 import {Text, View, Button, AsyncStorage, TextInput} from 'react-native';
 import TopBar from './top_bar';
 import CustomButton from "./CustomButton";
+import Register from "./Register"
 
 export default class LogInRegister extends React.Component {
     constructor(props){
@@ -49,6 +50,7 @@ export default class LogInRegister extends React.Component {
           />
           <CustomButton
             text = "Sign Up"
+            buttonStyle={{width:400, height:25}}
             onPress={() => this.setState({selectedPage: "Signup"})}
           />
           <Text>{logInMessage}</Text>
@@ -60,12 +62,14 @@ export default class LogInRegister extends React.Component {
     getSignupSequence(){
       return(
         <View style={{paddingTop:20}}>
-        <TopBar />  
-      <CustomButton
-      text = "Go Back"
-      onPress={() => this.setState({selectedPage: "Login"})}
-    />
-    </View>
+          <TopBar />  
+          <Register />
+          <CustomButton
+            text = "Go Back"
+            buttonStyle={{width:400, height:25}}
+            onPress={() => this.setState({selectedPage: "Login"})}
+          />
+        </View>
       );
     }
 
