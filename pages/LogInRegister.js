@@ -7,11 +7,25 @@ export default class LogInRegister extends React.Component {
     constructor(props){
       super(props);
       this.state = {isLoggedIn: false}
+      this.state = {selectedPage: "Login"}
       this.password = '';
       this.username = '';
     }
     
     render() {
+      if(this.state.selectedPage=="Login"){
+        return(
+          this.getLoginSequence()
+        )
+      }
+      else{
+        return(
+          this.getSignupSequence()
+        )
+      }
+    }
+
+    getLoginSequence(){
       logInMessage = "You are not logged in";
       profileInfo = "";
       if(this.state.isLoggedIn){
@@ -33,10 +47,26 @@ export default class LogInRegister extends React.Component {
             buttonStyle={{width:400, height:25}}
             textStyle={{fontSize:18}}
           />
+          <CustomButton
+            text = "Sign Up"
+            onPress={() => this.setState({selectedPage: "Signup"})}
+          />
           <Text>{logInMessage}</Text>
           <Text>{profileInfo}</Text>
         </View>
       )
+    }
+
+    getSignupSequence(){
+      return(
+        <View style={{paddingTop:20}}>
+        <TopBar />  
+      <CustomButton
+      text = "Go Back"
+      onPress={() => this.setState({selectedPage: "Login"})}
+    />
+    </View>
+      );
     }
 
     logUserIn = async() => {

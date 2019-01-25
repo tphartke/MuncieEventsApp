@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, TextInput, Button} from 'react-native';
+import {Text, View, TextInput} from 'react-native';
 import CustomButton from "./CustomButton";
 import TopBar from './top_bar';
 
@@ -11,14 +11,11 @@ export default class Contact extends React.Component {
       this.state = ({email: ""})
       this.state = ({name: ""})
       this.state = ({messageSent: false})
+      this.state = ({statusMessage: ""})
     }
     render() {
-      statusMessage = (<Text>Please enter a valid Email, Name and Message</Text>)
-      if(this.meetsMessageCriteria()){
-        statusMessage = (<Text>Success</Text>);
-      }
       return (
-        <View>
+        <View style={{paddingTop:20}}>
           <View>
             <TopBar />
           </View>
@@ -49,7 +46,7 @@ export default class Contact extends React.Component {
           />
 
           <CustomButton text="Send" onPress = {() => this.sendMessage()}></CustomButton>
-          {statusMessage}
+          <Text>{this.state.statusMessage}</Text>
           
         </View>
       </View>
@@ -58,7 +55,10 @@ export default class Contact extends React.Component {
     }
   sendMessage(){
     if(this.meetsMessageCriteria()){
-      this.setState({messageSent: true})
+      this.setState({messageSent: true, statusMessage: "Message Sent. Thanks for your feedback!"});
+    }
+    else{
+      this.setState({statusMessage: "Please enter a valid name, message, and email address"});
     }
   }
 
