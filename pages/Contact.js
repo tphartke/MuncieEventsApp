@@ -80,12 +80,10 @@ export default class Contact extends React.Component {
   }
 
   fetchAPIData(url){
-    this.setState({messageSent: true, statusMessage: this.state.name + " successfully registered!"});  
     fetch(url, {method: "POST"})      
     .catch((error) =>{
         console.log(error)
        this.setState({statusMessage: "Error reaching server: " + error})
     });
   }  
-}
 }
