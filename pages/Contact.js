@@ -2,7 +2,7 @@ import React from 'react';
 import {Text, View, TextInput} from 'react-native';
 import CustomButton from "./CustomButton";
 import TopBar from './top_bar';
-
+import Styles from './Styles';
 
 export default class Contact extends React.Component {
     constructor(props){
@@ -16,41 +16,38 @@ export default class Contact extends React.Component {
     }
     render() {
       return (
-        <View style={{paddingTop:20}}>
-          <View>
-            <TopBar />
-          </View>
-          <View>
-          <Text>
+        <View style={Styles.topBarPadding}>
+          <TopBar />
+          <Text style={Styles.title}>
             Contact Us
           </Text>
+          <View style={Styles.content}>
+            <Text>Name</Text>
+            <TextInput
+              onChangeText={(name) => this.setState({name})}
+              style={Styles.textBox}
+              placeholder="Name"
+            />
 
-          <Text>Name</Text>
-          <TextInput
-            onChangeText={(name) => this.setState({name})}
-            style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-            placeholder="Name"
-          />
+            <Text>Email</Text>
+            <TextInput
+              onChangeText={(email) => this.setState({email})}
+              style={Styles.textBox}
+              placeholder="Email"
+            />
 
-          <Text>Email</Text>
-          <TextInput
-            onChangeText={(email) => this.setState({email})}
-            style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-            placeholder="Email"
-          />
+            <Text>Message</Text>
+            <TextInput
+              onChangeText={(message) => this.setState({message})}
+              style={Styles.textArea}
+              placeholder="Type message here..."
+            />
 
-          <Text>Message</Text>
-          <TextInput
-            onChangeText={(message) => this.setState({message})}
-            style={{height: 160, borderColor: 'gray', borderWidth: 1}}
-            placeholder="Type message here..."
-          />
-
-          <CustomButton text="Send" onPress = {() => this.sendMessage()}></CustomButton>
-          <Text>{this.state.statusMessage}</Text>
+            <CustomButton text="Send" onPress = {() => this.sendMessage()} />
+            <Text>{this.state.statusMessage}</Text>
           
+          </View>
         </View>
-      </View>
 
       )
     }

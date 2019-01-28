@@ -1,6 +1,7 @@
 import React from 'react';
 import {Text, View, TextInput} from 'react-native';
-import CustomButton from "./CustomButton";
+import CustomButton from './CustomButton';
+import Styles from './Styles';
 
 export default class Register extends React.Component {
     constructor(props){
@@ -18,21 +19,21 @@ export default class Register extends React.Component {
                 <Text>Name</Text>
                 <TextInput
                     onChangeText={(name) => this.setState({name})}
-                    style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+                    style={Styles.textBox}
                     placeholder="Name"
                 />
 
                 <Text>Email</Text>
                 <TextInput
                     onChangeText={(email) => this.setState({email})}
-                    style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+                    style={Styles.textBox}
                     placeholder="Email"
                 />
   
                 <Text>Password</Text>
                 <TextInput
                     onChangeText={(message) => this.setState({message})}
-                    style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+                    style={Styles.textBox}
                     placeholder="Password"
                     secureTextEntry={true}
                 />
@@ -40,7 +41,7 @@ export default class Register extends React.Component {
                 <Text>Confirm Password</Text>
                 <TextInput
                     onChangeText={(message) => this.setState({message})}
-                    style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+                    style={Styles.textBox}
                     placeholder="Retype Password"
                     secureTextEntry={true}
                 />
@@ -48,8 +49,8 @@ export default class Register extends React.Component {
                 <CustomButton 
                     text="Register" 
                     onPress={()=> this.RegisterNewUser()} 
-                    buttonStyle={{width:400, height:25}}
-                    textStyle={{fontSize:18}}
+                    buttonStyle={Styles.longButtonStyle}
+                    textStyle={Styles.longButtonTextStyle}
                 />
                 <Text>{this.state.statusMessage}</Text>
             </View>

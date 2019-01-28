@@ -1,6 +1,8 @@
 import React from 'react';
-import {View, Button, Text, Picker, TextInput} from 'react-native';
+import {View, Text, Picker, TextInput} from 'react-native';
 import TopBar from './top_bar';
+import Styles from './Styles';
+import CustomButton from './CustomButton'
 
 export default class AdvancedSearch extends React.Component {
   constructor(props){
@@ -8,28 +10,27 @@ export default class AdvancedSearch extends React.Component {
   }
   render(){
     return (
-      <View style={{paddingTop:20}}>
+      <View style={Styles.topBarPadding}>
         <View>
           <TopBar />
         </View>
 
-        <Text style={{textAlign:"center", fontSize:30, fontWeight:"bold", color:'#efe0d5', backgroundColor: '#cb532b'}}>
-            Advanced Search
+        <Text style={Styles.title}>
+          Advanced Search
         </Text>
 
-        <View flexDirection='row' style={{paddingTop: 35, alignItems: 'center'}}>
-        <TextInput
+        <View flexDirection='row' style={Styles.advancedSearchRow}>
+          <TextInput
             placeholder='Event Name'
-            style={{borderColor: 'black', borderWidth: 1, width: 320, backgroundColor: '#fff', paddingTop: 35, alignItems: 'center',
-            justifyContent: 'center'}}
-        />
+            style={Styles.textInput}
+          />
         </View>
 
-        <View style={{height: 150, flexDirection: 'row', paddingTop:20,  alignItems: 'center'}}>
-          <View style={{flex:5}} >
+        <View style={Styles.advancedSearchRow}>
+          <View style={Styles.advancedSearchColumn} >
             <Text>Tags: </Text>
           </View>
-          <View style={{flex:5}}>
+          <View style={Styles.advancedSearchColumn}>
             <Picker>
               <Picker.Item label="18+" value="18+" />
               <Picker.Item label="Alcohol-free" value="Alcohol-free" />
@@ -37,11 +38,11 @@ export default class AdvancedSearch extends React.Component {
           </View>
         </View>
 
-        <View style={{height: 150, flexDirection: 'row', paddingTop:20,  alignItems: 'center'}}>
-          <View style={{flex:5}}>
+        <View style={Styles.advancedSearchRow}>
+          <View style={Styles.advancedSearchColumn}>
             <Text>Category </Text>
           </View>
-          <View style={{flex:5}}>
+          <View style={Styles.advancedSearchColumn}>
             <Picker>
               <Picker.Item label="Music" value="music" />
               <Picker.Item label="Food" value="food" />
@@ -49,9 +50,11 @@ export default class AdvancedSearch extends React.Component {
           </View>
         </View>
 
-          <Button
-            title="Search"
-          />
+        <CustomButton
+          text="Search"
+          buttonStyle = {Styles.longButtonStyle}
+          textStyle = {Styles.longButtonTextStyle}
+        />
       </View>
     );
   }

@@ -1,15 +1,14 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 import TopBar from './top_bar';
+import Styles from './Styles';
 
 export default class Widgets extends React.Component {
     render() {
       return (
-        <View style={{paddingTop:20}}>
+        <View style={Styles.topBarPadding}>
           <TopBar />
-          <View style={{paddingTop:30}}>
-            <Text> Widgets </Text>
-          </View>
+          <Text style={Styles.title}> Widgets </Text>
         </View>
       )
     }

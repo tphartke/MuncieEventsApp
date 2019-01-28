@@ -3,6 +3,7 @@ import {Text, View, Button, Platform, DatePickerAndroid, DatePickerIOS, Activity
 import TopBar from './top_bar';
 import DateAndTimeParser from "../DateAndTimeParser";
 import CustomButton from "./CustomButton";
+import Styles from './Styles';
 
 export default class GoToDate extends React.Component {
   constructor(props){
@@ -22,13 +23,12 @@ export default class GoToDate extends React.Component {
       return (
         <View>
           <TopBar />
-          <View>
-            <Text style={{textAlign:"center", fontSize:30, fontWeight:"bold", color:'#efe0d5', backgroundColor: '#cb532b', paddingTop: 10}}>
-              EVENTS
-            </Text>
-
-          {this.getDatePicker()}
-          {contentView}
+          <Text style={Styles.title}>
+            EVENTS
+          </Text>
+          <View style={Styles.content}>
+            {this.getDatePicker()}
+            {contentView}
           </View>
         </View>
       )
@@ -46,8 +46,8 @@ export default class GoToDate extends React.Component {
                 <CustomButton
                   text="Search"
                   onPress={() => {this.fetchAPIData(this.getFormattedDate());}}
-                  buttonStyle={{width:400, height:25}}
-                  textStyle={{fontSize:18}}
+                  buttonStyle={Styles.longButtonStyle}
+                  textStyle={Styles.longButtonTextStyle}
                   />
               </View>)
       }
@@ -56,8 +56,8 @@ export default class GoToDate extends React.Component {
           <CustomButton
               text="Select Date"
               onPress={() => {this.getAndroidDatePicker();}}
-              buttonStyle={{width:400, height:25}}
-              textStyle={{fontSize:18}}
+              buttonStyle={Styles.longButtonStyle}
+              textStyle={Styles.longButtonTextStyle}
           />
         )      
       }
@@ -129,7 +129,7 @@ export default class GoToDate extends React.Component {
 
     getLoadingView(){
       return(
-        <View style={{flex: 1, padding: 20}}>
+        <View style={Styles.loadingViewPadding}>
           <ActivityIndicator/>
         </View>
       );
@@ -161,10 +161,10 @@ export default class GoToDate extends React.Component {
   
       return(
         <View>
-          <Text style={{fontWeight: 'bold', fontSize:20}}>
+          <Text style={Styles.dateText}>
             {date}
           </Text>
-          <TouchableHighlight onPress={() => this.goToFullView(eventEntry)} style={{backgroundColor:'#ddd', borderColor:'black', borderWidth:1}}>
+          <TouchableHighlight onPress={() => this.goToFullView(eventEntry)} style={Styles.eventRow}>
             <Text>
               {listText}
             </Text>

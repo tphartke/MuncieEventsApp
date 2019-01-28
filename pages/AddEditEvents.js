@@ -1,16 +1,20 @@
 import React from 'react';
-import {Text, View, Button} from 'react-native';
+import {Text, View} from 'react-native';
 import TopBar from './top_bar';
+import Styles from './Styles';
+
 
 export default class AddEditEvent extends React.Component {
     render() {
       return (
-        <View style={{paddingTop:20}}>
+        <View style={Styles.topBarPadding}>
             <View>
                 <TopBar />
-                </View>
-                <View style={{paddingTop:30}}>
-            <Text> AddEditEvents </Text>
+            </View>
+            <View>
+                <Text style={Styles.title}>
+                    Add or Edit Events
+                </Text>
             </View>
         </View>
       )

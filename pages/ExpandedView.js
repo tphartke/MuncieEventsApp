@@ -1,9 +1,11 @@
 import React from 'react';
 import {Text, View, Button, WebView, ScrollView} from 'react-native';
 import TopBar from './top_bar';
-import DateAndTimeParser from "../DateAndTimeParser"
+import DateAndTimeParser from "../DateAndTimeParser";
 import { NavigationActions } from 'react-navigation';
-import * as Animatable from 'react-native-animatable'
+import Styles from './Styles';
+import CustomButton from './CustomButton';
+import * as Animatable from 'react-native-animatable';
 
 
 const script = `
@@ -45,29 +47,27 @@ export default class ExpandedView extends React.Component {
 
     render() {
       return (
-        <Animatable.View animation = 'slideInRight' duration = {600} style={{flex:1, paddingTop:20}}>
+        <Animatable.View animation = 'slideInRight' duration = {600} style={Styles.topBarPadding}>
           <TopBar />
           <ScrollView>
-            <View style={{flex:1, paddingTop:30}}>
-              <Button 
-                title = "Go back"
+            <Text style={Styles.title}>
+              {this.eventData.attributes.title}
+            </Text>
+            <View style={Styles.content}>
+              <CustomButton 
+                text = "Go back"
+                buttonStyle={Styles.longButtonStyle}
+                textStyle = {Styles.longButtonTextStyle}
                 onPress={() => this.props.navigation.dispatch(NavigationActions.back())}
-                style={{flex:1}}
               />
-              <Text style={{fontSize:35, fontWeight:'bold'}}>
-                {this.eventData.attributes.title}
-                {"\n"}
-              </Text>
-                    
               {this.getTimeView()}
               {this.getLocationView()}
-              {this.getDescriptionView()}       
+              {this.getDescriptionView()}    
             </View>
           </ScrollView>
         </Animatable.View>
       )
     }
-
 
     onNavigationChange(event) {
       if (event.title) {
@@ -79,8 +79,7 @@ export default class ExpandedView extends React.Component {
    getTimeView(){
      return(
       <View>
-        <Text style={{fontSize:22, fontWeight:'bold'}}>
-          {"\n"}  
+        <Text style={Styles.header}> 
           When
         </Text>
         <Text> 
@@ -95,8 +94,7 @@ export default class ExpandedView extends React.Component {
    getLocationView(){
     return(
       <View>
-        <Text style={{fontSize:22, fontWeight:'bold'}}>
-          {"\n"}  
+        <Text style={Styles.header}>  
           Where 
         </Text>
         <Text>
@@ -111,8 +109,7 @@ export default class ExpandedView extends React.Component {
    getDescriptionView(){
      return(
       <View>
-        <Text style={{fontSize:22, fontWeight:'bold'}}>
-          {"\n"}  
+        <Text style={Styles.header}>
           Description 
         </Text>
         <WebView

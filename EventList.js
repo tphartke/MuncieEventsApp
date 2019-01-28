@@ -4,6 +4,7 @@ import DateAndTimeParser from "./DateAndTimeParser";
 import TopBar from './pages/top_bar';
 import {View, ActivityIndicator, Text, TouchableOpacity, FlatList} from 'react-native';
 import * as Animatable from 'react-native-animatable'
+import Styles from './pages/Styles';
 
 class EventList extends React.Component {
     constructor(props){
@@ -31,7 +32,7 @@ class EventList extends React.Component {
 
     getLoadingView(){
         return(
-            <View style={{flex: 1, padding: 20}}>
+            <View style={Styles.loadingViewPadding}>
               <ActivityIndicator/>
             </View>
           );   
@@ -40,7 +41,7 @@ class EventList extends React.Component {
       getEventDataView(dataSource){
         return(
           <View >
-            <Text style={{textAlign:"center", fontSize:30, fontWeight:"bold", color:'#efe0d5', backgroundColor: '#cb532b'}}>
+            <Text style={Styles.title}>
               EVENTS
             </Text>
             <FlatList
@@ -63,7 +64,7 @@ class EventList extends React.Component {
           contentView = this.getEventDataView(this.state.dataSource);
         }
         return (
-          <View style={{paddingTop:20}}>
+          <View style={Styles.topBarPadding}>
             <View>
               <TopBar />
             </View>
@@ -77,10 +78,10 @@ class EventList extends React.Component {
         var listText = this.setEventEntryText(eventEntry);
         return(
           <Animatable.View animation = "slideInRight" duration = {700}>
-            <Text style={{fontWeight: 'bold', fontSize:20, marginHorizontal: 5,}}>
+            <Text style={Styles.dateText}>
               {date}
             </Text>           
-             <TouchableOpacity onPress={() => this.goToFullView(eventEntry)} style={{backgroundColor:'#ddd', fontSize: 14, borderColor:'black', borderWidth:1, paddingHorizontal: 10, borderRadius: 5, marginHorizontal: 5}}>
+             <TouchableOpacity onPress={() => this.goToFullView(eventEntry)} style={Styles.eventRow}>
                <Text>
                 {listText}
                </Text>

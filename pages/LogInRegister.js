@@ -3,11 +3,11 @@ import {Text, View, Button, AsyncStorage, TextInput} from 'react-native';
 import TopBar from './top_bar';
 import CustomButton from "./CustomButton";
 import Register from "./Register"
+import Styles from './Styles';
 
 export default class LogInRegister extends React.Component {
     constructor(props){
-      super(props);
-      this.state = {isLoggedIn: false}
+      super(props);      this.state = {isLoggedIn: false}
       this.state = {selectedPage: "Login"}
       this.password = '';
       this.username = '';
@@ -34,23 +34,24 @@ export default class LogInRegister extends React.Component {
           profileInfo = this.showProfileInfo();
       }
       return (
-        <View style={{paddingTop:20}}>
+        <View style={Styles.topBarPadding}>
           <TopBar />         
           <CustomButton 
             text="Log In" 
             onPress={()=> this.logUserIn()} 
-            buttonStyle={{width:400, height:25}}
-            textStyle={{fontSize:18}}
+            buttonStyle={Styles.longButtonStyle}
+            textStyle={Styles.longButtonTextStyle}
           />
           <CustomButton 
             text = "Log Out" 
             onPress={()=> this.logUserOut()} 
-            buttonStyle={{width:400, height:25}}
-            textStyle={{fontSize:18}}
+            buttonStyle={Styles.longButtonStyle}
+            textStyle={Styles.longButtonTextStyle}
           />
           <CustomButton
             text = "Sign Up"
-            buttonStyle={{width:400, height:25}}
+            buttonStyle={Styles.longButtonStyle}
+            textStyle={Styles.longButtonTextStyle}
             onPress={() => this.setState({selectedPage: "Signup"})}
           />
           <Text>{logInMessage}</Text>
@@ -61,12 +62,13 @@ export default class LogInRegister extends React.Component {
 
     getSignupSequence(){
       return(
-        <View style={{paddingTop:20}}>
+        <View style={Styles.topBarPadding}>
           <TopBar />  
           <Register />
           <CustomButton
             text = "Go Back"
-            buttonStyle={{width:400, height:25}}
+            buttonStyle={Styles.longButtonStyle}
+            textStyle={Styles.longButtonTextStyle}
             onPress={() => this.setState({selectedPage: "Login"})}
           />
         </View>
