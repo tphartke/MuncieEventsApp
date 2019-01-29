@@ -14,7 +14,12 @@ export default class LogInRegister extends React.Component {
     }
     
     render() {
-      if(this.state.selectedPage=="Login"){
+      if(this.state.isLoggedIn==true){
+        return(
+          this.getLogoutSequence()
+        )
+      }
+      else if(this.state.selectedPage=="Login"){
         return(
           this.getLoginSequence()
         )
@@ -35,19 +40,25 @@ export default class LogInRegister extends React.Component {
       }
       return (
         <View style={Styles.topBarPadding}>
-          <TopBar />         
+          <TopBar />        
+          <TextInput
+              onChangeText={(username) => this.setState({username})}
+              style={Styles.textBox}
+              placeholder="Username"
+          />          
+          <TextInput
+          onChangeText={(password) => this.setState({password})}
+          style={Styles.textBox}
+          placeholder="Password"
+          />
+          
           <CustomButton 
             text="Log In" 
             onPress={()=> this.logUserIn()} 
             buttonStyle={Styles.longButtonStyle}
             textStyle={Styles.longButtonTextStyle}
           />
-          <CustomButton 
-            text = "Log Out" 
-            onPress={()=> this.logUserOut()} 
-            buttonStyle={Styles.longButtonStyle}
-            textStyle={Styles.longButtonTextStyle}
-          />
+
           <CustomButton
             text = "Sign Up"
             buttonStyle={Styles.longButtonStyle}
@@ -58,6 +69,24 @@ export default class LogInRegister extends React.Component {
           <Text>{profileInfo}</Text>
         </View>
       )
+    }
+
+    getLogoutSequence(){
+      logInMessage = "You are logged in.";
+      profileInfo = this.showProfileInfo();
+      return(
+        <View style={Styles.topBarPadding}>
+          <TopBar />  
+          <CustomButton
+            text = "Log Out" 
+            onPress={()=> this.logUserOut()} 
+            buttonStyle={Styles.longButtonStyle}
+            textStyle={Styles.longButtonTextStyle}
+          />
+        <Text>{logInMessage}</Text>
+        <Text>{profileInfo}</Text>
+       </View>
+      );
     }
 
     getSignupSequence(){
