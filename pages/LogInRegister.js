@@ -1,14 +1,17 @@
 import React from 'react';
-import {Text, View, Button, AsyncStorage, TextInput} from 'react-native';
+import {Text, View, AsyncStorage, TextInput} from 'react-native';
 import TopBar from './top_bar';
+import ProfileView from './ProfileView'
 import CustomButton from "./CustomButton";
 import Register from "./Register"
 import Styles from './Styles';
 
 export default class LogInRegister extends React.Component {
     constructor(props){
-      super(props);      this.state = {isLoggedIn: false}
+      super(props);      
+      this.state = {isLoggedIn: false}
       this.state = {selectedPage: "Login"}
+      this.userid = '1112';
       this.password = '';
       this.username = '';
     }
@@ -16,7 +19,7 @@ export default class LogInRegister extends React.Component {
     render() {
       if(this.state.isLoggedIn==true){
         return(
-          this.getLogoutSequence()
+          this.getProfileViewSequence()
         )
       }
       else if(this.state.selectedPage=="Login"){
@@ -71,7 +74,7 @@ export default class LogInRegister extends React.Component {
       )
     }
 
-    getLogoutSequence(){
+    getProfileViewSequence(){
       logInMessage = "You are logged in.";
       profileInfo = this.showProfileInfo();
       return(
