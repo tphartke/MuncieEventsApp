@@ -1,11 +1,12 @@
 import React from 'react';
-import {Text, View, WebView, ScrollView} from 'react-native';
+import {Text, View, WebView, ScrollView, Image} from 'react-native';
 import TopBar from './top_bar';
 import DateAndTimeParser from "../DateAndTimeParser";
 import { NavigationActions } from 'react-navigation';
 import Styles from './Styles';
 import CustomButton from './CustomButton';
 import * as Animatable from 'react-native-animatable';
+//import { isNullOrUndefined } from 'util';
 
 
 const script = `
@@ -46,6 +47,11 @@ export default class ExpandedView extends React.Component {
       }
 
     render() {
+      if(this.eventData.attributes.images[0] == null){
+        imageURL = "None"
+      }else{
+        imageURL = this.eventData.attributes.images[0].full_url
+      }
       return (
         <Animatable.View animation = 'slideInRight' duration = {600} style={Styles.topBarPadding}>
           <TopBar />
@@ -60,6 +66,7 @@ export default class ExpandedView extends React.Component {
                 textStyle = {Styles.longButtonTextStyle}
                 onPress={() => this.props.navigation.dispatch(NavigationActions.back())}
               />
+              {this.getURLImage(imageURL)}
               {this.getTimeView()}
               {this.getLocationView()}
               {this.getDescriptionView()}    
@@ -74,6 +81,24 @@ export default class ExpandedView extends React.Component {
         const htmlHeight = Number(event.title)
         this.setState({height:htmlHeight});
       }
+   }
+
+
+   getURLImage(imageURL){
+    //source = {{uri: 'https://muncieevents.com/img/events/full/1601.jpeg'}}
+    if(imageURL == "None"){
+      return
+    }else{
+     return(
+      <View>
+        <Text>{imageURL}</Text>
+        <Image
+        style={{width: 300, height: 500}}
+        source = {{uri: imageURL}}
+        />
+      </View>
+      ) 
+     }
    }
 
    getTimeView(){
