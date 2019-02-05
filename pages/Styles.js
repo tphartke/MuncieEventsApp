@@ -30,7 +30,8 @@ export default StyleSheet.create({
     },
 
     topBarPadding: {
-        paddingTop:20
+        paddingTop:20,
+        flex: 1
     },
     
     topBarWrapper: {

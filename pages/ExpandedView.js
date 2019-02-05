@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, Button, WebView, ScrollView} from 'react-native';
+import {Text, View, WebView, ScrollView} from 'react-native';
 import TopBar from './top_bar';
 import DateAndTimeParser from "../DateAndTimeParser";
 import { NavigationActions } from 'react-navigation';
