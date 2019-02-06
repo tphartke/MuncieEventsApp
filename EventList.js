@@ -64,10 +64,7 @@ class EventList extends React.Component {
           contentView = this.getEventDataView(this.state.dataSource);
         }
         return (
-          <View style={Styles.topBarPadding}>
-            <View>
-              <TopBar />
-            </View>
+          <View>
             {contentView}
           </View>
         );

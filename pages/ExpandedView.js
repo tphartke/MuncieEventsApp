@@ -91,7 +91,6 @@ export default class ExpandedView extends React.Component {
     }else{
      return(
       <View>
-        <Text>{imageURL}</Text>
         <Image
         style={{width: 300, height: 500}}
         source = {{uri: imageURL}}
