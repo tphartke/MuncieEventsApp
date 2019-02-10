@@ -1,18 +1,19 @@
 import React from 'react';
 import{ withNavigation } from "react-navigation";
 import DateAndTimeParser from "./DateAndTimeParser";
-import TopBar from './pages/top_bar';
 import {View, ActivityIndicator, Text, TouchableOpacity, FlatList} from 'react-native';
 import * as Animatable from 'react-native-animatable'
 import Styles from './pages/Styles';
+import ExpandedView from './pages/ExpandedView'
 
 class EventList extends React.Component {
     constructor(props){
         super(props);
         this.state ={ isLoading: true}
         this.state ={lastUsedDate: null}
-        this.state = {text: ''};
+        this.state = {text: ''}
         this.state = {apicall: ''}
+        this.state = {selectedEvent: null}
         this.dateAndTimeParser = new DateAndTimeParser();
       }
 
@@ -55,19 +56,31 @@ class EventList extends React.Component {
       }
 
       render(){
-        if(this.state.apicall.length == 0){
+        if(!this.state.apicall){
             this.setState({apicall: this.props.apicall});
             this.fetchAPIData(this.props.apicall);
         }
-        var contentView = this.getLoadingView();
-        if(!this.state.isLoading){
-          contentView = this.getEventDataView(this.state.dataSource);
-        }
+        var contentView = this.getDisplayedPage();
         return (
           <View>
             {contentView}
           </View>
         );
+      }
+
+      getDisplayedPage(){
+        var contentView = this.getLoadingView();
+        if(!this.state.isLoading && !this.state.selectedEvent){
+          contentView = this.getEventDataView(this.state.dataSource);
+        }
+        if(this.state.selectedEvent){
+          contentView = this.getExpandedView();
+        }
+        return contentView;
+      }
+
+      getExpandedView(){
+        return(<ExpandedView event={this.state.selectedEvent} previousScreen={this.state.apicall}/>)
       }
 
       generateEventEntryView(eventEntry){   
@@ -78,7 +91,7 @@ class EventList extends React.Component {
             <Text style={Styles.dateText}>
               {date}
             </Text>           
-             <TouchableOpacity onPress={() => this.goToFullView(eventEntry)} style={Styles.eventRow}>
+             <TouchableOpacity onPress={() => this.setState({selectedEvent: eventEntry})} style={Styles.eventRow}>
                <Text>
                 {listText}
                </Text>
@@ -110,12 +123,6 @@ class EventList extends React.Component {
 
       isNewDate(date){
         return date != this.state.lastUsedDate;
-      }
-
-      goToFullView(eventEntry){
-        return this.props.navigation.navigate('ExpandedView', {
-          event: eventEntry,
-        });
       }
 } 
 export default withNavigation(EventList);

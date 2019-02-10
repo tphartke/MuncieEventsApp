@@ -13,7 +13,6 @@ class TopBar extends React.Component {
   }
 
   searchOnArbitraryString(input){
-      console.log("top_bar: " + input)
       return this.props.navigation.navigate('SearchOutput', {
         searchInput: input,
       });

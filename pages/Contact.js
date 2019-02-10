@@ -77,7 +77,7 @@ export default class Contact extends React.Component {
   }
 
   fetchAPIData(url){
-    fetch(url, {method: "POST"})      
+    fetch(url, {method: "POST"})
     .catch((error) =>{
         console.log(error)
        this.setState({statusMessage: "Error reaching server: " + error})

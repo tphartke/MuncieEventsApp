@@ -20,7 +20,6 @@ const App = createDrawerNavigator({
     LogInRegister: {screen: LogInRegister},
     Widgets: {screen: Widgets},
     SearchOutput: {screen: SearchOutput},
-    ExpandedView: {screen: ExpandedView}
   });
   
   export default App;

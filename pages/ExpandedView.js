@@ -1,13 +1,12 @@
 import React from 'react';
 import {Text, View, WebView, ScrollView, Image} from 'react-native';
-import TopBar from './top_bar';
 import DateAndTimeParser from "../DateAndTimeParser";
 import { NavigationActions } from 'react-navigation';
+import{ withNavigation } from "react-navigation";
 import Styles from './Styles';
 import CustomButton from './CustomButton';
 import * as Animatable from 'react-native-animatable';
-//import { isNullOrUndefined } from 'util';
-
+import EventList from '../EventList'
 
 const script = `
   <script>
@@ -36,44 +35,67 @@ const style = `
   </style>
 `;
 
-export default class ExpandedView extends React.Component {
-    eventData = this.props.navigation.getParam('event', 'No event found');
+class ExpandedView extends React.Component {
     constructor(props){
         super(props);
         this.dateAndTimeParser = new DateAndTimeParser();
-        this.state = {
-          height:0
-        }
+        this.state = {height:0}
+        this.eventData = null
+        this.previousScreen = null
+        this.state={selectedPreviousScreen:false}
       }
 
     render() {
-      if(this.eventData.attributes.images[0] == null){
-        imageURL = "None"
-      }else{
-        imageURL = this.eventData.attributes.images[0].full_url
+      renderedInfo = this.getExpandedView()
+      if(this.state.selectedPreviousScreen){
+        renderedInfo = (<EventList apicall = {this.previousScreen}/>)
       }
-      return (
-        <Animatable.View animation = 'slideInRight' duration = {600} style={Styles.topBarPadding}>
-          <TopBar />
-          <ScrollView>
-            <Text style={Styles.title}>
-              {this.eventData.attributes.title}
-            </Text>
-            <View style={Styles.content}>
-              <CustomButton 
-                text = "Go back"
-                buttonStyle={Styles.longButtonStyle}
-                textStyle = {Styles.longButtonTextStyle}
-                onPress={() => this.props.navigation.dispatch(NavigationActions.back())}
-              />
-              {this.getURLImage(imageURL)}
-              {this.getTimeView()}
-              {this.getLocationView()}
-              {this.getDescriptionView()}    
-            </View>
-          </ScrollView>
-        </Animatable.View>
+      return(
+        <View>
+          {renderedInfo}
+        </View>
       )
+
+    }
+
+    getExpandedView(){
+      if(!this.eventData){
+        this.eventData = this.props.event;
+        this.previousScreen = this.props.previousScreen;
+    }
+    if(this.eventData.attributes.images[0] == null){
+      imageURL = "None"
+    }else{
+      imageURL = this.eventData.attributes.images[0].full_url
+    }
+    return (
+      <Animatable.View animation = 'slideInRight' duration = {600}>
+        <ScrollView>
+          <Text style={Styles.title}>
+            {this.eventData.attributes.title}
+          </Text>
+          <View style={Styles.content}>
+            <CustomButton 
+              text = "Go back"
+              buttonStyle={Styles.longButtonStyle}
+              textStyle = {Styles.longButtonTextStyle}
+              onPress={() => this.goBackOnce()}
+            />
+            {this.getURLImage(imageURL)}
+            {this.getTimeView()}
+            {this.getLocationView()}
+            {this.getDescriptionView()}    
+          </View>
+        </ScrollView>
+      </Animatable.View>
+    )
+
+    }
+
+    goBackOnce(){
+      if(!this.state.selectedPreviousScreen){
+        this.setState({selectedPreviousScreen: true})
+      }
     }
 
     onNavigationChange(event) {
@@ -85,7 +107,6 @@ export default class ExpandedView extends React.Component {
 
 
    getURLImage(imageURL){
-    //source = {{uri: 'https://muncieevents.com/img/events/full/1601.jpeg'}}
     if(imageURL == "None"){
       return
     }else{
@@ -161,4 +182,4 @@ export default class ExpandedView extends React.Component {
     }
     return "";
   }
-}
+} export default withNavigation(ExpandedView)
