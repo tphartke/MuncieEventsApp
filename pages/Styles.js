@@ -19,7 +19,7 @@ export default StyleSheet.create({
         fontSize: 14, 
         borderColor:'black', 
         borderWidth:1, 
-        paddingHorizontal: 10, 
+        paddingHorizontal: 10,
         borderRadius: 5, 
         marginHorizontal: 5
     },

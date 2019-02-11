@@ -1,7 +1,7 @@
 import React from 'react';
 import{ withNavigation } from "react-navigation";
 import DateAndTimeParser from "./DateAndTimeParser";
-import {View, ActivityIndicator, Text, TouchableOpacity, FlatList} from 'react-native';
+import {View, ActivityIndicator, Text, TouchableOpacity, FlatList, Image} from 'react-native';
 import * as Animatable from 'react-native-animatable'
 import Styles from './pages/Styles';
 import ExpandedView from './pages/ExpandedView'
@@ -90,15 +90,23 @@ class EventList extends React.Component {
       generateEventEntryView(eventEntry){   
         var date = this.setDateText(eventEntry);
         var listText = this.setEventEntryText(eventEntry);
+        if(eventEntry.attributes.images[0] == null){
+          imageURL = "None"
+        }else{
+          imageURL = eventEntry.attributes.images[0].tiny_url
+        }
         return(
           <Animatable.View animation = "slideInRight" duration = {700}>
             <Text style={Styles.dateText}>
               {date}
             </Text>           
              <TouchableOpacity onPress={() => this.setState({selectedEvent: eventEntry})} style={Styles.eventRow}>
-               <Text>
+              <View style={{flexDirection:'row', flex:1}}>
+              {this.getURLImage(imageURL)}
+               <Text style={{flex:1}}>
                 {listText}
                </Text>
+               </View>
              </TouchableOpacity>
              </Animatable.View>
         )
@@ -128,5 +136,20 @@ class EventList extends React.Component {
       isNewDate(date){
         return date != this.state.lastUsedDate;
       }
+
+      getURLImage(imageURL){
+        if(imageURL == "None"){
+          return
+        }else{
+         return(
+          <View>
+            <Image
+            style={{width: 60, height: 60}}
+            source = {{uri: imageURL}}
+            />
+          </View>
+          ) 
+         }
+       }
 } 
 export default withNavigation(EventList);
