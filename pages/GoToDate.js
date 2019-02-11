@@ -1,37 +1,43 @@
 import React from 'react';
-import {Text, View, Button, Platform, DatePickerAndroid, DatePickerIOS, ActivityIndicator, FlatList, TouchableHighlight} from 'react-native';
+import {Text, View, Platform, DatePickerAndroid, DatePickerIOS} from 'react-native';
 import TopBar from './top_bar';
-import DateAndTimeParser from "../DateAndTimeParser";
 import CustomButton from "./CustomButton";
+import EventList from "../EventList"
 import Styles from './Styles';
 
 export default class GoToDate extends React.Component {
   constructor(props){
     super(props);
-    this.state ={ isLoading: true}
-    this.state ={lastUsedDate: null}
-    this.state = {chosenDate: new Date()}
+    this.state = {formattedDate: '', 
+                  lastUsedDate: null, 
+                  chosenDate: new Date(), 
+                  eventView: (<Text></Text>)
+                }  
+    this.dateSelected = false; 
     this.setDate = this.setDate.bind(this);
-    this.dateAndTimeParser = new DateAndTimeParser();
   }
 
     render() {
-      var contentView = this.getLoadingView();
-      if(!this.state.isLoading){
-        contentView = this.getEventDataView();
-      }
       return (
         <View>
           <TopBar />
-          <Text style={Styles.title}>
-            EVENTS
-          </Text>
           <View style={Styles.content}>
             {this.getDatePicker()}
-            {contentView}
+            {this.updateEventView()}
           </View>
         </View>
       )
+    }
+
+    updateEventView(){
+      if(this.state.dateSelected){
+        console.log(this.state.formattedDate)
+        results = (<EventList apicall={'https://api.muncieevents.com/v1/events?start='+this.state.formattedDate+'&end='+this.state.formattedDate+'&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1'} />)
+      }
+      else{
+        results = (<Text></Text>)
+      }
+      return results
     }
 
     getDatePicker(){
@@ -45,7 +51,7 @@ export default class GoToDate extends React.Component {
                 />
                 <CustomButton
                   text="Search"
-                  onPress={() => {this.fetchAPIData(this.getFormattedDate());}}
+                  onPress={()=>this.setState({dateSelected: true})}
                   buttonStyle={Styles.longButtonStyle}
                   textStyle={Styles.longButtonTextStyle}
                   />
@@ -55,7 +61,7 @@ export default class GoToDate extends React.Component {
         return(
           <CustomButton
               text="Select Date"
-              onPress={() => {this.getAndroidDatePicker();}}
+              onPress={() => this.getAndroidDatePicker()}
               buttonStyle={Styles.longButtonStyle}
               textStyle={Styles.longButtonTextStyle}
           />
@@ -70,8 +76,6 @@ export default class GoToDate extends React.Component {
         });
         if (action == DatePickerAndroid.dateSetAction) {
           newDate = new Date(year, month, day);
-          formattedDate = this.getAndroidFormattedDate(newDate);
-          this.fetchAPIData(formattedDate);
           this.setDate(newDate);
         }
       } catch ({code, message}) {
@@ -80,7 +84,12 @@ export default class GoToDate extends React.Component {
     }
 
     setDate(newDate) {
-      this.setState({chosenDate: newDate});
+      if(Platform.OS == 'ios'){
+        this.setState({chosenDate: newDate, formattedDate: this.getFormattedDate(newDate)})
+      }
+      else{
+        this.setState({chosenDate: newDate, formattedDate: this.getAndroidFormattedDate(newDate), dateSelected: true})
+      }
     }
 
     getFormattedDate(){
@@ -111,96 +120,5 @@ export default class GoToDate extends React.Component {
         day='0' + newDate.getDate().toString();
       }
       return year + '-' + month + '-' + day;
-    }
-
-    fetchAPIData(date){
-      return fetch('https://api.muncieevents.com/v1/events?start='+date+'&end='+date+'&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1')
-        .then((response) => response.json())
-        .then((responseJson) => {
-          this.setState({
-            isLoading: false,
-            dataSource: responseJson.data,
-          }, function(){});
-        })
-        .catch((error) =>{
-          console.error(error);
-        });
-    }
-
-    getLoadingView(){
-      return(
-        <View style={Styles.loadingViewPadding}>
-          <ActivityIndicator/>
-        </View>
-      );
-    }
-
-    getEventDataView(){
-      return(
-        <View style={{paddingTop: 20}}>
-          <FlatList
-            data={this.state.dataSource}
-            renderItem={({item}) => 
-              this.generateEventEntryView(item)
-            }
-            ListEmptyComponent={() => this.noEventsOnThisDay()}
-          />
-        </View>
-      );
-    }
-
-    noEventsOnThisDay(){
-      return(
-        <Text>No Events found for this day</Text>
-      );
-    }
-
-    generateEventEntryView(eventEntry){   
-      var date = this.setDateText(eventEntry);
-      var listText = this.setEventEntryText(eventEntry);
-  
-      return(
-        <View>
-          <Text style={Styles.dateText}>
-            {date}
-          </Text>
-          <TouchableHighlight onPress={() => this.goToFullView(eventEntry)} style={Styles.eventRow}>
-            <Text>
-              {listText}
-            </Text>
-          </TouchableHighlight>
-        </View>
-      )
-    }
-
-    setEventEntryText(eventEntry) {
-      var title = eventEntry.attributes.title;
-      var startTimeText = this.dateAndTimeParser.extractTimeFromDate(eventEntry.attributes.time_start);
-      var endTimeText = "";
-      var locationText = eventEntry.attributes.location;
-      if (eventEntry.attributes.time_end != null) {
-        endTimeText = " to " + this.dateAndTimeParser.extractTimeFromDate(eventEntry.attributes.time_end);
-      }
-      var listText = title + '\n' + startTimeText + endTimeText + " @ " + locationText;
-      return listText;
-    }
-
-    setDateText(eventEntry){
-      var date = null;
-      if(this.isNewDate(eventEntry.attributes.date)){
-        date = this.dateAndTimeParser.formatDate(eventEntry.attributes.date) + "\n";
-        this.state = {lastUsedDate: eventEntry.attributes.date};
-      }
-      return date;
-    }
-
-    isNewDate(date){
-      return date != this.state.lastUsedDate;
-    }
-
-    goToFullView(eventEntry){
-      return this.props.navigation.navigate('ExpandedView', {
-        event: eventEntry,
-      });
     }
 }

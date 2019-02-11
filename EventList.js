@@ -50,8 +50,15 @@ class EventList extends React.Component {
               renderItem={({item}) => 
                 this.generateEventEntryView(item)
               }
+              ListEmptyComponent={() => this.noEventsFound()}
             />
           </View>
+        );
+      }
+
+      noEventsFound(){
+        return(
+          <Text>No Events found</Text>
         );
       }
 

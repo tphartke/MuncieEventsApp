@@ -1,7 +1,6 @@
 import React from 'react';
 import {Text, View, WebView, ScrollView, Image} from 'react-native';
 import DateAndTimeParser from "../DateAndTimeParser";
-import { NavigationActions } from 'react-navigation';
 import{ withNavigation } from "react-navigation";
 import Styles from './Styles';
 import CustomButton from './CustomButton';
