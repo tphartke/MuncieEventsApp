@@ -19,7 +19,7 @@ export default class GoToDate extends React.Component {
 
     render() {
       return (
-        <View>
+        <View style={Styles.topBarPadding}>
           <TopBar />
           <View style={Styles.content}>
             {this.getDatePicker()}
@@ -31,8 +31,27 @@ export default class GoToDate extends React.Component {
 
     updateEventView(){
       if(this.state.dateSelected){
-        console.log(this.state.formattedDate)
-        results = (<EventList apicall={'https://api.muncieevents.com/v1/events?start='+this.state.formattedDate+'&end='+this.state.formattedDate+'&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1'} />)
+        if(Platform.OS == 'ios'){
+          results = (   
+            <View>        
+            <Text style={Styles.title}>
+            EVENTS
+            </Text>
+            <EventList apicall={'https://api.muncieevents.com/v1/events?start='+this.getFormattedDate()+'&end='+this.getFormattedDate()+'&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1'} />
+            </View> 
+            )
+        }
+        else{
+          results = (   
+            <View>        
+            <Text style={Styles.title}>
+            EVENTS
+            </Text>
+            <EventList apicall={'https://api.muncieevents.com/v1/events?start='+this.state.formattedDate+'&end='+this.state.formattedDate+'&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1'} />
+            </View> 
+            )
+        }
+
       }
       else{
         results = (<Text></Text>)
@@ -85,7 +104,7 @@ export default class GoToDate extends React.Component {
 
     setDate(newDate) {
       if(Platform.OS == 'ios'){
-        this.setState({chosenDate: newDate, formattedDate: this.getFormattedDate(newDate)})
+        this.setState({chosenDate: newDate})
       }
       else{
         this.setState({chosenDate: newDate, formattedDate: this.getAndroidFormattedDate(newDate), dateSelected: true})
@@ -93,18 +112,18 @@ export default class GoToDate extends React.Component {
     }
 
     getFormattedDate(){
-      day = this.state.chosenDate.getDate();
-      month = this.state.chosenDate.getMonth()+1;
-      year = this.state.chosenDate.getFullYear();
-      //pad month if needed for api
-      if(this.state.chosenDate.getMonth()+1 < 10){
-         month="0" + (this.state.chosenDate.getMonth()+1).toString();
-      }
-      //pad day if needed for api
-      if(this.state.chosenDate.getDate() < 10){
-        day='0' + this.state.chosenDate.getDate().toString();
-      }
-      return year + '-' + month + '-' + day;
+        day = this.state.chosenDate.getDate();
+        month = this.state.chosenDate.getMonth()+1;
+        year = this.state.chosenDate.getFullYear();
+        //pad month if needed for api
+        if(this.state.chosenDate.getMonth()+1 < 10){
+           month="0" + (this.state.chosenDate.getMonth()+1).toString();
+        }
+        //pad day if needed for api
+        if(this.state.chosenDate.getDate() < 10){
+          day='0' + this.state.chosenDate.getDate().toString();
+        }
+        return year + '-' + month + '-' + day;
     }
 
     getAndroidFormattedDate(newDate){

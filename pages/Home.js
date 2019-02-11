@@ -1,6 +1,6 @@
 import React from 'react';
 import EventList from "../EventList"
-import {View} from 'react-native';
+import {View, Text} from 'react-native';
 import TopBar from '../pages/top_bar';
 import Styles from '../pages/Styles';
 
@@ -9,6 +9,9 @@ export default class HomeScreen extends React.Component{
         return(
         <View style={Styles.topBarPadding}>
           <TopBar />
+          <Text style={Styles.title}>
+            EVENTS
+          </Text>
           <EventList 
             apicall='https://api.muncieevents.com/v1/events/future?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ'
           />

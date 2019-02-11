@@ -42,9 +42,6 @@ class EventList extends React.Component {
       getEventDataView(dataSource){
         return(
           <View >
-            <Text style={Styles.title}>
-              EVENTS
-            </Text>
             <FlatList
               data={dataSource}
               renderItem={({item}) => 

@@ -99,7 +99,13 @@ export default class AdvancedSearch extends React.Component {
       results = (<EventList apicall=""/>)
     }
     else if(criteria == "category"){
-      results = (<EventList apicall={'https://api.muncieevents.com/v1/events/category/' + this.state.categorySelectedValue +'?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ'} />)
+      results = (
+        <View>
+        <Text style={Styles.title}>
+          Search Results
+        </Text>
+        <EventList apicall={'https://api.muncieevents.com/v1/events/category/' + this.state.categorySelectedValue +'?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ'} />
+        </View>)
     }
     else{
       results = (<Text></Text>)
