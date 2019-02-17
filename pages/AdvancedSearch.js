@@ -126,7 +126,6 @@ export default class AdvancedSearch extends React.Component {
         <EventList apicall={this.state.url} />
       </View>
     )
-
   }
   getCategorySearch(){
     categorylist = this.categories.map( (name) => {

@@ -1,9 +1,10 @@
 import React from 'react';
-import {Text, View, Platform, DatePickerAndroid, DatePickerIOS} from 'react-native';
-import TopBar from './top_bar';
+import {Text, View, Platform, DatePickerAndroid, DatePickerIOS, TextInput} from 'react-native';
 import CustomButton from "./CustomButton";
 import EventList from "../EventList"
 import Styles from './Styles';
+import Icon from 'react-native-vector-icons/Ionicons'
+import * as Animatable from 'react-native-animatable'
 
 export default class GoToDate extends React.Component {
   constructor(props){
@@ -11,20 +12,61 @@ export default class GoToDate extends React.Component {
     this.state = {formattedDate: '', 
                   lastUsedDate: null, 
                   chosenDate: new Date(), 
-                  eventView: (<Text></Text>)
+                  eventView: null,
+                  searchurl: '',
+                  text: ''
                 }  
     this.dateSelected = false; 
     this.setDate = this.setDate.bind(this);
   }
 
     render() {
+      datePicker = null
+      eventView =  this.updateEventView()
+      searchView = null
+      if(this.state.searchurl){
+        searchView = this.getSearchView()
+      }
+      else if(!eventView){
+        datePicker = this.getDatePicker()
+      }
       return (
         <View style={Styles.topBarPadding}>
-          <TopBar />
+           <View style={Styles.topBarWrapper}>
+            <Animatable.View animation = "slideInRight" duration={500} style={Styles.topBarContent}>
+                <CustomButton
+                    text="Menu"
+                    onPress={() => this.props.navigation.openDrawer()}/>
+                <TextInput
+                    placeholder=' Search'
+                    value={this.state.text} 
+                    style={Styles.searchBar}
+                    onChangeText={(text) => this.setState({text})}
+                    onBlur={() => this.setState({searchurl:'https://api.muncieevents.com/v1/events/search?q=' + this.state.text +  '&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1'})}
+                    showLoading='true'
+                  />
+                <Icon name="ios-search" style={Styles.iosSearch}/>
+              </Animatable.View>
+            </View>
           <View style={Styles.content}>
-            {this.getDatePicker()}
-            {this.updateEventView()}
+            {searchView}
+            {datePicker}
+            {eventView}
           </View>
+        </View>
+      )
+    }
+
+    getSearchView(){
+      return(
+        <View>
+          <CustomButton 
+            text="Go Back"
+            buttonStyle = {Styles.longButtonStyle}
+            textStyle = {Styles.longButtonTextStyle}
+            onPress={() => this.setState({searchurl: ""})}/>
+          />
+          <EventList apicall={this.state.searchurl} />
         </View>
       )
     }
@@ -37,6 +79,12 @@ export default class GoToDate extends React.Component {
             <Text style={Styles.title}>
             EVENTS
             </Text>
+            <CustomButton 
+            text="Go Back"
+            buttonStyle = {Styles.longButtonStyle}
+            textStyle = {Styles.longButtonTextStyle}
+            onPress={() => this.setState({dateSelected: false})}/>
+          />
             <EventList apicall={'https://api.muncieevents.com/v1/events?start='+this.getFormattedDate()+'&end='+this.getFormattedDate()+'&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1'} />
             </View> 
             )
@@ -47,6 +95,12 @@ export default class GoToDate extends React.Component {
             <Text style={Styles.title}>
             EVENTS
             </Text>
+            <CustomButton 
+            text="Go Back"
+            buttonStyle = {Styles.longButtonStyle}
+            textStyle = {Styles.longButtonTextStyle}
+            onPress={() => this.setState({eventView: null})}/>
+          />
             <EventList apicall={'https://api.muncieevents.com/v1/events?start='+this.state.formattedDate+'&end='+this.state.formattedDate+'&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1'} />
             </View> 
             )
@@ -54,7 +108,7 @@ export default class GoToDate extends React.Component {
 
       }
       else{
-        results = (<Text></Text>)
+        results = null
       }
       return results
     }
