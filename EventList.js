@@ -9,12 +9,22 @@ import ExpandedView from './pages/ExpandedView'
 class EventList extends React.Component {
     constructor(props){
         super(props);
-        this.state ={ isLoading: true}
-        this.state ={lastUsedDate: null}
-        this.state = {text: ''}
-        this.state = {apicall: ''}
-        this.state = {selectedEvent: null}
+        this.state ={ isLoading: true,
+                    lastUsedDate: null,
+                    text: '',
+                    apicall: '',
+                    selectedEvent: null}
+        this.previousUrl = ''
         this.dateAndTimeParser = new DateAndTimeParser();
+      }
+
+      componentDidMount(){
+        this.setState({apicall: this.props.apicall});
+      }
+
+      componentWillReceiveProps({apicall}) {
+        this.previousUrl = this.state.apicall
+        this.setState({apicall: apicall})
       }
 
       fetchAPIData(url){
@@ -24,7 +34,7 @@ class EventList extends React.Component {
           this.setState({
             isLoading: false,
             dataSource: responseJson.data,
-          }, function(){});
+          });
         })
         .catch((error) =>{
           console.error(error);
@@ -41,7 +51,7 @@ class EventList extends React.Component {
 
       getEventDataView(dataSource){
         return(
-          <View >
+          <View>
             <FlatList
               data={dataSource}
               renderItem={({item}) => 
@@ -55,14 +65,13 @@ class EventList extends React.Component {
 
       noEventsFound(){
         return(
-          <Text>No Events found</Text>
+          <Text></Text>
         );
       }
 
       render(){
-        if(!this.state.apicall){
-            this.setState({apicall: this.props.apicall});
-            this.fetchAPIData(this.props.apicall);
+        if(this.state.apicall != this.previousUrl){
+            this.fetchAPIData(this.state.apicall);
         }
         var contentView = this.getDisplayedPage();
         return (
@@ -102,10 +111,10 @@ class EventList extends React.Component {
             </Text>           
              <TouchableOpacity onPress={() => this.setState({selectedEvent: eventEntry})} style={Styles.eventRow}>
               <View style={{flexDirection:'row', flex:1}}>
-              {this.getURLImage(imageURL)}
                <Text style={{flex:1}}>
                 {listText}
                </Text>
+               {this.getURLImage(imageURL)}
                </View>
              </TouchableOpacity>
              </Animatable.View>
