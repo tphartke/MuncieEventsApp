@@ -16,7 +16,7 @@ export default class AdvancedSearch extends React.Component {
                 tagSelectedValue: "",
                 tag: "",
                 searchCriteria: "",
-                searchResults: (<Text></Text>),
+                searchResults: null,
                 url: "",
                 text: ""
               }
@@ -52,6 +52,7 @@ export default class AdvancedSearch extends React.Component {
     categoryView = () => {return(<Text>Loading...</Text>)}
     tagView = () => {return(<Text></Text>)}
     searchView = () => {return(<Text></Text>)}
+    resultsView = () => {return(<Text></Text>)}
     
     if(this.state.isLoading){
       this.fetchCategoryData();
@@ -59,6 +60,9 @@ export default class AdvancedSearch extends React.Component {
     }
     else if(this.state.url){
       searchView=this.getSearchView();
+    }
+    else if(this.state.searchResults){
+      resultsView = this.getResultsView();
     }
     else{
       categoryView = this.getCategorySearch();
@@ -90,11 +94,24 @@ export default class AdvancedSearch extends React.Component {
         {tagView}
         {categoryView}
         <View>
-          {this.state.searchResults}
+          {resultsView}
         </View>
 
       </View>
     );
+  }
+
+  getResultsView(){
+    return(
+    <View>
+    <CustomButton 
+      text="Go Back"
+      buttonStyle = {Styles.longButtonStyle}
+      textStyle = {Styles.longButtonTextStyle}
+      onPress={() => this.setState({searchResults: null})}/>
+    />
+    {this.state.searchResults}
+  </View>)
   }
 
   getSearchView(){
