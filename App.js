@@ -18,7 +18,6 @@ const App = createDrawerNavigator({
     Contact: {screen: Contact},
     LogInRegister: {screen: LogInRegister},
     Widgets: {screen: Widgets},
-    SearchOutput: {screen: SearchOutput},
   });
   
   export default App;

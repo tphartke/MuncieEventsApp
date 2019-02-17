@@ -1,37 +1,74 @@
 import React from 'react';
 import {Text, View, AsyncStorage, TextInput} from 'react-native';
 import TopBar from './top_bar';
-import ProfileView from './ProfileView'
 import CustomButton from "./CustomButton";
 import Register from "./Register"
 import Styles from './Styles';
+import Icon from 'react-native-vector-icons/Ionicons'
+import * as Animatable from 'react-native-animatable'
+import EventList from '../EventList'
 
 export default class LogInRegister extends React.Component {
     constructor(props){
       super(props);      
-      this.state = {isLoggedIn: false}
-      this.state = {selectedPage: "Login"}
+      this.state = {isLoggedIn: false,
+                    selectedPage: "Login",
+                    url: "",
+                    text: ""}
       this.userid = '1112';
       this.password = '';
       this.username = '';
     }
     
     render() {
-      if(this.state.isLoggedIn==true){
-        return(
-          this.getProfileViewSequence()
-        )
+      loginRegisterView = null
+      searchView = null
+      if(this.state.url){
+          searchView = this.getSearchView()
+      }
+      else if(this.state.isLoggedIn==true){
+          loginRegisterView = this.getProfileViewSequence()
       }
       else if(this.state.selectedPage=="Login"){
-        return(
-          this.getLoginSequence()
-        )
+          loginRegisterView = this.getLoginSequence()
       }
       else{
-        return(
-          this.getSignupSequence()
-        )
+          loginRegisterView = this.getSignupSequence()
       }
+      return(<View style={Styles.topBarPadding}>
+                 <View style={Styles.topBarWrapper}>
+                    <Animatable.View animation = "slideInRight" duration={500} style={Styles.topBarContent}>
+                      <CustomButton
+                        text="Menu"
+                        onPress={() => this.props.navigation.openDrawer()}/>
+                      <TextInput
+                        placeholder=' Search'
+                        value={this.state.text} 
+                        style={Styles.searchBar}
+                        onChangeText={(text) => this.setState({text})}
+                        onBlur={() => this.setState({url:'https://api.muncieevents.com/v1/events/search?q=' + this.state.text +  '&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1'})}
+                        showLoading='true'
+                        />
+                        <Icon name="ios-search" style={Styles.iosSearch}/>
+                      </Animatable.View>
+                    </View>
+                {searchView}
+                {loginRegisterView}
+            </View>)
+    }
+
+    getSearchView(){
+      return(
+        <View>
+          <CustomButton 
+            text="Go Back"
+            buttonStyle = {Styles.longButtonStyle}
+            textStyle = {Styles.longButtonTextStyle}
+            onPress={() => this.setState({url: ""})}/>
+          />
+          <EventList apicall={this.state.url} />
+        </View>
+      )
     }
 
     getLoginSequence(){
@@ -42,8 +79,7 @@ export default class LogInRegister extends React.Component {
           profileInfo = this.showProfileInfo();
       }
       return (
-        <View style={Styles.topBarPadding}>
-          <TopBar />        
+        <View>      
           <TextInput
               onChangeText={(username) => this.setState({username})}
               style={Styles.textBox}
@@ -78,8 +114,7 @@ export default class LogInRegister extends React.Component {
       logInMessage = "You are logged in.";
       profileInfo = this.showProfileInfo();
       return(
-        <View style={Styles.topBarPadding}>
-          <TopBar />  
+        <View>
           <CustomButton
             text = "Log Out" 
             onPress={()=> this.logUserOut()} 
@@ -94,8 +129,7 @@ export default class LogInRegister extends React.Component {
 
     getSignupSequence(){
       return(
-        <View style={Styles.topBarPadding}>
-          <TopBar />  
+        <View>
           <Register />
           <CustomButton
             text = "Go Back"
