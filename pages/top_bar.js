@@ -1,6 +1,6 @@
 import React from 'react';
 import {TextInput, View} from 'react-native';
-import{ withNavigation } from "react-navigation";
+import {withNavigation } from "react-navigation";
 import CustomButton from "./CustomButton";
 import Icon from 'react-native-vector-icons/Ionicons'
 import * as Animatable from 'react-native-animatable'
@@ -10,12 +10,13 @@ class TopBar extends React.Component {
   constructor(props) {
     super(props);
     this.state={text: ''};
+    this.state={readyToSearch: false}
   }
 
-  searchOnArbitraryString(input){
-      return this.props.navigation.navigate('SearchOutput', {
-        searchInput: input,
-      });
+  searchOnArbitraryString(){
+    return this.props.navigation.navigate('SearchOutput', {
+      searchInput: this.state.text,
+});
   }
 
   render() {
@@ -29,15 +30,15 @@ class TopBar extends React.Component {
             }
           />
           <TextInput
+            ref={TextInput => {this.searchInput = TextInput}}
             placeholder=' Search'
             value={this.state.text} 
             style={Styles.searchBar}
             onChangeText={(text) => this.setState({text})}
-            onBlur={() => this.searchOnArbitraryString(this.state.text)}
+            onBlur={() => this.setState({readyToSearch: true})}
             showLoading='true'
           />
           <Icon name="ios-search" style={Styles.iosSearch}/>
-          
         </Animatable.View>
       </View>
     );

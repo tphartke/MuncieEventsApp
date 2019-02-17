@@ -12,7 +12,7 @@ export default class Contact extends React.Component {
       this.state = ({name: ""})
       this.state = ({messageSent: false})
       this.state = ({statusMessage: ""})
-      this.url = "https://api.muncieevents.com/v1/contact?name=tphartke?email=tphartke@bsu.edu?body=hello?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ"
+      this.state = ({dataSource: ""})
     }
     render() {
       return (
@@ -26,7 +26,7 @@ export default class Contact extends React.Component {
             <TextInput
               onChangeText={(name) => this.setState({name})}
               style={Styles.textBox}
-              placeholder="Name"
+              placeholder="Name" 
             />
 
             <Text>Email</Text>
@@ -54,7 +54,7 @@ export default class Contact extends React.Component {
   sendMessage(){
     if(this.meetsMessageCriteria()){
       this.setState({messageSent: true, statusMessage: "Message Sent. Thanks for your feedback!"});
-      this.fetchAPIData("https://api.muncieevents.com/v1/contact?name=" + this.state.name + "?email=" + this.state.email + "?body=" + this.state.message + "?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ")
+      this.fetchAPIData()
     }
     else{
       this.setState({statusMessage: "Please enter a valid name, message, and email address"});
@@ -63,7 +63,8 @@ export default class Contact extends React.Component {
 
   meetsMessageCriteria(){
     if(this.state.name == "" || this.state.message == "" || !this.isValidEmail(this.state.email)){
-        return false;
+      //CHANGE THIS BACK TO FALSE
+        return true;
     }
     else{
       return true;
@@ -76,11 +77,20 @@ export default class Contact extends React.Component {
     return rfc2822.test(email);
   }
 
-  fetchAPIData(url){
-    fetch(url, {method: "POST"})
+  fetchAPIData(){
+    fetch("https://api.muncieevents.com/v1/contact?name=Timothy&email=tphartke@bsu.edu&body=Test&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1", {method: "POST",   headers: {
+      "Content-Type": "application/json"
+  }}).then((responseJson) => {
+      this.setState({dataSource: responseJson.data})
+      Object.keys(responseJson).forEach(function(key) {
+        console.log(responseJson[key])
+      });
+
+    })  
     .catch((error) =>{
         console.log(error)
        this.setState({statusMessage: "Error reaching server: " + error})
     });
-  }  
+  }
 }
+
