@@ -43,7 +43,12 @@ export default class Contact extends React.Component {
               placeholder="Type message here..."
             />
 
-            <CustomButton text="Send" onPress = {() => this.sendMessage()} />
+            <CustomButton 
+                text="Send" 
+                onPress = {() => this.sendMessage()} 
+                buttonStyle = {Styles.longButtonStyle}
+                textStyle = {Styles.longButtonTextStyle}
+            />
             <Text>{this.state.statusMessage}</Text>
           
           </View>

@@ -1,8 +1,9 @@
 import React from 'react';
 import {View, Text, Picker, TextInput} from 'react-native';
-import TopBar from './top_bar';
 import Styles from './Styles';
 import CustomButton from './CustomButton'
+import Icon from 'react-native-vector-icons/Ionicons'
+import * as Animatable from 'react-native-animatable'
 import EventList from '../EventList'
 
 export default class AdvancedSearch extends React.Component {
@@ -15,7 +16,9 @@ export default class AdvancedSearch extends React.Component {
                 tagSelectedValue: "",
                 tag: "",
                 searchCriteria: "",
-                searchResults: (<Text></Text>)
+                searchResults: (<Text></Text>),
+                url: "",
+                text: ""
               }
     this.categories=[]
     this.tags=[]
@@ -48,9 +51,14 @@ export default class AdvancedSearch extends React.Component {
   render(){
     categoryView = () => {return(<Text>Loading...</Text>)}
     tagView = () => {return(<Text></Text>)}
+    searchView = () => {return(<Text></Text>)}
+    
     if(this.state.isLoading){
       this.fetchCategoryData();
       this.fetchTagData();
+    }
+    else if(this.state.url){
+      searchView=this.getSearchView();
     }
     else{
       categoryView = this.getCategorySearch();
@@ -58,27 +66,29 @@ export default class AdvancedSearch extends React.Component {
     }
     return (
       <View style={Styles.topBarPadding}>
-        <View>
-          <TopBar />
-        </View>
+          <View style={Styles.topBarWrapper}>
+            <Animatable.View animation = "slideInRight" duration={500} style={Styles.topBarContent}>
+                <CustomButton
+                    text="Menu"
+                    onPress={() => this.props.navigation.openDrawer()}/>
+                <TextInput
+                    placeholder=' Search'
+                    value={this.state.text} 
+                    style={Styles.searchBar}
+                    onChangeText={(text) => this.setState({text})}
+                    onBlur={() => this.setState({url:'https://api.muncieevents.com/v1/events/search?q=' + this.state.text +  '&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1'})}
+                    showLoading='true'
+                  />
+                <Icon name="ios-search" style={Styles.iosSearch}/>
+              </Animatable.View>
+            </View>
 
         <Text style={Styles.title}>
           Advanced Search
         </Text>
+        {searchView}
         {tagView}
-        <CustomButton
-          text="Search By Tag"
-          buttonStyle = {Styles.longButtonStyle}
-          textStyle = {Styles.longButtonTextStyle}
-          onPress = {() => this.returnSearchResults("tag")}
-        />
         {categoryView}
-        <CustomButton
-          text="Search By Category"
-          buttonStyle = {Styles.longButtonStyle}
-          textStyle = {Styles.longButtonTextStyle}
-          onPress = {() => this.returnSearchResults("category")}
-        />
         <View>
           {this.state.searchResults}
         </View>
@@ -87,23 +97,45 @@ export default class AdvancedSearch extends React.Component {
     );
   }
 
+  getSearchView(){
+    return(
+      <View>
+        <CustomButton 
+          text="Go Back"
+          buttonStyle = {Styles.longButtonStyle}
+          textStyle = {Styles.longButtonTextStyle}
+          onPress={() => this.setState({url: ""})}/>
+        />
+        <EventList apicall={this.state.url} />
+      </View>
+    )
+
+  }
   getCategorySearch(){
     categorylist = this.categories.map( (name) => {
       return <Picker.Item key={name[0]} value={name[1]} label={name[0]} />
     });
     return( 
-    <View style={Styles.advancedSearchRow}>
-      <View style={Styles.advancedSearchColumn}>
-        <Text>Category </Text>
-      </View>
-      <View style={Styles.advancedSearchColumn}>
-        <Picker     
+    <View>
+      <View style={Styles.advancedSearchRow}>
+        <View style={Styles.advancedSearchColumn}>
+          <Text>Category </Text>
+        </View>
+        <View style={Styles.advancedSearchColumn}>
+          <Picker     
             selectedValue = {this.state.categorySelectedValue}
             onValueChange={(value) => {
             this.setState({categorySelectedValue: value, categorySelectedName: value.label});}}>
             {categorylist}
-        </Picker>
+          </Picker>
+        </View>
       </View>
+      <CustomButton
+          text="Search By Category"
+          buttonStyle = {Styles.longButtonStyle}
+          textStyle = {Styles.longButtonTextStyle}
+          onPress = {() => this.returnSearchResults("category")}
+        />
     </View>)
   }
 
@@ -112,18 +144,26 @@ export default class AdvancedSearch extends React.Component {
       return <Picker.Item key={name[0]} value={name[0]} label={name[0]} />
     });
     return( 
-    <View style={Styles.advancedSearchRow}>
-      <View style={Styles.advancedSearchColumn}>
-        <Text>Tag </Text>
+    <View>
+      <View style={Styles.advancedSearchRow}>
+        <View style={Styles.advancedSearchColumn}>
+          <Text>Tag </Text>
+        </View>
+        <View style={Styles.advancedSearchColumn}>
+          <Picker     
+              selectedValue = {this.state.tagSelectedValue}
+              onValueChange={(value) => {
+              this.setState({tagSelectedValue: value});}}>
+              {taglist}
+          </Picker>
+        </View>
       </View>
-      <View style={Styles.advancedSearchColumn}>
-        <Picker     
-            selectedValue = {this.state.tagSelectedValue}
-            onValueChange={(value) => {
-            this.setState({tagSelectedValue: value});}}>
-            {taglist}
-        </Picker>
-      </View>
+      <CustomButton
+          text="Search By Tag"
+          buttonStyle = {Styles.longButtonStyle}
+          textStyle = {Styles.longButtonTextStyle}
+          onPress = {() => this.returnSearchResults("tag")}
+          />
     </View>)
   }
 

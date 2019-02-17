@@ -130,7 +130,7 @@ export default StyleSheet.create({
 
     longButtonStyle: {
         width:400, 
-        height:25
+        height:50
     },
 
     longButtonTextStyle: {
