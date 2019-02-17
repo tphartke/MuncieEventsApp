@@ -11,11 +11,14 @@ export default class AdvancedSearch extends React.Component {
     this.state ={ 
                 isLoading: true,
                 categorySelectedValue: "",
+                categorySelectedName: "",
+                tagSelectedValue: "",
                 tag: "",
                 searchCriteria: "",
                 searchResults: (<Text></Text>)
               }
     this.categories=[]
+    this.tags=[]
   }
 
   fetchCategoryData(){
@@ -24,19 +27,34 @@ export default class AdvancedSearch extends React.Component {
     .then((responseJson) => {
       this.categories = responseJson.data.map((category) => {return [category.attributes.name, category.id]})
     })
-    .then(() => {this.setState({isLoading: false, categorySelectedValue: this.categories[0]})})
+    .then(() => {this.setState({categorySelectedValue: this.categories[0]})})
     .catch((error) =>{
       console.error(error);
     });
   }   
 
+  fetchTagData(){
+    fetch("https://api.muncieevents.com/v1/tags/future?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ")        
+    .then((response) => response.json())
+    .then((responseJson) => {
+      this.tags = responseJson.data.map((tag) => {return [tag.attributes.name, tag.id]})
+    })
+    .then(() => {this.setState({isLoading: false, TagSelectedValue: this.tags[0]})})
+    .catch((error) =>{
+      console.error(error);
+    });
+  }
+
   render(){
-    searchView = () => {return(<Text>Loading...</Text>)}
+    categoryView = () => {return(<Text>Loading...</Text>)}
+    tagView = () => {return(<Text></Text>)}
     if(this.state.isLoading){
       this.fetchCategoryData();
+      this.fetchTagData();
     }
     else{
-      searchView = this.getAdvancedSearch();
+      categoryView = this.getCategorySearch();
+      tagView = this.getTagSearch();
     }
     return (
       <View style={Styles.topBarPadding}>
@@ -47,19 +65,14 @@ export default class AdvancedSearch extends React.Component {
         <Text style={Styles.title}>
           Advanced Search
         </Text>
-
-        <TextInput
-          onValueChange={(text) => {this.setState({tag: text})}}
-          placeholder='Search by tag...'
-          style={Styles.textInput}
-        />
+        {tagView}
         <CustomButton
           text="Search By Tag"
           buttonStyle = {Styles.longButtonStyle}
           textStyle = {Styles.longButtonTextStyle}
           onPress = {() => this.returnSearchResults("tag")}
         />
-        {searchView}
+        {categoryView}
         <CustomButton
           text="Search By Category"
           buttonStyle = {Styles.longButtonStyle}
@@ -74,7 +87,7 @@ export default class AdvancedSearch extends React.Component {
     );
   }
 
-  getAdvancedSearch(){
+  getCategorySearch(){
     categorylist = this.categories.map( (name) => {
       return <Picker.Item key={name[0]} value={name[1]} label={name[0]} />
     });
@@ -87,8 +100,28 @@ export default class AdvancedSearch extends React.Component {
         <Picker     
             selectedValue = {this.state.categorySelectedValue}
             onValueChange={(value) => {
-            this.setState({categorySelectedValue: value});}}>
+            this.setState({categorySelectedValue: value, categorySelectedName: value.label});}}>
             {categorylist}
+        </Picker>
+      </View>
+    </View>)
+  }
+
+  getTagSearch(){
+    taglist = this.tags.map( (name) => {
+      return <Picker.Item key={name[0]} value={name[0]} label={name[0]} />
+    });
+    return( 
+    <View style={Styles.advancedSearchRow}>
+      <View style={Styles.advancedSearchColumn}>
+        <Text>Tag </Text>
+      </View>
+      <View style={Styles.advancedSearchColumn}>
+        <Picker     
+            selectedValue = {this.state.tagSelectedValue}
+            onValueChange={(value) => {
+            this.setState({tagSelectedValue: value});}}>
+            {taglist}
         </Picker>
       </View>
     </View>)
@@ -96,13 +129,19 @@ export default class AdvancedSearch extends React.Component {
 
   returnSearchResults(criteria){
     if(criteria == "tag"){
-      results = (<EventList apicall=""/>)
+    results = (
+      <View>
+        <Text style={Styles.title}>
+          Tag: {this.state.tagSelectedValue}
+        </Text>
+        <EventList apicall={'https://api.muncieevents.com/v1/events/future?withTags[]=' + this.state.tagSelectedValue +  '&apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ'}/>
+      </View>)
     }
     else if(criteria == "category"){
       results = (
         <View>
         <Text style={Styles.title}>
-          Search Results
+          Category
         </Text>
         <EventList apicall={'https://api.muncieevents.com/v1/events/category/' + this.state.categorySelectedValue +'?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ'} />
         </View>)
