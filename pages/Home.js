@@ -11,9 +11,17 @@ export default class HomeScreen extends React.Component{
   constructor(props){
     super(props);
     this.state={text: ''};
-    this.state={url: 'https://api.muncieevents.com/v1/events/future?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ'}
+    this.state={url: ""}
   }  
       render(){
+        homeView = null
+        searchView = null
+        if(this.state.url){
+            searchView = this.getSearchView()
+        }
+        else{
+            homeView = this.getHomeView()
+        }
         return(
         <View style={Styles.topBarPadding}>
           <View style={Styles.topBarWrapper}>
@@ -32,11 +40,33 @@ export default class HomeScreen extends React.Component{
                 <Icon name="ios-search" style={Styles.iosSearch}/>
               </Animatable.View>
             </View>
-          <Text style={Styles.title}>
-            EVENTS
-          </Text>
-          <EventList apicall={this.state.url} />
+            {searchView}
+            {homeView}
         </View>
         );
       } 
+
+      getHomeView(){
+        return(
+          <View>
+            <Text style={Styles.title}>
+              EVENTS
+            </Text>
+            <EventList apicall='https://api.muncieevents.com/v1/events/future?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ' />
+          </View>)
+      }
+
+      getSearchView(){
+        return(
+          <View>
+            <CustomButton 
+              text="Go Back"
+              buttonStyle = {Styles.longButtonStyle}
+              textStyle = {Styles.longButtonTextStyle}
+              onPress={() => this.setState({url: ""})}/>
+            />
+            <EventList apicall={this.state.url} />
+          </View>
+        )
+      }
 }
