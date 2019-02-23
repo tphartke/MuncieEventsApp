@@ -112,9 +112,9 @@ class ExpandedView extends React.Component {
       return
     }else{
      return(
-      <View>
+      <View style={{justifyContent: 'center', alignItems: 'center',}}>
         <Image
-        style={{width: 300, height: 500, resizeMode: "contain"}}
+        style={{width: 400, height: 400, resizeMode: "contain"}}
         source = {{uri: imageURL}}
         />
       </View>
