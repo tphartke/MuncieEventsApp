@@ -52,7 +52,7 @@ export default class AddEditEvent extends React.Component {
         return(
             <View>
                 <Text style={Styles.title}>
-                    Add or Edit Events
+                    Add an Event
                 </Text>
             </View>
         )

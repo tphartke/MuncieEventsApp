@@ -50,12 +50,7 @@ class ExpandedView extends React.Component {
       if(this.state.selectedPreviousScreen){
         renderedInfo = (<EventList apicall = {this.previousScreen}/>)
       }
-      return(
-        <View>
-          {renderedInfo}
-        </View>
-      )
-
+      return(<View>{renderedInfo}</View>)
     }
 
     getExpandedView(){
@@ -89,7 +84,6 @@ class ExpandedView extends React.Component {
         </ScrollView>
       </Animatable.View>
     )
-
     }
 
     goBackOnce(){

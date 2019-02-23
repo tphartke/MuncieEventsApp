@@ -40,8 +40,10 @@ export default class HomeScreen extends React.Component{
                 <Icon name="ios-search" style={Styles.iosSearch}/>
               </Animatable.View>
             </View>
+            <View>
             {searchView}
             {homeView}
+            </View>
         </View>
         );
       } 
@@ -65,7 +67,7 @@ export default class HomeScreen extends React.Component{
               textStyle = {Styles.longButtonTextStyle}
               onPress={() => this.setState({url: ""})}/>
             />
-            <EventList apicall={this.state.url} />
+              <EventList apicall={this.state.url} />
           </View>
         )
       }

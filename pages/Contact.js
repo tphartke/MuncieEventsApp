@@ -104,9 +104,12 @@ export default class Contact extends React.Component {
   }
 
   sendMessage(){
-    if(this.meetsMessageCriteria()){
+    if(this.meetsMessageCriteria() && !this.state.messageSent){
       this.setState({messageSent: true, statusMessage: "Message Sent. Thanks for your feedback!"});
       this.fetchAPIData()
+    }
+    else if(this.state.messageSent){
+      this.setState({statusMessage: "Message Sent. Thanks for your feedback!"});
     }
     else{
       this.setState({statusMessage: "Please enter a valid name, message, and email address"});
@@ -115,8 +118,7 @@ export default class Contact extends React.Component {
 
   meetsMessageCriteria(){
     if(this.state.name == "" || this.state.message == "" || !this.isValidEmail(this.state.email)){
-      //CHANGE THIS BACK TO FALSE
-        return true;
+        return false;
     }
     else{
       return true;
@@ -130,9 +132,18 @@ export default class Contact extends React.Component {
   }
 
   fetchAPIData(){
-    fetch("https://api.muncieevents.com/v1/contact?name=Timothy&email=tphartke@bsu.edu&body=Test&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1", {method: "POST",   headers: {
-      "Content-Type": "application/json"
-  }}).then((responseJson) => {
+    fetch("https://api.muncieevents.com/v1/contact?apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1", 
+      {method: "POST",
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: this.state.email,
+        name: this.state.name,
+        body: this.state.message
+      }),
+  }).then((responseJson) => {
       this.setState({dataSource: responseJson.data})
       Object.keys(responseJson).forEach(function(key) {
         console.log(responseJson[key])
