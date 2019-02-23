@@ -38,7 +38,8 @@ class ExpandedView extends React.Component {
     constructor(props){
         super(props);
         this.dateAndTimeParser = new DateAndTimeParser();
-        this.state = {height:0}
+        this.state = {imageHeight:0,
+                      imageWidth:0}
         this.eventData = null
         this.previousScreen = null
         this.state={selectedPreviousScreen:false}
@@ -106,13 +107,14 @@ class ExpandedView extends React.Component {
 
 
    getURLImage(imageURL){
+
     if(imageURL == "None"){
       return
     }else{
      return(
       <View>
         <Image
-        style={{width: 300, height: 500}}
+        style={{width: 300, height: 500, resizeMode: "contain"}}
         source = {{uri: imageURL}}
         />
       </View>
