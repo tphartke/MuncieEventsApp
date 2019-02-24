@@ -1,38 +1,42 @@
 import React from 'react';
 import {View, TextInput} from 'react-native';
+import CustomButton from "./CustomButton";
 import Styles from './Styles';
 
 export default class ProfileView extends React.Component {
     constructor(props){
         super(props);
-        this.state = ({email: ""})
-        this.state = ({name: ""})
-        this.state = ({statusMessage: ""})
-        this.state = ({userid: ""})
-        this.state = ({isLoading: true})
+        this.state = ({email: null,
+                       name: null,
+                       statusMessage: "",
+                       userid: "644",
+                       isLoading: true})
       }
       render(){
-        if(this.state.userid.length == 0){
-            this.setState({userid: this.props.userid});
-            this.fetchAPIData(this.state.userid);
-        }
-        var contentView = this.getLoadingView();
-        if(!this.state.isLoading){
-          contentView = this.getEventDataView(this.state.dataSource);
+        if(!this.state.email){
+          this.fetchAPIData(this.state.userid)
+          console.log(this.state.email)
+          contentView = this.getProfileInformation();
         }
           return(
-            {contentView}
+            <View>
+                {contentView}
+            </View>
         );
       }
 
+      componentDidMount(){
+        this.setState({userid: this.props.userid});
+      }
+
       fetchAPIData(userid){
-        return fetch("https://api.muncieevents.com/v1/user/" + userid + "?apikey= E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ")        
+        fetch("https://api.muncieevents.com/v1/user/" + userid + "?apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1")        
         .then((response) => response.json())
         .then((responseJson) => {
           this.setState({
-            isLoading: false,
-            dataSource: responseJson.data,
-          }, function(){});
+            email: responseJson.data.attributes.email,
+            name: responseJson.data.attributes.name
+          });
         })
         .catch((error) =>{
           console.error(error);
@@ -47,8 +51,7 @@ export default class ProfileView extends React.Component {
           );   
       }
 
-      getProfileInformation(dataSource){
-          this.setState({email: dataSource.attributes.email, name: dataSource.attributes.name})
+      getProfileInformation(){
           return(
               <View>
                 <TextInput
@@ -60,6 +63,11 @@ export default class ProfileView extends React.Component {
                     onChangeText={(email) => this.setState({email})}
                     style={Styles.textBox}
                     placeholder={this.state.email}
+                />
+                <CustomButton 
+                    text="Update" 
+                    buttonStyle = {Styles.longButtonStyle}
+                    textStyle = {Styles.longButtonTextStyle}
                 />
               </View>
           )

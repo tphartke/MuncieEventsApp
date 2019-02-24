@@ -23,7 +23,7 @@ export default class LogInRegister extends React.Component {
     }
     dataSource = ""
     username = ""
-    password = ""
+    name = ""
     token = ""
     
     render() {
@@ -187,9 +187,9 @@ export default class LogInRegister extends React.Component {
 
     retrieveStoredName = async() => {
       try {
-        const pword = await AsyncStorage.getItem('Name');
-        if (pword !== null) {
-          this.password = pword;
+        const nm = await AsyncStorage.getItem('Name');
+        if (nm !== null) {
+          this.name = nm;
         }
        } catch (error) {
           return "NULL"
@@ -213,7 +213,7 @@ export default class LogInRegister extends React.Component {
         this.retrieveStoredUsername()
         this.retrieveStoredName()
         this.retrieveStoredToken()
-        return "Username: " + this.username + ". Password: " + this.password + "Token: " + this.token;
+        return "Email: " + this.username + " Name: " + this.name + "Token: " + this.token;
       }
       else{
         return ""
