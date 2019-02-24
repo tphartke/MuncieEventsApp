@@ -1,6 +1,5 @@
 import React from 'react';
 import {Text, View, AsyncStorage, TextInput} from 'react-native';
-import TopBar from './top_bar';
 import CustomButton from "./CustomButton";
 import Register from "./Register"
 import Styles from './Styles';
@@ -14,11 +13,18 @@ export default class LogInRegister extends React.Component {
       this.state = {isLoggedIn: false,
                     selectedPage: "Login",
                     url: "",
-                    text: ""}
-      this.userid = '1112';
-      this.password = '';
-      this.username = '';
+                    text: "",
+                    token: "",
+                    email: "",
+                    password: "",
+                    rname: "",
+                    remail: "",
+                    rtoken: ""}
     }
+    dataSource = ""
+    username = ""
+    password = ""
+    token = ""
     
     render() {
       loginRegisterView = null
@@ -81,19 +87,20 @@ export default class LogInRegister extends React.Component {
       return (
         <View>      
           <TextInput
-              onChangeText={(username) => this.setState({username})}
+              onChangeText={(email) => this.setState({email})}
               style={Styles.textBox}
-              placeholder="Username"
+              placeholder="Email"
           />          
           <TextInput
           onChangeText={(password) => this.setState({password})}
           style={Styles.textBox}
           placeholder="Password"
+          secureTextEntry={true}
           />
           
           <CustomButton 
             text="Log In" 
-            onPress={()=> this.logUserIn()} 
+            onPress={()=> this.initiateLoginProcess()} 
             buttonStyle={Styles.longButtonStyle}
             textStyle={Styles.longButtonTextStyle}
           />
@@ -141,10 +148,15 @@ export default class LogInRegister extends React.Component {
       );
     }
 
+    initiateLoginProcess(){
+      this.fetchAPILoginData()
+    }
+
     logUserIn = async() => {
       try {
-        await AsyncStorage.setItem('Username', 'User');
-        await AsyncStorage.setItem('Password', 'Password');
+        await AsyncStorage.setItem('Username', this.state.remail);
+        await AsyncStorage.setItem('Name', this.state.rname);
+        await AsyncStorage.setItem('Token', this.state.rtoken);
         this.setState({isLoggedIn: true});
       } catch (error) {
         console.log("Error storing login information");
@@ -154,7 +166,8 @@ export default class LogInRegister extends React.Component {
     logUserOut = async() => {
       try {
         await AsyncStorage.removeItem('Username');
-        await AsyncStorage.removeItem('Password');
+        await AsyncStorage.removeItem('Name');
+        await AsyncStorage.removeItem('Token');
         this.setState({isLoggedIn: false});
       } catch (error) {
         console.log("Error logging user out");
@@ -172,9 +185,9 @@ export default class LogInRegister extends React.Component {
        }
     }
 
-    retrieveStoredPassword = async() => {
+    retrieveStoredName = async() => {
       try {
-        const pword = await AsyncStorage.getItem('Password');
+        const pword = await AsyncStorage.getItem('Name');
         if (pword !== null) {
           this.password = pword;
         }
@@ -184,14 +197,48 @@ export default class LogInRegister extends React.Component {
       
     }
 
+    retrieveStoredToken = async() => {
+      try {
+        const tkn = await AsyncStorage.getItem('Token');
+        if (tkn !== null) {
+          this.token = tkn;
+        }
+       } catch (error) {
+          return "NULL"
+       }
+      
+    }
     showProfileInfo(){
       if(this.state.isLoggedIn){
         this.retrieveStoredUsername()
-        this.retrieveStoredPassword()
-        return "Username: " + this.username + ". Password: " + this.password;
+        this.retrieveStoredName()
+        this.retrieveStoredToken()
+        return "Username: " + this.username + ". Password: " + this.password + "Token: " + this.token;
       }
       else{
         return ""
       }
+    }
+
+    fetchAPILoginData(){
+      fetch("https://api.muncieevents.com/v1/user/login?apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1", 
+        {method: "POST",
+        headers: {
+            Accept: 'application/vnd.api+json',
+            'Content-Type': 'application/json',
+            },
+        body: JSON.stringify({
+          password: this.state.password,
+          email: this.state.email,
+        })
+    })
+    .then((response) => response.json())
+    .then((responseJson) =>  this.dataSource = responseJson)
+    .then(() => this.setState({remail: this.dataSource.data.attributes.email, rname: this.dataSource.data.attributes.name, rtoken: this.dataSource.data.id}))
+    .then(() => this.logUserIn())
+      .catch((error) =>{
+         console.log(error)
+         this.setState({statusMessage: "Error reaching server: " + error})
+      })
     }
 }

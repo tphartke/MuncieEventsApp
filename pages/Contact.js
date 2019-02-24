@@ -9,9 +9,9 @@ import Styles from './Styles';
 export default class Contact extends React.Component {
     constructor(props){
       super(props)
-      this.state = ({message: "",
-                     email: "",
-                     name: "",
+      this.state = ({message: 'This is a test of the MuncieEvents app',
+                     email: 'tphartke@bsu.edu',
+                     name: 'Timothy Hartke',
                      messageSent: false,
                      statusMessage: "",
                      dataSource: "",
@@ -135,21 +135,17 @@ export default class Contact extends React.Component {
     fetch("https://api.muncieevents.com/v1/contact?apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1", 
       {method: "POST",
       headers: {
-        Accept: 'application/json',
+        Accept: 'application/vnd.api+json',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        email: this.state.email,
         name: this.state.name,
+        email: this.state.email,
         body: this.state.message
       }),
-  }).then((responseJson) => {
-      this.setState({dataSource: responseJson.data})
-      Object.keys(responseJson).forEach(function(key) {
-        console.log(responseJson[key])
-      });
-
-    })  
+  })
+  .then((response) => console.log(response))
+  .then((responseJSON) => console.log(responseJSON))
     .catch((error) =>{
         console.log(error)
        this.setState({statusMessage: "Error reaching server: " + error})

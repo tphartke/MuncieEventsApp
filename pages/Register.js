@@ -6,11 +6,12 @@ import Styles from './Styles';
 export default class Register extends React.Component {
     constructor(props){
         super(props);
-        this.state = ({message: ""})
-        this.state = ({email: ""})
-        this.state = ({name: ""})
-        this.state = ({userregistered: false})
-        this.state = ({statusMessage: ""})
+        this.state = ({ password: "",
+                        confirmpassword: "",
+                        email: "",
+                        name: "",
+                        userregistered: false,
+                        statusMessage: ""})
       }
 
     render (){
@@ -32,7 +33,7 @@ export default class Register extends React.Component {
   
                 <Text>Password</Text>
                 <TextInput
-                    onChangeText={(message) => this.setState({message})}
+                    onChangeText={(password) => this.setState({password})}
                     style={Styles.textBox}
                     placeholder="Password"
                     secureTextEntry={true}
@@ -40,7 +41,7 @@ export default class Register extends React.Component {
 
                 <Text>Confirm Password</Text>
                 <TextInput
-                    onChangeText={(message) => this.setState({message})}
+                    onChangeText={(confirmpassword) => this.setState({confirmpassword})}
                     style={Styles.textBox}
                     placeholder="Retype Password"
                     secureTextEntry={true}
@@ -60,7 +61,7 @@ export default class Register extends React.Component {
     RegisterNewUser(){
         if(this.isValidNewUser()){
             this.setState({userregistered: true, statusMessage: this.state.name + " successfully registered!"});  
-            this.fetchAPIData("https://api.muncieevents.com/v1/user/register?name=" + this.state.name + "?email=" + this.state.email + "?password=" + this.state.password + "?apikey= E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ", {method: 'POST'})
+            this.fetchAPIData("https://api.muncieevents.com/v1/user/register?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ")
         }
         else{
             this.setState({statusMessage: "Please ensure your password matches and your email is valid"});
@@ -83,7 +84,16 @@ export default class Register extends React.Component {
       }
 
       fetchAPIData(url){
-        fetch(url, {method: "POST"})      
+        fetch(url, {method: "POST", 
+                    headers: {
+                        Accept: 'application/vnd.api+json',
+                        'Content-Type': 'application/vnd.api+json',
+                    },
+                    body: JSON.stringify({
+                        name: this.state.name,
+                        password: this.state.password,
+                        email: this.state.email,
+          })})      
         .catch((error) =>{
             console.log(error)
            this.setState({statusMessage: "Error reaching server: " + error})
