@@ -213,7 +213,7 @@ export default class LogInRegister extends React.Component {
         this.retrieveStoredUsername()
         this.retrieveStoredName()
         this.retrieveStoredToken()
-        return "Email: " + this.username + " Name: " + this.name + "Token: " + this.token;
+        return "Email: " + this.state.remail + " Name: " + this.state.rname + "Token: " + this.state.rtoken;
       }
       else{
         return ""
