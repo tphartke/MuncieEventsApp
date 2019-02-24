@@ -12,6 +12,7 @@ export default class Register extends React.Component {
                         name: "",
                         userregistered: false,
                         statusMessage: ""})
+        dataSource = null
       }
 
     render (){
@@ -60,8 +61,8 @@ export default class Register extends React.Component {
 
     RegisterNewUser(){
         if(this.isValidNewUser()){
+            this.fetchAPIData()
             this.setState({userregistered: true, statusMessage: this.state.name + " successfully registered!"});  
-            this.fetchAPIData("https://api.muncieevents.com/v1/user/register?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ")
         }
         else{
             this.setState({statusMessage: "Please ensure your password matches and your email is valid"});
@@ -83,17 +84,21 @@ export default class Register extends React.Component {
         return rfc2822.test(email);
       }
 
-      fetchAPIData(url){
-        fetch(url, {method: "POST", 
-                    headers: {
-                        Accept: 'application/vnd.api+json',
-                        'Content-Type': 'application/vnd.api+json',
-                    },
-                    body: JSON.stringify({
-                        name: this.state.name,
-                        password: this.state.password,
-                        email: this.state.email,
-          })})      
+      fetchAPIData(){
+            fetch("https://api.muncieevents.com/v1/user/register?apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1", 
+              {method: "POST",
+              headers: {
+                  Accept: 'application/vnd.api+json',
+                  'Content-Type': 'application/json',
+                  },
+              body: JSON.stringify({
+                password: this.state.password,
+                email: this.state.email,
+                name: this.state.name
+              })
+          })
+          .then((response) => response.json())
+          .then((responseJson) => console.log(responseJson)) 
         .catch((error) =>{
             console.log(error)
            this.setState({statusMessage: "Error reaching server: " + error})
