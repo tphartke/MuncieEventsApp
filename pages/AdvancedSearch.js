@@ -11,7 +11,8 @@ export default class AdvancedSearch extends React.Component {
   constructor(props){
     super(props);
     this.state ={ 
-                isLoading: true,
+                isInitialLoading: true,
+                isLoadingResults: false,
                 categorySelectedValue: "",
                 categorySelectedName: "",
                 tagSelectedValue: "",
@@ -45,7 +46,7 @@ export default class AdvancedSearch extends React.Component {
     .then((responseJson) => {
       this.tags = responseJson.data.map((tag) => {return [tag.attributes.name, tag.id]})
     })
-    .then(() => {this.setState({isLoading: false, TagSelectedValue: this.tags[0]})})
+    .then(() => {this.setState({isInitialLoading: false, TagSelectedValue: this.tags[0]})})
     .catch((error) =>{
       console.error(error);
     });
@@ -55,71 +56,77 @@ export default class AdvancedSearch extends React.Component {
     categoryView = () => {return(<Text>Loading...</Text>)}
     tagView = () => {return(<Text></Text>)}
     resultsView = () => {return(<Text></Text>)}
+    mainView = () => {return(<Text></Text>)}
+    title = "Advanced Search"
     
-    if(this.state.isLoading){
+    if(this.state.isInitialLoading){
       this.fetchCategoryData();
       this.fetchTagData();
     }
     else if(this.state.resultsLoaded){
-      console.log("It got to the else if statement")
-      resultsView = this.getResultsView();
+      mainView = this.getResultsView();
+      title = "Search by " + this.state.title
     }
     else{
-      categoryView = this.getCategorySearch();
-      tagView = this.getTagSearch();
+      mainView = this.getMainView()
     }
     return (
       <View style={Styles.topBarPadding}>
-          <View style={Styles.topBarWrapper}>
-            <Animatable.View animation = "slideInRight" duration={500} style={Styles.topBarContent}>
-                <CustomButton
-                    text="Menu"
-                    onPress={() => this.props.navigation.openDrawer()}/>
-                <TextInput
-                    placeholder=' Search'
-                    value={this.state.text} 
-                    style={Styles.searchBar}
-                    onChangeText={(text) => this.setState({text})}
-                    onBlur={() => this.setState({url:'https://api.muncieevents.com/v1/events/search?q=' + this.state.text +  '&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1'})}
-                    showLoading='true'
-                  />
-                <Icon name="ios-search" style={Styles.iosSearch}/>
-              </Animatable.View>
-            </View>
-
+        {this.getTopBar()}
         <Text style={Styles.title}>
-          Advanced Search
+          {title}
         </Text>
-        {tagView}
-        {categoryView}
         <View>
-          {resultsView}
+          {mainView}
         </View>
-
       </View>
     );
   }
 
-  
-  getResultsView(){
-    console.log("It got here")
+  getMainView(){
+    categoryView = this.getCategorySearch();
+    tagView = this.getTagSearch();
     return(
       <View>
+        {tagView}
+        {categoryView}
+      </View>
+    );
+  }
+
+  getTopBar(){
+    return(
+      <View style={Styles.topBarWrapper}>
+      <Animatable.View animation = "slideInRight" duration={500} style={Styles.topBarContent}>
+          <CustomButton
+              text="Menu"
+              onPress={() => this.props.navigation.openDrawer()}/>
+          <TextInput
+              placeholder=' Search'
+              value={this.state.text} 
+              style={Styles.searchBar}
+              onChangeText={(text) => this.setState({text})}
+              onBlur={() => this.setState({url:'https://api.muncieevents.com/v1/events/search?q=' + this.state.text +  '&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1'})}
+              showLoading='true'
+            />
+          <Icon name="ios-search" style={Styles.iosSearch}/>
+        </Animatable.View>
+    </View>
+    )
+  }
+  
+  getResultsView(){
+    return(
+      <View>        
         <CustomButton 
           text="Go Back"
           buttonStyle = {Styles.longButtonStyle}
           textStyle = {Styles.longButtonTextStyle}
-          onPress={() => this.setState({searchResults: null})}/>
-        />
-        <View>
-          <Text style={Styles.title}>
-            {this.state.title}
-          </Text>
-          <EventList
-            useSearchResults={true} />
-        </View>
+          onPress={() => this.setState({resultsLoaded: false})}/>
+        <EventList useSearchResults = {true} />
     </View>
-  )}
+
+  );}
   
 
   /*
@@ -195,23 +202,29 @@ export default class AdvancedSearch extends React.Component {
   }
 
   returnSearchResults(criteria){
-    urlSecondHalf = '?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ'
     if(criteria == "tag"){
-      searchURL = 'https://api.muncieevents.com/v1/events/future?withTags[]=' + this.state.tagSelectedValue + urlSecondHalf
-      this.state.title = "Tag: " + this.state.tagSelectedValue
+      searchURL = 'https://api.muncieevents.com/v1/events/future?withTags[]=' + this.state.tagSelectedValue + "&apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ"
+      newTitle = "Tag: " + this.state.tagSelectedValue
     }
     else if(criteria == "category"){
-      searchURL = 'https://api.muncieevents.com/v1/events/category/' + this.state.categorySelectedValue + urlSecondHalf
-      this.state.title = "Category: " + this.state.categorySelectedValue
+      searchURL = 'https://api.muncieevents.com/v1/events/category/' + this.state.categorySelectedValue + "&apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ"
+      newTitle = "Category: " + this.state.categorySelectedValue
     }
     console.log(searchURL)
-    this.cacheData(searchURL)
+    this.state.title = newTitle;
+    this.state.url = searchURL;
+    /*
+    this.setState({
+      isLoadingResults: true
+    });
+    */
+    this._cacheDataAsync(searchURL)
   }
 
-  async cacheData(searchURL){
+  async _cacheDataAsync(searchURL){
     await this.APICacher._cacheJSONFromAPIAsync("SearchResults", searchURL)
-    .then(console.log("datacached"))
-    .then(this.state.resultsLoaded = true)
-    .then(console.log(this.state.resultsLoaded));
+    .then(this.state.isLoadingResults = false)
+    .then(this.setState({resultsLoaded: true}));
   }
+  
 }

@@ -1,12 +1,13 @@
 import React from 'react';
 import{ withNavigation } from "react-navigation";
 import DateAndTimeParser from "./DateAndTimeParser";
-import {View, ActivityIndicator, Text, TouchableOpacity, FlatList, Image, AsyncStorage} from 'react-native';
+import {View, ActivityIndicator, Text, TouchableOpacity, FlatList, Image} from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import Styles from './pages/Styles';
 import ExpandedView from './pages/ExpandedView';
 import {AppLoading} from 'expo';
 import APICacher from './APICacher';
+import PropTypes from 'prop-types';
 
 class EventList extends React.Component {
     constructor(props){
@@ -15,7 +16,8 @@ class EventList extends React.Component {
                     lastUsedDate: null,
                     text: '',
                     apicall: '',
-                    selectedEvent: null}
+                    selectedEvent: null,
+                  }
         this.previousUrl = ''
         this.dateAndTimeParser = new DateAndTimeParser();
         this._getCachedDataAsync = this._getCachedDataAsync.bind(this);
@@ -24,7 +26,6 @@ class EventList extends React.Component {
       }
 
       componentDidMount(){
-        useSearchResults = this.props.navigation.getParam("useSearchResults", false)
         //this.setState({apicall: this.props.apicall});
       }
 
@@ -67,7 +68,7 @@ class EventList extends React.Component {
           return(
             <AppLoading 
               startAsync={this._getCachedDataAsync}
-              onFinish={() => this.setState({ isReady: true })}
+              onFinish={() => this.setState({ isReady: true})}
               onError= {console.error}
             />
           );
@@ -81,10 +82,12 @@ class EventList extends React.Component {
       }
 
       async _getCachedDataAsync(){
+        const {useSearchResults} = this.props;
         key = "APIData"
-        if (this.state.useSearchResults){
+        if (useSearchResults){
           key = "SearchResults"
         }
+        console.log(key)
         data = await this.APICacher._getJSONFromStorage(key);
         this.setState({dataSource: data})
       }
@@ -170,3 +173,11 @@ class EventList extends React.Component {
        }
 } 
 export default withNavigation(EventList);
+
+EventList.propTypes = {
+  useSearchResults: PropTypes.bool
+};
+
+EventList.defaultPropts = {
+  useSearchResults: false
+}

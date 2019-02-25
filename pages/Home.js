@@ -59,9 +59,10 @@ export default class HomeScreen extends React.Component{
       } 
 
       async _startupCachingAsync(){
+          url = this.state.url
           hasAPIData = await this.APICacher._hasAPIData("APIData")
           if(!hasAPIData){
-            await this.APICacher._cacheJSONFromAPIAsync("APIData", this.state.url)
+            await this.APICacher._cacheJSONFromAPIAsync("APIData", url);
           }
       }
 
