@@ -5,6 +5,7 @@ import CustomButton from './CustomButton'
 import Icon from 'react-native-vector-icons/Ionicons'
 import * as Animatable from 'react-native-animatable'
 import EventList from '../EventList'
+import APICacher from '../APICacher'
 
 export default class AdvancedSearch extends React.Component {
   constructor(props){
@@ -18,10 +19,12 @@ export default class AdvancedSearch extends React.Component {
                 searchCriteria: "",
                 searchResults: null,
                 url: "",
-                text: ""
+                text: "",
+                resultsLoaded: false
               }
     this.categories=[]
     this.tags=[]
+    this.APICacher = new APICacher();
   }
 
   fetchCategoryData(){
@@ -51,17 +54,14 @@ export default class AdvancedSearch extends React.Component {
   render(){
     categoryView = () => {return(<Text>Loading...</Text>)}
     tagView = () => {return(<Text></Text>)}
-    searchView = () => {return(<Text></Text>)}
     resultsView = () => {return(<Text></Text>)}
     
     if(this.state.isLoading){
       this.fetchCategoryData();
       this.fetchTagData();
     }
-    else if(this.state.url){
-      searchView=this.getSearchView();
-    }
-    else if(this.state.searchResults){
+    else if(this.state.resultsLoaded){
+      console.log("It got to the else if statement")
       resultsView = this.getResultsView();
     }
     else{
@@ -90,7 +90,6 @@ export default class AdvancedSearch extends React.Component {
         <Text style={Styles.title}>
           Advanced Search
         </Text>
-        {searchView}
         {tagView}
         {categoryView}
         <View>
@@ -101,19 +100,29 @@ export default class AdvancedSearch extends React.Component {
     );
   }
 
+  
   getResultsView(){
+    console.log("It got here")
     return(
-    <View>
-    <CustomButton 
-      text="Go Back"
-      buttonStyle = {Styles.longButtonStyle}
-      textStyle = {Styles.longButtonTextStyle}
-      onPress={() => this.setState({searchResults: null})}/>
-    />
-    {this.state.searchResults}
-  </View>)
-  }
+      <View>
+        <CustomButton 
+          text="Go Back"
+          buttonStyle = {Styles.longButtonStyle}
+          textStyle = {Styles.longButtonTextStyle}
+          onPress={() => this.setState({searchResults: null})}/>
+        />
+        <View>
+          <Text style={Styles.title}>
+            {this.state.title}
+          </Text>
+          <EventList
+            useSearchResults={true} />
+        </View>
+    </View>
+  )}
+  
 
+  /*
   getSearchView(){
     return(
       <View>
@@ -127,6 +136,8 @@ export default class AdvancedSearch extends React.Component {
       </View>
     )
   }
+  */
+
   getCategorySearch(){
     categorylist = this.categories.map( (name) => {
       return <Picker.Item key={name[0]} value={name[1]} label={name[0]} />
@@ -184,27 +195,23 @@ export default class AdvancedSearch extends React.Component {
   }
 
   returnSearchResults(criteria){
+    urlSecondHalf = '?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ'
     if(criteria == "tag"){
-    results = (
-      <View>
-        <Text style={Styles.title}>
-          Tag: {this.state.tagSelectedValue}
-        </Text>
-        <EventList apicall={'https://api.muncieevents.com/v1/events/future?withTags[]=' + this.state.tagSelectedValue +  '&apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ'}/>
-      </View>)
+      searchURL = 'https://api.muncieevents.com/v1/events/future?withTags[]=' + this.state.tagSelectedValue + urlSecondHalf
+      this.state.title = "Tag: " + this.state.tagSelectedValue
     }
     else if(criteria == "category"){
-      results = (
-        <View>
-        <Text style={Styles.title}>
-          Category
-        </Text>
-        <EventList apicall={'https://api.muncieevents.com/v1/events/category/' + this.state.categorySelectedValue +'?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ'} />
-        </View>)
+      searchURL = 'https://api.muncieevents.com/v1/events/category/' + this.state.categorySelectedValue + urlSecondHalf
+      this.state.title = "Category: " + this.state.categorySelectedValue
     }
-    else{
-      results = (<Text></Text>)
-    }
-    this.setState({searchResults: results})
+    console.log(searchURL)
+    this.cacheData(searchURL)
+  }
+
+  async cacheData(searchURL){
+    await this.APICacher._cacheJSONFromAPIAsync("SearchResults", searchURL)
+    .then(console.log("datacached"))
+    .then(this.state.resultsLoaded = true)
+    .then(console.log(this.state.resultsLoaded));
   }
 }

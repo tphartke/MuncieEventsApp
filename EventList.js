@@ -24,29 +24,14 @@ class EventList extends React.Component {
       }
 
       componentDidMount(){
+        useSearchResults = this.props.navigation.getParam("useSearchResults", false)
         //this.setState({apicall: this.props.apicall});
       }
 
       componentWillReceiveProps({apicall}) {
         this.previousUrl = this.state.apicall
         this.setState({apicall: apicall})
-      }
-
-      /*
-      fetchAPIData(url){
-        return fetch(url)        
-        .then((response) => response.json())
-        .then((responseJson) => {
-          this.setState({
-            isLoading: false,
-            dataSource: responseJson.data,
-          });
-        })
-        .catch((error) =>{
-          console.error(error);
-        });
-      }
-      */   
+      }  
 
     getLoadingView(){
         return(
@@ -78,11 +63,6 @@ class EventList extends React.Component {
       }
 
       render(){
-        /*
-        if(this.state.apicall != this.previousUrl){
-            this.fetchAPIData(this.state.apicall);
-        }
-        */
         if(!this.state.isReady){
           return(
             <AppLoading 
@@ -101,7 +81,11 @@ class EventList extends React.Component {
       }
 
       async _getCachedDataAsync(){
-        data = await this.APICacher._getJSONFromStorage("APIData");
+        key = "APIData"
+        if (this.state.useSearchResults){
+          key = "SearchResults"
+        }
+        data = await this.APICacher._getJSONFromStorage(key);
         this.setState({dataSource: data})
       }
 
