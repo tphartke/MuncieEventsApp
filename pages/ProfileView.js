@@ -8,7 +8,7 @@ export default class ProfileView extends React.Component {
         this.state = ({email: ""})
         this.state = ({name: ""})
         this.state = ({statusMessage: ""})
-        this.state = ({userid: ""})
+        this.state = ({userID: ""})
         this.state = ({isLoading: true})
       }
       render(){

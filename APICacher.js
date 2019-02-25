@@ -1,27 +1,30 @@
-import AsyncStorage from 'react-native';
+import { AsyncStorage } from 'react-native';
 export default class APICacher{
 
     async _cacheJSONFromAPIAsync(key, url){
+        console.log("cache")
         APIData = await fetch(url)  
         .then(response => response.json())
         .then(responseJson => AsyncStorage.setItem(key, JSON.stringify(responseJson.data)) )
         .catch(error => console.log(error)); 
-        _hasAPIData = _hasAPIData.bind(this)
     }
 
     async _hasAPIData(key){
         await AsyncStorage.getItem(key, (err, result) => {
-            return result != null
+            console.log("HasAPIData: " + (result != null))
+            hasAPIData = result != null
         });
+        return hasAPIData;
     }
 
     async _getStringFromStorage(key){
         hasData = await this._hasAPIData(key)
         if(hasData){
             await AsyncStorage.getItem(key, (err, result) =>{
-                return result;
+                data = result;
             })
         }
+        return data;
     }
 
     async _getJSONFromStorage(key){

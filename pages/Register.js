@@ -57,7 +57,7 @@ export default class Register extends React.Component {
         );
     }
 
-    RegisterNewUser(){
+    registerNewUser(){
         if(this.isValidNewUser()){
             this.setState({userregistered: true, statusMessage: this.state.name + " successfully registered!"});  
             this.fetchAPIData("https://api.muncieevents.com/v1/user/register?name=" + this.state.name + "?email=" + this.state.email + "?password=" + this.state.password + "?apikey= E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ", {method: 'POST'})
