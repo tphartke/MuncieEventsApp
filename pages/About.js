@@ -6,6 +6,8 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import * as Animatable from 'react-native-animatable'
 import EventList from '../EventList'
 import {AppLoading} from 'expo';
+import APICacher from '../APICacher';
+
 
 export default class About extends React.Component {
   constructor(props){
@@ -14,6 +16,7 @@ export default class About extends React.Component {
                   url: "",
                   text: ""}
     this._getCachedDataAsync = this._getCachedDataAsync.bind(this);
+    this.APICacher = new APICacher();
   }
 
   /*
@@ -81,9 +84,12 @@ export default class About extends React.Component {
   }
 
   async _getCachedDataAsync(){
-    await AsyncStorage.getItem("AboutUsData", (err, result) => {
-      this.setState({dataSource: JSON.parse(result)})
-    });
+    hasAPIData = await this.APICacher._hasAPIData("AboutUsData")
+    if(!hasAPIData){
+        await this.APICacher._cacheJSONFromAPIAsync("AboutUsData", "https://api.muncieevents.com/v1/pages/about?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ")
+    }
+    await this.APICacher._getJSONFromStorage("AboutUsData")
+      .then((response) => this.setState({dataSource: response}))
   }
 
   getSearchView(){
