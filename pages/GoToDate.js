@@ -50,6 +50,36 @@ export default class GoToDate extends React.Component {
       )
     }
 
+    getIOSFormattedDate(){
+      day = this.state.chosenDate.getDate();
+      month = this.state.chosenDate.getMonth()+1;
+      year = this.state.chosenDate.getFullYear();
+      //pad month if needed for api
+      if(this.state.chosenDate.getMonth()+1 < 10){
+         month="0" + (this.state.chosenDate.getMonth()+1).toString();
+      }
+      //pad day if needed for api
+      if(this.state.chosenDate.getDate() < 10){
+        day='0' + this.state.chosenDate.getDate().toString();
+      }
+      return year + '-' + month + '-' + day;
+    }
+
+  getFormattedDate(newDate){
+      day = newDate.getDate();
+      month = newDate.getMonth()+1;
+      year = newDate.getFullYear();
+      //pad month if needed for api
+      if(newDate.getMonth()+1 < 10){
+         month="0" + (newDate.getMonth()+1).toString();
+      }
+      //pad day if needed for api
+      if(newDate.getDate() < 10){
+        day='0' + newDate.getDate().toString();
+      }
+      return year + '-' + month + '-' + day;
+  }
+
     getTopBar(){
       return(
         <View style={Styles.topBarWrapper}>
@@ -71,7 +101,6 @@ export default class GoToDate extends React.Component {
       );
     }
 
-    /*
     getSearchView(){
       return(
         <View>
@@ -85,19 +114,15 @@ export default class GoToDate extends React.Component {
         </View>
       )
     }
-    */
 
     updateEventView(date){
-        formattedDate = this.getFormattedDate(date)
-        url = 'https://api.muncieevents.com/v1/events?start=' + formattedDate +'&end='+formattedDate + '&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1';
-        /*
         if(Platform.OS == 'ios'){
-          url = 'https://api.muncieevents.com/v1/events?start='+this.getIOSFormattedDate()+'&end='+this.getIOSFormattedDate()+'&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1';
+          formattedDate = this.getIOSFormattedDate()
+          url = 'https://api.muncieevents.com/v1/events?start='+formattedDate+'&end='+formattedDate+'&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1';
         }
         else{
           url = 'https://api.muncieevents.com/v1/events?start='+this.state.formattedDate+'&end='+this.state.formattedDate+'&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1'
         }
-        */
        this.state.searchURL = url;
        this.setState({resultsLoading: true})
     }
@@ -170,47 +195,11 @@ export default class GoToDate extends React.Component {
     }
 
     setDate(newDate) {
-      this.setState({chosenDate: newDate, formattedDate: this.getFormattedDate(newDate), dateSelected: true})
-
-      /*
       if(Platform.OS == 'ios'){
         this.setState({chosenDate: newDate})
       }
       else{
         this.setState({chosenDate: newDate, formattedDate: this.getFormattedDate(newDate), dateSelected: true})
       }
-      */
-    }
-
-    /*
-    getIOSFormattedDate(){
-        day = this.state.chosenDate.getDate();
-        month = this.state.chosenDate.getMonth()+1;
-        year = this.state.chosenDate.getFullYear();
-        //pad month if needed for api
-        if(this.state.chosenDate.getMonth()+1 < 10){
-           month="0" + (this.state.chosenDate.getMonth()+1).toString();
-        }
-        //pad day if needed for api
-        if(this.state.chosenDate.getDate() < 10){
-          day='0' + this.state.chosenDate.getDate().toString();
-        }
-        return year + '-' + month + '-' + day;
-    }
-    */
-
-    getFormattedDate(newDate){
-      day = newDate.getDate();
-      month = newDate.getMonth()+1;
-      year = newDate.getFullYear();
-      //pad month if needed for api
-      if(newDate.getMonth()+1 < 10){
-         month="0" + (newDate.getMonth()+1).toString();
-      }
-      //pad day if needed for api
-      if(newDate.getDate() < 10){
-        day='0' + newDate.getDate().toString();
-      }
-      return year + '-' + month + '-' + day;
     }
 }
