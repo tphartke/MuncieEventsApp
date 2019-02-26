@@ -1,10 +1,11 @@
 import React from 'react';
-import {Text, View, WebView, TextInput} from 'react-native';
+import {Text, View, WebView, TextInput, AsyncStorage} from 'react-native';
 import Styles from './Styles';
 import CustomButton from './CustomButton'
 import Icon from 'react-native-vector-icons/Ionicons'
 import * as Animatable from 'react-native-animatable'
 import EventList from '../EventList'
+import {AppLoading} from 'expo';
 
 export default class About extends React.Component {
   constructor(props){
@@ -12,8 +13,10 @@ export default class About extends React.Component {
     this.state ={ isLoading: true,                
                   url: "",
                   text: ""}
+    this._getCachedDataAsync = this._getCachedDataAsync.bind(this);
   }
 
+  /*
   fetchAPIData(){
     return fetch('https://api.muncieevents.com/v1/pages/about?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ')        
     .then((response) => response.json())
@@ -26,7 +29,8 @@ export default class About extends React.Component {
     .catch((error) =>{
       console.error(error);
     });
-  }   
+  }  
+  */ 
 
   render() {
     aboutUsTitle = "";
@@ -34,7 +38,13 @@ export default class About extends React.Component {
     webView = null
     searchView = null
     if(this.state.isLoading){
-      this.fetchAPIData();
+      return(
+        <AppLoading 
+          startAsync={this._getCachedDataAsync}
+          onFinish={() => this.setState({ isLoading: false })}
+          onError= {console.error}
+        />
+      );
     }
     else if(this.state.url){
       searchView = this.getSearchView();
@@ -70,6 +80,12 @@ export default class About extends React.Component {
     )
   }
 
+  async _getCachedDataAsync(){
+    await AsyncStorage.getItem("AboutUsData", (err, result) => {
+      this.setState({dataSource: JSON.parse(result)})
+    });
+  }
+
   getSearchView(){
     return(
       <View>
@@ -90,7 +106,7 @@ export default class About extends React.Component {
         originWhitelist={['*']}
         source={{ html: html }}
         scrollEnabled={true}
-        startInLoadingState={true}
+        startInLoadingState={false}
       />
     )
   }

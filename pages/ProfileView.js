@@ -6,11 +6,12 @@ import Styles from './Styles';
 export default class ProfileView extends React.Component {
     constructor(props){
         super(props);
-        this.state = ({email: null,
-                       name: null,
-                       statusMessage: "",
-                       userid: "644",
-                       isLoading: true})
+        this.state = ({email: ""})
+        this.state = ({name: ""})
+        this.state = ({statusMessage: ""})
+        this.state = ({userID: ""})
+        this.state = ({isLoading: true})
+
       }
       render(){
         if(!this.state.email){

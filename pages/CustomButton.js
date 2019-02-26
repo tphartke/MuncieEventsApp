@@ -21,5 +21,4 @@ export default class CustomButton extends React.Component {
 CustomButton.propTypes = {
     text: PropTypes.string.isRequired,
     onPress: PropTypes.func.isRequired,
-
 };

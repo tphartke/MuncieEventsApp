@@ -2,44 +2,37 @@ import React from 'react';
 import{ withNavigation } from "react-navigation";
 import DateAndTimeParser from "./DateAndTimeParser";
 import {View, ActivityIndicator, Text, TouchableOpacity, FlatList, Image} from 'react-native';
-import * as Animatable from 'react-native-animatable'
+import * as Animatable from 'react-native-animatable';
 import Styles from './pages/Styles';
-import ExpandedView from './pages/ExpandedView'
+import ExpandedView from './pages/ExpandedView';
+import {AppLoading} from 'expo';
+import APICacher from './APICacher';
+import PropTypes from 'prop-types';
 
 class EventList extends React.Component {
     constructor(props){
         super(props);
-        this.state ={ isLoading: true,
+        this.state ={ isReady: false,
                     lastUsedDate: null,
                     text: '',
                     apicall: '',
-                    selectedEvent: null}
+                    selectedEvent: null,
+                  }
         this.previousUrl = ''
         this.dateAndTimeParser = new DateAndTimeParser();
+        this._getCachedDataAsync = this._getCachedDataAsync.bind(this);
+        this.APICacher = new APICacher();
+
       }
 
       componentDidMount(){
-        this.setState({apicall: this.props.apicall});
+        //this.setState({apicall: this.props.apicall});
       }
 
       componentWillReceiveProps({apicall}) {
         this.previousUrl = this.state.apicall
         this.setState({apicall: apicall})
-      }
-
-      fetchAPIData(url){
-        return fetch(url)        
-        .then((response) => response.json())
-        .then((responseJson) => {
-          this.setState({
-            isLoading: false,
-            dataSource: responseJson.data,
-          });
-        })
-        .catch((error) =>{
-          console.error(error);
-        });
-      }   
+      }  
 
     getLoadingView(){
         return(
@@ -49,7 +42,8 @@ class EventList extends React.Component {
           );   
       }
 
-      getEventDataView(dataSource){
+      getEventDataView(){
+        dataSource = this.state.dataSource
         return(
           <View>
             <FlatList
@@ -70,8 +64,14 @@ class EventList extends React.Component {
       }
 
       render(){
-        if(this.state.apicall != this.previousUrl){
-            this.fetchAPIData(this.state.apicall);
+        if(!this.state.isReady){
+          return(
+            <AppLoading 
+              startAsync={this._getCachedDataAsync}
+              onFinish={() => this.setState({ isReady: true})}
+              onError= {console.error}
+            />
+          );
         }
         var contentView = this.getDisplayedPage();
         return (
@@ -81,10 +81,21 @@ class EventList extends React.Component {
         );
       }
 
+      async _getCachedDataAsync(){
+        const {useSearchResults} = this.props;
+        key = "APIData"
+        if (useSearchResults){
+          key = "SearchResults"
+        }
+        console.log(key)
+        data = await this.APICacher._getJSONFromStorage(key);
+        this.setState({dataSource: data})
+      }
+
       getDisplayedPage(){
         var contentView = this.getLoadingView();
-        if(!this.state.isLoading && !this.state.selectedEvent){
-          contentView = this.getEventDataView(this.state.dataSource);
+        if(!this.state.selectedEvent){
+          contentView = this.getEventDataView();
         }
         if(this.state.selectedEvent){
           contentView = this.getExpandedView();
@@ -162,3 +173,11 @@ class EventList extends React.Component {
        }
 } 
 export default withNavigation(EventList);
+
+EventList.propTypes = {
+  useSearchResults: PropTypes.bool
+};
+
+EventList.defaultPropts = {
+  useSearchResults: false
+}
