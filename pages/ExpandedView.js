@@ -38,7 +38,8 @@ class ExpandedView extends React.Component {
     constructor(props){
         super(props);
         this.dateAndTimeParser = new DateAndTimeParser();
-        this.state = {height:0}
+        this.state = {imageHeight:0,
+                      imageWidth:0}
         this.eventData = null
         this.previousScreen = null
         this.state={selectedPreviousScreen:false}
@@ -49,12 +50,7 @@ class ExpandedView extends React.Component {
       if(this.state.selectedPreviousScreen){
         renderedInfo = (<EventList apicall = {this.previousScreen}/>)
       }
-      return(
-        <View>
-          {renderedInfo}
-        </View>
-      )
-
+      return(<View>{renderedInfo}</View>)
     }
 
     getExpandedView(){
@@ -88,7 +84,6 @@ class ExpandedView extends React.Component {
         </ScrollView>
       </Animatable.View>
     )
-
     }
 
     goBackOnce(){
@@ -106,13 +101,14 @@ class ExpandedView extends React.Component {
 
 
    getURLImage(imageURL){
+
     if(imageURL == "None"){
       return
     }else{
      return(
-      <View>
+      <View style={{justifyContent: 'center', alignItems: 'center',}}>
         <Image
-        style={{width: 300, height: 500}}
+        style={{width: 400, height: 400, resizeMode: "contain"}}
         source = {{uri: imageURL}}
         />
       </View>

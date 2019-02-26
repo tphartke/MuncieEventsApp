@@ -9,9 +9,9 @@ import Styles from './Styles';
 export default class Contact extends React.Component {
     constructor(props){
       super(props)
-      this.state = ({message: "",
-                     email: "",
-                     name: "",
+      this.state = ({message: 'This is a test of the MuncieEvents app',
+                     email: 'tphartke@bsu.edu',
+                     name: 'Timothy Hartke',
                      messageSent: false,
                      statusMessage: "",
                      dataSource: "",
@@ -104,9 +104,12 @@ export default class Contact extends React.Component {
   }
 
   sendMessage(){
-    if(this.meetsMessageCriteria()){
+    if(this.meetsMessageCriteria() && !this.state.messageSent){
       this.setState({messageSent: true, statusMessage: "Message Sent. Thanks for your feedback!"});
       this.fetchAPIData()
+    }
+    else if(this.state.messageSent){
+      this.setState({statusMessage: "Message Sent. Thanks for your feedback!"});
     }
     else{
       this.setState({statusMessage: "Please enter a valid name, message, and email address"});
@@ -115,8 +118,7 @@ export default class Contact extends React.Component {
 
   meetsMessageCriteria(){
     if(this.state.name == "" || this.state.message == "" || !this.isValidEmail(this.state.email)){
-      //CHANGE THIS BACK TO FALSE
-        return true;
+        return false;
     }
     else{
       return true;
@@ -130,15 +132,20 @@ export default class Contact extends React.Component {
   }
 
   fetchAPIData(){
-    fetch("https://api.muncieevents.com/v1/contact?name=Timothy&email=tphartke@bsu.edu&body=Test&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1", {method: "POST",   headers: {
-      "Content-Type": "application/json"
-  }}).then((responseJson) => {
-      this.setState({dataSource: responseJson.data})
-      Object.keys(responseJson).forEach(function(key) {
-        console.log(responseJson[key])
-      });
-
-    })  
+    fetch("https://api.muncieevents.com/v1/contact?apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1", 
+      {method: "POST",
+      headers: {
+        Accept: 'application/vnd.api+json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: this.state.name,
+        email: this.state.email,
+        body: this.state.message
+      }),
+  })
+  .then((response) => console.log(response))
+  .then((responseJSON) => console.log(responseJSON))
     .catch((error) =>{
         console.log(error)
        this.setState({statusMessage: "Error reaching server: " + error})
