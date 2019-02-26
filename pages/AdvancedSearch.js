@@ -217,7 +217,7 @@ export default class AdvancedSearch extends React.Component {
       newTitle = "Tag: " + this.state.tagSelectedValue
     }
     else if(criteria == "category"){
-      searchURL = 'https://api.muncieevents.com/v1/events/category/' + this.state.categorySelectedValue + "&apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ"
+      searchURL = 'https://api.muncieevents.com/v1/events/category/' + this.state.categorySelectedValue + "?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ"
       newTitle = "Category: " + this.state.categorySelectedValue
     }
     console.log(searchURL)
