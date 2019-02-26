@@ -139,7 +139,6 @@ export default class AdvancedSearch extends React.Component {
   );}
   
 
-  /*
   getSearchView(){
     return(
       <View>
@@ -153,7 +152,6 @@ export default class AdvancedSearch extends React.Component {
       </View>
     )
   }
-  */
 
   getCategorySearch(){
     categorylist = this.categories.map( (name) => {
