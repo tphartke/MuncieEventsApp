@@ -5,6 +5,8 @@ import EventList from "../EventList"
 import Styles from './Styles';
 import Icon from 'react-native-vector-icons/Ionicons'
 import * as Animatable from 'react-native-animatable'
+import APICacher from '../APICacher'
+import {AppLoading} from 'expo';
 
 export default class GoToDate extends React.Component {
   constructor(props){
@@ -13,50 +15,63 @@ export default class GoToDate extends React.Component {
                   lastUsedDate: null, 
                   chosenDate: new Date(), 
                   eventView: null,
-                  searchurl: '',
-                  text: ''
+                  searchURL: "",
+                  text: '',
+                  resultsLoaded: false,
+                  resultsLoading: false
                 }  
     this.dateSelected = false; 
     this.setDate = this.setDate.bind(this);
+    this.APICacher = new APICacher();
   }
 
     render() {
-      datePicker = null
-      eventView =  this.updateEventView()
-      searchView = null
-      if(this.state.searchurl){
-        searchView = this.getSearchView()
+      mainView = this.getDatePicker()
+      if(this.state.resultsLoaded){
+        mainView = this.getResultsScreen()
       }
-      else if(!eventView){
-        datePicker = this.getDatePicker()
+      else if(this.state.resultsLoading){
+        url = this.state.searchURL
+        return(
+          <AppLoading 
+            startAsync={() => this._cacheSearchResults(url)}
+            onFinish={() => this.setState({ resultsLoaded: true, resultsLoading: false})}
+            onError= {console.error}
+          />
+        );
       }
       return (
         <View style={Styles.topBarPadding}>
-           <View style={Styles.topBarWrapper}>
-            <Animatable.View animation = "slideInRight" duration={500} style={Styles.topBarContent}>
-                <CustomButton
-                    text="Menu"
-                    onPress={() => this.props.navigation.openDrawer()}/>
-                <TextInput
-                    placeholder=' Search'
-                    value={this.state.text} 
-                    style={Styles.searchBar}
-                    onChangeText={(text) => this.setState({text})}
-                    onBlur={() => this.setState({searchurl:'https://api.muncieevents.com/v1/events/search?q=' + this.state.text +  '&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1'})}
-                    showLoading='true'
-                  />
-                <Icon name="ios-search" style={Styles.iosSearch}/>
-              </Animatable.View>
-            </View>
+          {this.getTopBar()}
           <View style={Styles.content}>
-            {searchView}
-            {datePicker}
-            {eventView}
+            {mainView}
           </View>
         </View>
       )
     }
 
+    getTopBar(){
+      return(
+        <View style={Styles.topBarWrapper}>
+        <Animatable.View animation = "slideInRight" duration={500} style={Styles.topBarContent}>
+            <CustomButton
+                text="Menu"
+                onPress={() => this.props.navigation.openDrawer()}/>
+            <TextInput
+                placeholder=' Search'
+                value={this.state.text} 
+                style={Styles.searchBar}
+                onChangeText={(text) => this.setState({text})}
+                onBlur={() => this.setState({searchurl:'https://api.muncieevents.com/v1/events/search?q=' + this.state.text +  '&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1'})}
+                showLoading='true'
+              />
+            <Icon name="ios-search" style={Styles.iosSearch}/>
+          </Animatable.View>
+        </View>
+      );
+    }
+
+    /*
     getSearchView(){
       return(
         <View>
@@ -66,51 +81,49 @@ export default class GoToDate extends React.Component {
             textStyle = {Styles.longButtonTextStyle}
             onPress={() => this.setState({searchurl: ""})}/>
           />
-          <EventList apicall={this.state.searchurl} />
+          <EventList useSearchResults= {true}/>
         </View>
       )
     }
+    */
 
-    updateEventView(){
-      if(this.state.dateSelected){
+    updateEventView(date){
+        formattedDate = this.getFormattedDate(date)
+        url = 'https://api.muncieevents.com/v1/events?start=' + formattedDate +'&end='+formattedDate + '&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1';
+        /*
         if(Platform.OS == 'ios'){
-          results = (   
-            <View>        
-            <Text style={Styles.title}>
-            EVENTS
-            </Text>
-            <CustomButton 
-            text="Go Back"
-            buttonStyle = {Styles.longButtonStyle}
-            textStyle = {Styles.longButtonTextStyle}
-            onPress={() => this.setState({dateSelected: false})}/>
-          />
-            <EventList apicall={'https://api.muncieevents.com/v1/events?start='+this.getFormattedDate()+'&end='+this.getFormattedDate()+'&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1'} />
-            </View> 
-            )
+          url = 'https://api.muncieevents.com/v1/events?start='+this.getIOSFormattedDate()+'&end='+this.getIOSFormattedDate()+'&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1';
         }
         else{
-          results = (   
-            <View>        
-            <Text style={Styles.title}>
-            EVENTS
-            </Text>
-            <CustomButton 
+          url = 'https://api.muncieevents.com/v1/events?start='+this.state.formattedDate+'&end='+this.state.formattedDate+'&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1'
+        }
+        */
+       this.state.searchURL = url;
+       this.setState({resultsLoading: true})
+    }
+
+    startLoadingResults(){
+      this.setState({resultsLoading: true})
+    }
+
+    async _cacheSearchResults(searchURL){
+      await this.APICacher._cacheJSONFromAPIAsync("SearchResults", searchURL)
+    }
+
+    getResultsScreen(){
+      return (   
+        <View>        
+          <Text style={Styles.title}>
+          EVENTS
+          </Text>
+          <CustomButton 
             text="Go Back"
             buttonStyle = {Styles.longButtonStyle}
             textStyle = {Styles.longButtonTextStyle}
-            onPress={() => this.setState({eventView: null})}/>
-          />
-            <EventList apicall={'https://api.muncieevents.com/v1/events?start='+this.state.formattedDate+'&end='+this.state.formattedDate+'&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1'} />
-            </View> 
-            )
-        }
-
-      }
-      else{
-        results = null
-      }
-      return results
+            onPress={() => this.setState({resultsLoaded: false})}/>
+          <EventList useSearchResults = {true} />
+        </View> 
+        );
     }
 
     getDatePicker(){
@@ -119,7 +132,7 @@ export default class GoToDate extends React.Component {
               <View>
                 <DatePickerIOS 
                   date={this.state.chosenDate}
-                  onDateChange={this.setDate}
+                  onDateChange={this.updateEventView}
                   mode={'date'}
                 />
                 <CustomButton
@@ -149,7 +162,7 @@ export default class GoToDate extends React.Component {
         });
         if (action == DatePickerAndroid.dateSetAction) {
           newDate = new Date(year, month, day);
-          this.setDate(newDate);
+          this.updateEventView(newDate);
         }
       } catch ({code, message}) {
         console.warn('Cannot open date picker', message);
@@ -157,15 +170,20 @@ export default class GoToDate extends React.Component {
     }
 
     setDate(newDate) {
+      this.setState({chosenDate: newDate, formattedDate: this.getFormattedDate(newDate), dateSelected: true})
+
+      /*
       if(Platform.OS == 'ios'){
         this.setState({chosenDate: newDate})
       }
       else{
-        this.setState({chosenDate: newDate, formattedDate: this.getAndroidFormattedDate(newDate), dateSelected: true})
+        this.setState({chosenDate: newDate, formattedDate: this.getFormattedDate(newDate), dateSelected: true})
       }
+      */
     }
 
-    getFormattedDate(){
+    /*
+    getIOSFormattedDate(){
         day = this.state.chosenDate.getDate();
         month = this.state.chosenDate.getMonth()+1;
         year = this.state.chosenDate.getFullYear();
@@ -179,8 +197,9 @@ export default class GoToDate extends React.Component {
         }
         return year + '-' + month + '-' + day;
     }
+    */
 
-    getAndroidFormattedDate(newDate){
+    getFormattedDate(newDate){
       day = newDate.getDate();
       month = newDate.getMonth()+1;
       year = newDate.getFullYear();

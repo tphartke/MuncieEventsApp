@@ -2,12 +2,13 @@ import { AsyncStorage } from 'react-native';
 export default class APICacher{
 
     async _cacheJSONFromAPIAsync(key, url){
-        console.log("The cached url is: " + url)
+        console.log("Beginning fetch, the url is: " + url)
         await fetch(url)
         .then((response) => response.json())
         .then((responseJson) => {
             AsyncStorage.setItem(key, JSON.stringify(responseJson.data))
         })
+        .then(console.log("fetch completed. The URL is: " + url))
         .catch(error => console.log(error)); 
     }
 

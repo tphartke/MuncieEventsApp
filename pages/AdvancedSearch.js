@@ -1,18 +1,19 @@
 import React from 'react';
 import {View, Text, Picker, TextInput} from 'react-native';
 import Styles from './Styles';
-import CustomButton from './CustomButton'
-import Icon from 'react-native-vector-icons/Ionicons'
-import * as Animatable from 'react-native-animatable'
-import EventList from '../EventList'
-import APICacher from '../APICacher'
+import CustomButton from './CustomButton';
+import Icon from 'react-native-vector-icons/Ionicons';
+import * as Animatable from 'react-native-animatable';
+import EventList from '../EventList';
+import APICacher from '../APICacher';
+import {AppLoading} from 'expo';
+
 
 export default class AdvancedSearch extends React.Component {
   constructor(props){
     super(props);
     this.state ={ 
                 isInitialLoading: true,
-                isLoadingResults: false,
                 categorySelectedValue: "",
                 categorySelectedName: "",
                 tagSelectedValue: "",
@@ -21,7 +22,8 @@ export default class AdvancedSearch extends React.Component {
                 searchResults: null,
                 url: "",
                 text: "",
-                resultsLoaded: false
+                resultsLoaded: false,
+                resultsLoading: false
               }
     this.categories=[]
     this.tags=[]
@@ -53,15 +55,23 @@ export default class AdvancedSearch extends React.Component {
   }
 
   render(){
-    categoryView = () => {return(<Text>Loading...</Text>)}
-    tagView = () => {return(<Text></Text>)}
-    resultsView = () => {return(<Text></Text>)}
+
     mainView = () => {return(<Text></Text>)}
     title = "Advanced Search"
     
     if(this.state.isInitialLoading){
       this.fetchCategoryData();
       this.fetchTagData();
+    }
+    else if(this.state.resultsLoading){
+      url = this.state.searchURL;
+      return(
+        <AppLoading 
+          startAsync={() => this._cacheDataAsync(searchURL)}
+          onFinish={() => this.setState({ resultsLoaded: true, resultsLoading: false})}
+          onError= {console.error}
+        />
+      );
     }
     else if(this.state.resultsLoaded){
       mainView = this.getResultsView();
@@ -213,17 +223,14 @@ export default class AdvancedSearch extends React.Component {
     console.log(searchURL)
     this.state.title = newTitle;
     this.state.url = searchURL;
-    /*
     this.setState({
-      isLoadingResults: true
+      resultsLoading: true
     });
-    */
-    this._cacheDataAsync(searchURL)
+    
   }
 
   async _cacheDataAsync(searchURL){
     await this.APICacher._cacheJSONFromAPIAsync("SearchResults", searchURL)
-    .then(this.state.isLoadingResults = false)
     .then(this.setState({resultsLoaded: true}));
   }
   
