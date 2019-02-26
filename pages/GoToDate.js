@@ -32,6 +32,7 @@ export default class GoToDate extends React.Component {
       }
       else if(this.state.resultsLoading){
         url = this.state.searchURL
+        console.log("This is the URL about to be cached: " + url)
         return(
           <AppLoading 
             startAsync={() => this._cacheSearchResults(url)}
@@ -65,10 +66,12 @@ export default class GoToDate extends React.Component {
       return year + '-' + month + '-' + day;
     }
 
-  getFormattedDate(newDate){
+  getAndroidFormattedDate(newDate){
+      console.log("The nonformatted date is: " + newDate)
       day = newDate.getDate();
       month = newDate.getMonth()+1;
       year = newDate.getFullYear();
+      console.log("day: " + day + " month: " + month + " year: " + year)
       //pad month if needed for api
       if(newDate.getMonth()+1 < 10){
          month="0" + (newDate.getMonth()+1).toString();
@@ -77,7 +80,8 @@ export default class GoToDate extends React.Component {
       if(newDate.getDate() < 10){
         day='0' + newDate.getDate().toString();
       }
-      return year + '-' + month + '-' + day;
+      formattedDate = year + '-' + month + '-' + day
+      return formattedDate;
   }
 
     getTopBar(){
@@ -121,7 +125,8 @@ export default class GoToDate extends React.Component {
           url = 'https://api.muncieevents.com/v1/events?start='+formattedDate+'&end='+formattedDate+'&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1';
         }
         else{
-          url = 'https://api.muncieevents.com/v1/events?start='+this.state.formattedDate+'&end='+this.state.formattedDate+'&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1'
+          formattedDate = this.getAndroidFormattedDate(date)
+          url = 'https://api.muncieevents.com/v1/events?start='+formattedDate+'&end='+formattedDate+'&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1'
         }
        this.state.searchURL = url;
        this.setState({resultsLoading: true})
@@ -199,7 +204,7 @@ export default class GoToDate extends React.Component {
         this.setState({chosenDate: newDate})
       }
       else{
-        this.setState({chosenDate: newDate, formattedDate: this.getFormattedDate(newDate), dateSelected: true})
+        this.setState({chosenDate: newDate, formattedDate: this.getAndroidFormattedDate(newDate), dateSelected: true})
       }
     }
 }
