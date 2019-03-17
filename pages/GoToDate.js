@@ -111,7 +111,6 @@ export default class GoToDate extends React.Component {
         }
         url = 'https://api.muncieevents.com/v1/events?start='+formattedDate+'&end='+formattedDate+'&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1'
         this.setState({searchURL: url, chosenDate: date});
-
     }
 
     startLoadingResults(){

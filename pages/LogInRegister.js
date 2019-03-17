@@ -1,7 +1,8 @@
 import React from 'react';
-import {Text, View, AsyncStorage, TextInput} from 'react-native';
+import {Text, View, AsyncStorage, TextInput, TouchableOpacity} from 'react-native';
 import CustomButton from "./CustomButton";
 import Register from "./Register"
+import ForgotPassword from "./ForgotPassword"
 import Styles from './Styles';
 import Icon from 'react-native-vector-icons/Ionicons'
 import * as Animatable from 'react-native-animatable'
@@ -37,6 +38,9 @@ export default class LogInRegister extends React.Component {
       }
       else if(this.state.selectedPage=="Login"){
           loginRegisterView = this.getLoginSequence()
+      }
+      else if(this.state.selectedPage=="ForgotPassword"){
+          loginRegisterView = this.getForgotPasswordSequence()
       }
       else{
           loginRegisterView = this.getSignupSequence()
@@ -111,6 +115,11 @@ export default class LogInRegister extends React.Component {
             textStyle={Styles.longButtonTextStyle}
             onPress={() => this.setState({selectedPage: "Signup"})}
           />
+          <TouchableOpacity
+            onPress={() => this.setState({selectedPage: "ForgotPassword"})}
+          >
+            <Text style={{color: 'blue'}}>Forgot Password?</Text>
+          </TouchableOpacity>
           <Text>{logInMessage}</Text>
           <Text>{profileInfo}</Text>
         </View>
@@ -152,6 +161,20 @@ export default class LogInRegister extends React.Component {
       this.fetchAPILoginData()
     }
 
+    getForgotPasswordSequence(){
+      return(
+        <View>
+            <ForgotPassword />
+            <CustomButton
+            text = "Go Back"
+            buttonStyle={Styles.longButtonStyle}
+            textStyle={Styles.longButtonTextStyle}
+            onPress={() => this.setState({selectedPage: "Login"})}
+          />
+        </View>
+      );
+    }
+    
     logUserIn = async() => {
       try {
         await AsyncStorage.setItem('Username', this.state.remail);
