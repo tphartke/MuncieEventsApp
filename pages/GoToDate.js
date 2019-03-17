@@ -105,13 +105,13 @@ export default class GoToDate extends React.Component {
     updateEventView(date){
         if(Platform.OS == 'ios'){
           formattedDate = this.getIOSFormattedDate(date)
-          url = 'https://api.muncieevents.com/v1/events?start='+formattedDate+'&end='+formattedDate+'&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1';
         }
         else{
           formattedDate = this.getAndroidFormattedDate(date)
-          url = 'https://api.muncieevents.com/v1/events?start='+formattedDate+'&end='+formattedDate+'&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1'
         }
-        this.setState({searchURL: url, chosenDate: date})
+        url = 'https://api.muncieevents.com/v1/events?start='+formattedDate+'&end='+formattedDate+'&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1'
+        this.setState({searchURL: url, chosenDate: date});
+
     }
 
     startLoadingResults(){
@@ -175,6 +175,7 @@ export default class GoToDate extends React.Component {
         if (action == DatePickerAndroid.dateSetAction) {
           newDate = new Date(year, month, day);
           this.updateEventView(newDate);
+          this.setState({resultsLoading: true});
         }
       } catch ({code, message}) {
         console.warn('Cannot open date picker', message);
