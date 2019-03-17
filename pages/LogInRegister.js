@@ -20,7 +20,9 @@ export default class LogInRegister extends React.Component {
                     password: "",
                     rname: "",
                     remail: "",
-                    rtoken: ""}
+                    rtoken: "", 
+                    credentialsAreCorrect: false, 
+                    statusMessage: "You are not logged in."}
     }
     dataSource = ""
     username = ""
@@ -82,10 +84,8 @@ export default class LogInRegister extends React.Component {
     }
 
     getLoginSequence(){
-      logInMessage = "You are not logged in";
       profileInfo = "";
       if(this.state.isLoggedIn){
-          logInMessage = "You are logged in.";
           profileInfo = this.showProfileInfo();
       }
       return (
@@ -120,7 +120,7 @@ export default class LogInRegister extends React.Component {
           >
             <Text style={{color: 'blue'}}>Forgot Password?</Text>
           </TouchableOpacity>
-          <Text>{logInMessage}</Text>
+          <Text>{this.state.statusMessage}</Text>
           <Text>{profileInfo}</Text>
         </View>
       )
@@ -176,6 +176,7 @@ export default class LogInRegister extends React.Component {
     }
     
     logUserIn = async() => {
+      if(this.state.credentialsAreCorrect){
       try {
         await AsyncStorage.setItem('Username', this.state.remail);
         await AsyncStorage.setItem('Name', this.state.rname);
@@ -185,13 +186,14 @@ export default class LogInRegister extends React.Component {
         console.log("Error storing login information");
       }
     }
+    }
 
     logUserOut = async() => {
       try {
         await AsyncStorage.removeItem('Username');
         await AsyncStorage.removeItem('Name');
         await AsyncStorage.removeItem('Token');
-        this.setState({isLoggedIn: false});
+        this.setState({isLoggedIn: false, credentialsAreCorrect: false, statusMessage: "You are not logged in"});
       } catch (error) {
         console.log("Error logging user out");
       }
@@ -257,11 +259,23 @@ export default class LogInRegister extends React.Component {
     })
     .then((response) => response.json())
     .then((responseJson) =>  this.dataSource = responseJson)
-    .then(() => this.setState({remail: this.dataSource.data.attributes.email, rname: this.dataSource.data.attributes.name, rtoken: this.dataSource.data.id}))
+    .then((responseJson) => console.log(responseJson)) 
+    .then(() => this.setLoginData(this.dataSource))
     .then(() => this.logUserIn())
       .catch((error) =>{
          console.log(error)
          this.setState({statusMessage: "Error reaching server: " + error})
       })
+    }
+
+    setLoginData(dataSource){
+      try{
+        console.log("A")
+        this.setState({remail: dataSource.data.attributes.email, rname: dataSource.data.attributes.name, rtoken: dataSource.data.id, credentialsAreCorrect: true})
+      }
+      catch(error){
+        console.log("B")
+        this.setState({statusMessage: dataSource.errors[0].detail})
+      }
     }
 }
