@@ -51,27 +51,10 @@ export default class GoToDate extends React.Component {
       )
     }
 
-    getIOSFormattedDate(){
-      day = this.state.chosenDate.getDate();
-      month = this.state.chosenDate.getMonth()+1;
-      year = this.state.chosenDate.getFullYear();
-      //pad month if needed for api
-      if(this.state.chosenDate.getMonth()+1 < 10){
-         month="0" + (this.state.chosenDate.getMonth()+1).toString();
-      }
-      //pad day if needed for api
-      if(this.state.chosenDate.getDate() < 10){
-        day='0' + this.state.chosenDate.getDate().toString();
-      }
-      return year + '-' + month + '-' + day;
-    }
-
   getAndroidFormattedDate(newDate){
-      console.log("The nonformatted date is: " + newDate)
       day = newDate.getDate();
       month = newDate.getMonth()+1;
       year = newDate.getFullYear();
-      console.log("day: " + day + " month: " + month + " year: " + year)
       //pad month if needed for api
       if(newDate.getMonth()+1 < 10){
          month="0" + (newDate.getMonth()+1).toString();
@@ -121,15 +104,14 @@ export default class GoToDate extends React.Component {
 
     updateEventView(date){
         if(Platform.OS == 'ios'){
-          formattedDate = this.getIOSFormattedDate()
+          formattedDate = this.getIOSFormattedDate(date)
           url = 'https://api.muncieevents.com/v1/events?start='+formattedDate+'&end='+formattedDate+'&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1';
         }
         else{
           formattedDate = this.getAndroidFormattedDate(date)
           url = 'https://api.muncieevents.com/v1/events?start='+formattedDate+'&end='+formattedDate+'&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1'
         }
-       this.state.searchURL = url;
-       this.setState({resultsLoading: true})
+        this.setState({searchURL: url, chosenDate: date})
     }
 
     startLoadingResults(){
@@ -162,12 +144,12 @@ export default class GoToDate extends React.Component {
               <View>
                 <DatePickerIOS 
                   date={this.state.chosenDate}
-                  onDateChange={this.updateEventView}
+                  onDateChange={(date) => this.updateEventView(date)}
                   mode={'date'}
                 />
                 <CustomButton
                   text="Search"
-                  onPress={()=>this.setState({dateSelected: true})}
+                  onPress={()=>this.setState({resultsLoading: true})}
                   buttonStyle={Styles.longButtonStyle}
                   textStyle={Styles.longButtonTextStyle}
                   />
@@ -197,6 +179,23 @@ export default class GoToDate extends React.Component {
       } catch ({code, message}) {
         console.warn('Cannot open date picker', message);
       }
+    }
+
+    getIOSFormattedDate(date){
+      console.log("The nonformatted date is: " + date)
+      day = date.getDate();
+      month = date.getMonth()+1;
+      year = date.getFullYear();
+      console.log("day: " + day + " month: " + month + " year: " + year)
+      //pad month if needed for api
+      if(date.getMonth()+1 < 10){
+         month="0" + (date.getMonth()+1).toString();
+      }
+      //pad day if needed for api
+      if(date.getDate() < 10){
+        day='0' +date.getDate().toString();
+      }
+      return year + '-' + month + '-' + day;
     }
 
     setDate(newDate) {
