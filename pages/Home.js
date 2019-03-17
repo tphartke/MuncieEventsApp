@@ -72,10 +72,14 @@ export default class HomeScreen extends React.Component{
       } 
 
       async _startupCachingAsync(){
+          key = "APIData"
           url = "https://api.muncieevents.com/v1/events/future?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ"
-          hasAPIData = await this.APICacher._hasAPIData("APIData")
+          hasAPIData = await this.APICacher._hasAPIData(key)
+          if(hasAPIData){
+           await this.APICacher._refreshJSONFromStorage(key, url)
+          }
           if(!hasAPIData){
-            await this.APICacher._cacheJSONFromAPIAsync("APIData", url);
+            await this.APICacher._cacheJSONFromAPIWithExpDate(key, url);
           }
       }
 

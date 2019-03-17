@@ -22,7 +22,6 @@ class EventList extends React.Component {
         this.dateAndTimeParser = new DateAndTimeParser();
         this._getCachedDataAsync = this._getCachedDataAsync.bind(this);
         this.APICacher = new APICacher();
-
       }
 
       componentDidMount(){
@@ -87,7 +86,6 @@ class EventList extends React.Component {
         if (useSearchResults){
           key = "SearchResults"
         }
-        console.log(key)
         data = await this.APICacher._getJSONFromStorage(key);
         this.setState({dataSource: data})
       }

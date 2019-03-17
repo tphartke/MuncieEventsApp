@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, WebView, TextInput, AsyncStorage} from 'react-native';
+import {Text, View, WebView, TextInput} from 'react-native';
 import Styles from './Styles';
 import CustomButton from './CustomButton'
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -18,22 +18,6 @@ export default class About extends React.Component {
     this._getCachedDataAsync = this._getCachedDataAsync.bind(this);
     this.APICacher = new APICacher();
   }
-
-  /*
-  fetchAPIData(){
-    return fetch('https://api.muncieevents.com/v1/pages/about?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ')        
-    .then((response) => response.json())
-    .then((responseJson) => {
-      this.setState({
-        isLoading: false,
-        dataSource: responseJson.data,
-      }, function(){});
-    })
-    .catch((error) =>{
-      console.error(error);
-    });
-  }  
-  */ 
 
   render() {
     aboutUsTitle = "";
@@ -84,11 +68,16 @@ export default class About extends React.Component {
   }
 
   async _getCachedDataAsync(){
-    hasAPIData = await this.APICacher._hasAPIData("AboutUsData")
-    if(!hasAPIData){
-        await this.APICacher._cacheJSONFromAPIAsync("AboutUsData", "https://api.muncieevents.com/v1/pages/about?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ")
+    key = "AboutUsData"
+    url = "https://api.muncieevents.com/v1/pages/about?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ"
+    hasAPIData = await this.APICacher._hasAPIData(key)
+    if(hasAPIData){
+      await this.APICacher._refreshJSONFromStorage(key, url)
     }
-    await this.APICacher._getJSONFromStorage("AboutUsData")
+    else{
+        await this.APICacher._cacheJSONFromAPIWithExpDate(key, url)
+    }
+    await this.APICacher._getJSONFromStorage(key)
       .then((response) => this.setState({dataSource: response}))
   }
 
