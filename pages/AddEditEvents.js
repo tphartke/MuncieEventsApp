@@ -7,8 +7,6 @@ import * as Animatable from 'react-native-animatable'
 import EventList from '../EventList'
 import AddEventsForm from "../components/AddEventsForm"
 
-
-
 export default class AddEditEvent extends React.Component {
     constructor(props){
         super(props)
@@ -25,28 +23,28 @@ export default class AddEditEvent extends React.Component {
         else{
             AddEventsView = this.getAddEventsView()
         }
-      return (
-        <View style={Styles.topBarPadding}>
-           <View style={Styles.topBarWrapper}>
-            <Animatable.View animation = "slideInRight" duration={500} style={Styles.topBarContent}>
-                <CustomButton
-                    text="Menu"
-                    onPress={() => this.props.navigation.openDrawer()}/>
-                <TextInput
-                    placeholder=' Search'
-                    value={this.state.text} 
-                    style={Styles.searchBar}
-                    onChangeText={(text) => this.setState({text})}
-                    onBlur={() => this.setState({url:'https://api.muncieevents.com/v1/events/search?q=' + this.state.text +  '&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1'})}
-                    showLoading='true'
-                  />
-                <Icon name="ios-search" style={Styles.iosSearch}/>
-              </Animatable.View>
+        return (
+            <View style={Styles.topBarPadding}>
+            <View style={Styles.topBarWrapper}>
+                <Animatable.View animation = "slideInRight" duration={500} style={Styles.topBarContent}>
+                    <CustomButton
+                        text="Menu"
+                        onPress={() => this.props.navigation.openDrawer()}/>
+                    <TextInput
+                        placeholder=' Search'
+                        value={this.state.text} 
+                        style={Styles.searchBar}
+                        onChangeText={(text) => this.setState({text})}
+                        onBlur={() => this.setState({url:'https://api.muncieevents.com/v1/events/search?q=' + this.state.text +  '&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1'})}
+                        showLoading='true'
+                    />
+                    <Icon name="ios-search" style={Styles.iosSearch}/>
+                </Animatable.View>
+                </View>
+                {searchView}
+                {AddEventsView}
             </View>
-          {searchView}
-          {AddEventsView}
-        </View>
-      )
+      );
     }
 
     getAddEventsView(){
