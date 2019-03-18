@@ -106,15 +106,30 @@ export default StyleSheet.create({
     },
 
     textBox: {
+        flexGrow: 1,
         height: 40,
         borderColor: 'gray', 
-        borderWidth: 1
+        borderWidth: 1,
     },
         
     textArea: {
         height: 160, 
         borderColor: 'gray', 
         borderWidth: 1
+    },
+
+    formRow:{
+        flexDirection: 'row'
+    },
+
+    formLabel:{
+        flex: 0, 
+        fontWeight: 'bold', 
+        fontSize: 25
+    },
+
+    formEntry:{
+        flex: 1
     },
 
     defaultButtonStyle: {

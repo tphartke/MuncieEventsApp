@@ -2,13 +2,13 @@ import { AsyncStorage } from 'react-native';
 export default class APICacher{
 
     async _cacheJSONFromAPIAsync(key, url){
-        console.log("Beginning fetch, the url is: " + url)
+        console.log("Beginning fetch for " + key + ", the url is: " + url)
         await fetch(url)
         .then((response) => response.json())
         .then((responseJson) => {
             this._cacheStringAsync(key, JSON.stringify(responseJson.data))
         })
-        .then(console.log("fetch completed. The URL is: " + url))
+        .then(console.log("Fetch completed for " + key))
         .catch(error => console.log(error)); 
     }
 
@@ -28,10 +28,8 @@ export default class APICacher{
     }
 
     async _cacheExpirationDate(key){
-        console.log("caching expiration date for " + key)
         expirationDate = this.createExpirationDate();
         expDateKey = this.createExpirationDateKey(key);
-        console.log("The expiration date is: " + expirationDate + ". The key is " + key)
         await this._cacheStringAsync(expDateKey, expirationDate);
     }
 
@@ -56,10 +54,8 @@ export default class APICacher{
     async _hasExpired(key){
         expDateKey = this.createExpirationDateKey(key)
         expirationDate = await this._getStringFromStorage(expDateKey)
-        console.log("APIData already exists, the expiration date is: " + expirationDate)
         expirationDate = Date.parse(expirationDate)
         currentDate = new Date()
-        console.log("The current date is " + currentDate)
         return expirationDate <= currentDate
     }
 
@@ -82,11 +78,8 @@ export default class APICacher{
         console.log("Refreshing " + key)
         hasExpired = await this._hasExpired(key)
         if(hasExpired){
-            console.log("The data has expired")
+            console.log("The data for " + key + " has expired!")
             await this._cacheJSONFromAPIWithExpDate(key, url)
-        }
-        else{
-            console.log("The data has not expired")
         }
         return await this._getJSONFromStorage(key)
     }
@@ -96,5 +89,4 @@ export default class APICacher{
         await AsyncStorage.removeItem(key)
         .then(console.log(key + " has been removed."))
     }
-
 }

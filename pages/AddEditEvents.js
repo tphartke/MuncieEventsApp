@@ -5,6 +5,7 @@ import CustomButton from "./CustomButton";
 import Icon from 'react-native-vector-icons/Ionicons'
 import * as Animatable from 'react-native-animatable'
 import EventList from '../EventList'
+import AddEventsForm from "../components/AddEventsForm"
 
 
 
@@ -54,6 +55,7 @@ export default class AddEditEvent extends React.Component {
                 <Text style={Styles.title}>
                     Add an Event
                 </Text>
+                <AddEventsForm />
             </View>
         )
     }

@@ -8,7 +8,6 @@ import EventList from '../EventList';
 import APICacher from '../APICacher';
 import {AppLoading} from 'expo';
 
-
 export default class AdvancedSearch extends React.Component {
   constructor(props){
     super(props);
@@ -30,28 +29,39 @@ export default class AdvancedSearch extends React.Component {
     this.APICacher = new APICacher();
   }
 
-  fetchCategoryData(){
-    fetch("https://api.muncieevents.com/v1/categories?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ")        
-    .then((response) => response.json())
-    .then((responseJson) => {
-      this.categories = responseJson.data.map((category) => {return [category.attributes.name, category.id]})
-    })
-    .then(() => {this.setState({categorySelectedValue: this.categories[0]})})
-    .catch((error) =>{
-      console.error(error);
-    });
+  async _fetchTagAndCategoryData(){
+    await this._fetchCategoryData()
+    await this._fetchTagData()
+  }
+
+  async _fetchCategoryData(){
+    key = "Categories"
+    url = "https://api.muncieevents.com/v1/categories?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ"
+    await this._refreshData(key, url)
+
+    this.categories = await this.APICacher._getJSONFromStorage(key)
+    this.categories = this.categories.map((category) => {return [category.attributes.name, category.id]})
+    this.setState({categorySelectedValue: this.categories[0]})
   }   
 
-  fetchTagData(){
-    fetch("https://api.muncieevents.com/v1/tags/future?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ")        
-    .then((response) => response.json())
-    .then((responseJson) => {
-      this.tags = responseJson.data.map((tag) => {return [tag.attributes.name, tag.id]})
-    })
-    .then(() => {this.setState({isInitialLoading: false, TagSelectedValue: this.tags[0]})})
-    .catch((error) =>{
-      console.error(error);
-    });
+  async _fetchTagData(){
+    key = "Tags"
+    url = "https://api.muncieevents.com/v1/tags/future?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ"
+    await this._refreshData(key, url)
+
+    this.tags = await this.APICacher._getJSONFromStorage(key)
+    this.tags = this.tags.map((tag) => {return [tag.attributes.name, tag.id]})
+    this.setState({tagSelectedValue: this.tags[0]})
+  }
+
+  async _refreshData(key, url){
+    hasAPIData = await this.APICacher._hasAPIData(key)
+    if(hasAPIData){
+      await this.APICacher._refreshJSONFromStorage(key, url)
+    }
+    else{
+      await this.APICacher._cacheJSONFromAPIWithExpDate(key, url)
+    }
   }
 
   render(){
@@ -60,14 +70,19 @@ export default class AdvancedSearch extends React.Component {
     title = "Advanced Search"
     
     if(this.state.isInitialLoading){
-      this.fetchCategoryData();
-      this.fetchTagData();
+      return(
+        <AppLoading 
+          startAsync={() => this._fetchTagAndCategoryData()}
+          onFinish={() => this.setState({isInitialLoading: false})}
+          onError= {console.error}
+        />
+      );
     }
     else if(this.state.resultsLoading){
       url = this.state.searchURL;
       return(
         <AppLoading 
-          startAsync={() => this._cacheDataAsync(searchURL)}
+          startAsync={() => this._cacheSearchResultsAsync(searchURL)}
           onFinish={() => this.setState({ resultsLoaded: true, resultsLoading: false})}
           onError= {console.error}
         />
@@ -227,7 +242,7 @@ export default class AdvancedSearch extends React.Component {
     
   }
 
-  async _cacheDataAsync(searchURL){
+  async _cacheSearchResultsAsync(searchURL){
     await this.APICacher._cacheJSONFromAPIAsync("SearchResults", searchURL)
     .then(this.setState({resultsLoaded: true}));
   }
