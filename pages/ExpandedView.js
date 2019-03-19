@@ -63,9 +63,20 @@ class ExpandedView extends React.Component {
     }else{
       imageURL = this.eventData.attributes.images[0].full_url
     }
+    mainContent = this.getMainContent()
     return (
-      <Animatable.View animation = 'slideInRight' duration = {600}>
-        <ScrollView>
+      <ScrollView>
+        <Animatable.View animation = 'slideInRight' duration = {600}>
+            {mainContent}
+        </Animatable.View>
+      </ScrollView>
+
+    )
+    }
+
+    getMainContent(){
+      return(
+        <View>
           <Text style={Styles.title}>
             {this.eventData.attributes.title}
           </Text>
@@ -81,9 +92,8 @@ class ExpandedView extends React.Component {
             {this.getLocationView()}
             {this.getDescriptionView()}    
           </View>
-        </ScrollView>
-      </Animatable.View>
-    )
+        </View>
+      );
     }
 
     goBackOnce(){

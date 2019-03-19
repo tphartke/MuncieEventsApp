@@ -137,12 +137,14 @@ export default class AddEventsForm extends Component{
                     />
                     <Text>Start Time:</Text>
                     <DatePickerIOS 
+                        date={new Date()}
                         mode= "time"
                         onDateChange={(time) => {
                             this.highlightedStartTime = time
                         }}/>
                     <Text>End Time:</Text>
                     <DatePickerIOS 
+                        date={new Date()}
                         mode= "time"
                         onDateChange={(time) => {
                             this.highlightedEndTime = time
