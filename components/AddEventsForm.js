@@ -1,14 +1,17 @@
 import React, {Component} from 'react';  
-import {View, ScrollView, Text, Picker, TextInput} from 'react-native';
+import {View, Platform, ScrollView, Text, Picker, TextInput, Modal, DatePickerAndroid, DatePickerIOS} from 'react-native';
 import Styles from '../pages/Styles';
 import APICacher from '../APICacher'
 import AppLoading from 'expo';
+import CustomButton from '../pages/CustomButton';
 
 export default class AddEventsForm extends Component{
     constructor(props){
         super(props)
         this.state = {
             isLoading: true,
+            IOSModalVisible: false,
+            chosenDate: new Date(),
         }
         this.APICacher = new APICacher();
     }
@@ -72,8 +75,68 @@ export default class AddEventsForm extends Component{
         );
     }
 
+    getIOSDatePicker(){
+        highlightedDate = new Date()
+        return(
+            <Modal
+                animationType ="slide"
+                transparent={false}
+                visible= {this.state.IOSModalVisible}
+                onRequestClose={() => {
+                    console.log("Modal has been closed")
+            }}>
+
+                <View>
+                    <DatePickerIOS 
+                        date={this.state.chosenDate}
+                        onDateChange={(date) => {
+                            this.highlightedDate = date
+                        }}
+                        mode={'date'}
+                    />
+                    {/*select button*/}
+                    <CustomButton
+                        text="Select"
+                        onPress = {() => {
+                            this.setState({chosenDate: this.highlightedDate, IOSModalVisible: false})
+                    }}/>
+                    {/*cancel button*/}
+                    <CustomButton
+                        text="Cancel"
+                        onPress = {() => {
+                            this.setState({IOSModalVisible: false})
+                    }}/>
+                </View>
+            </Modal>
+        );
+    }
+
+    async getAndroidDatePicker(){
+        try {
+            const {action, year, month, day} = await DatePickerAndroid.open({
+              date: new Date()
+            });
+            if (action == DatePickerAndroid.dateSetAction) {
+              newDate = new Date(year, month, day);
+              this.setState({chosenDate: newDate})
+            }
+          } catch ({code, message}) {
+            console.warn('Cannot open date picker', message);
+          }
+    }
+
+    selectDatePickerFromOS(){
+        if(Platform.OS == "ios"){
+            this.setState({IOSModalVisible: true})
+        }
+        else{
+            this.getAndroidDatePicker()
+        }
+    }
+
     render(){
-        if(this.state.isLoading){
+        IOSDatePickerModal = this.getIOSDatePicker()
+        if(this.state.isLoading){;
             return(
             <View>
                 <Text>Loading...</Text>
@@ -83,6 +146,7 @@ export default class AddEventsForm extends Component{
         else{
             return(
                 <ScrollView>
+                    {IOSDatePickerModal}
                     <View style={Styles.formRow}>
                         <Text style={Styles.formLabel}>Event </Text>
                         <TextInput               
@@ -93,6 +157,17 @@ export default class AddEventsForm extends Component{
                     <View style={Styles.formRow}>
                         <Text style={Styles.formLabel}>Category </Text>
                         {this.getCategoryPicker()}
+                    </View>
+                    <View style={Styles.formRow}>
+                        <Text style={Styles.formLabel}>Date </Text>
+                        <CustomButton
+                            text="Select Date"
+                            style={[{width:300}]}
+                            onPress={() => this.selectDatePickerFromOS()}
+                        />
+                    </View>
+                    <View style={Styles.formRow}>
+                        <Text>{this.state.chosenDate.toString()}</Text>
                     </View>
                 </ScrollView>
             );
