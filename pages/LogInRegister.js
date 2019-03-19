@@ -3,6 +3,7 @@ import {Text, View, AsyncStorage, TextInput, TouchableOpacity} from 'react-nativ
 import CustomButton from "./CustomButton";
 import Register from "./Register"
 import ForgotPassword from "./ForgotPassword"
+import ProfileView from "./ProfileView"
 import Styles from './Styles';
 import Icon from 'react-native-vector-icons/Ionicons'
 import * as Animatable from 'react-native-animatable'
@@ -127,8 +128,6 @@ export default class LogInRegister extends React.Component {
     }
 
     getProfileViewSequence(){
-      logInMessage = "You are logged in.";
-      profileInfo = this.showProfileInfo();
       return(
         <View>
           <CustomButton
@@ -137,8 +136,7 @@ export default class LogInRegister extends React.Component {
             buttonStyle={Styles.longButtonStyle}
             textStyle={Styles.longButtonTextStyle}
           />
-        <Text>{logInMessage}</Text>
-        <Text>{profileInfo}</Text>
+          <ProfileView userid={this.state.rtoken}/>
        </View>
       );
     }
@@ -233,17 +231,6 @@ export default class LogInRegister extends React.Component {
        }
       
     }
-    showProfileInfo(){
-      if(this.state.isLoggedIn){
-        this.retrieveStoredUsername()
-        this.retrieveStoredName()
-        this.retrieveStoredToken()
-        return "Email: " + this.state.remail + " Name: " + this.state.rname + "Token: " + this.state.rtoken;
-      }
-      else{
-        return ""
-      }
-    }
 
     fetchAPILoginData(){
       fetch("https://api.muncieevents.com/v1/user/login?apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1", 
@@ -259,7 +246,6 @@ export default class LogInRegister extends React.Component {
     })
     .then((response) => response.json())
     .then((responseJson) =>  this.dataSource = responseJson)
-    .then((responseJson) => console.log(responseJson)) 
     .then(() => this.setLoginData(this.dataSource))
     .then(() => this.logUserIn())
       .catch((error) =>{
@@ -270,11 +256,9 @@ export default class LogInRegister extends React.Component {
 
     setLoginData(dataSource){
       try{
-        console.log("A")
         this.setState({remail: dataSource.data.attributes.email, rname: dataSource.data.attributes.name, rtoken: dataSource.data.id, credentialsAreCorrect: true})
       }
       catch(error){
-        console.log("B")
         this.setState({statusMessage: dataSource.errors[0].detail})
       }
     }

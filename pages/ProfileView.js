@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, TextInput} from 'react-native';
+import {View, TextInput, Text} from 'react-native';
 import CustomButton from "./CustomButton";
 import Styles from './Styles';
 
@@ -9,14 +9,16 @@ export default class ProfileView extends React.Component {
         this.state = ({email: ""})
         this.state = ({name: ""})
         this.state = ({statusMessage: ""})
-        this.state = ({userID: ""})
+        this.state = ({userid: ""})
         this.state = ({isLoading: true})
 
       }
       render(){
-        if(!this.state.email){
+        contentView = (<Text></Text>)
+        if(!this.state.email && this.state.userid){
           this.fetchAPIData(this.state.userid)
-          console.log(this.state.email)
+        }
+        else if(this.state.userid){
           contentView = this.getProfileInformation();
         }
           return(
@@ -34,6 +36,7 @@ export default class ProfileView extends React.Component {
         fetch("https://api.muncieevents.com/v1/user/" + userid + "?apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1")        
         .then((response) => response.json())
         .then((responseJson) => {
+          console.log(responseJson)
           this.setState({
             email: responseJson.data.attributes.email,
             name: responseJson.data.attributes.name
