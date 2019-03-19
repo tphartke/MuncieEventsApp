@@ -1,8 +1,7 @@
 import React, {Component} from 'react';  
-import {View, Platform, ScrollView, Text, Picker, TextInput, Modal, DatePickerAndroid, DatePickerIOS} from 'react-native';
+import {View, Platform, ScrollView, Text, Picker, TextInput, Modal, DatePickerAndroid, TimePickerAndroid, DatePickerIOS} from 'react-native';
 import Styles from '../pages/Styles';
 import APICacher from '../APICacher'
-import AppLoading from 'expo';
 import CustomButton from '../pages/CustomButton';
 
 export default class AddEventsForm extends Component{
@@ -12,6 +11,8 @@ export default class AddEventsForm extends Component{
             isLoading: true,
             IOSModalVisible: false,
             chosenDate: new Date(),
+            startTime: "12:00 PM",
+            endTime: null
         }
         this.APICacher = new APICacher();
     }
@@ -75,8 +76,47 @@ export default class AddEventsForm extends Component{
         );
     }
 
+    getAndroidTimeFields(){
+        if(Platform.OS == "android"){
+            return(
+                <View style={Styles.formRow}>
+                    <Text style ={Styles.formLabel}>Time: </Text>
+                    <CustomButton 
+                        style={Styles.formEntry}
+                        text="Select Time"
+                        onPress = {() => this.getAndroidTimePicker()}
+                    />
+                </View>
+            );
+        }
+        else{
+            console.log("iOS")
+            return(
+                <View></View>
+            );
+        }
+    }
+
+    async getAndroidTimePicker(){
+        try {
+            const {action, hour, minute} = await TimePickerAndroid.open({
+              hour: 12,
+              minute: 0,
+              is24Hour: false,
+            });
+            if (action !== TimePickerAndroid.dismissedAction) {
+              time = hour + ":" + minute
+              this.setState({startTime: time})
+            }
+          } catch ({code, message}) {
+            console.warn('Cannot open time picker', message);
+          }
+    }
+
     getIOSDatePicker(){
         highlightedDate = new Date()
+        highlightedStartTime = new Date()
+        highlightedEndTime = new Date()
         return(
             <Modal
                 animationType ="slide"
@@ -94,11 +134,24 @@ export default class AddEventsForm extends Component{
                         }}
                         mode={'date'}
                     />
+                    <Text>Start Time:</Text>
+                    <DatePickerIOS 
+                        mode= "time"
+                        onDateChange={(time) => {
+                            this.highlightedStartTime = time
+                        }}/>
+                    <Text>End Time:</Text>
+                    <DatePickerIOS 
+                        mode= "time"
+                        onDateChange={(time) => {
+                            this.highlightedEndTime = time
+                        }}
+                    />
                     {/*select button*/}
                     <CustomButton
                         text="Select"
                         onPress = {() => {
-                            this.setState({chosenDate: this.highlightedDate, IOSModalVisible: false})
+                            this.setState({chosenDate: this.highlightedDate, startTime: this.highlightedStartTime, endTime: this.highlightedEndTime, IOSModalVisible: false})
                     }}/>
                     {/*cancel button*/}
                     <CustomButton
@@ -136,6 +189,7 @@ export default class AddEventsForm extends Component{
 
     render(){
         IOSDatePickerModal = this.getIOSDatePicker()
+        androidTimePicker = this.getAndroidTimeFields()
         if(this.state.isLoading){;
             return(
             <View>
@@ -145,30 +199,72 @@ export default class AddEventsForm extends Component{
         }
         else{
             return(
-                <ScrollView>
-                    {IOSDatePickerModal}
-                    <View style={Styles.formRow}>
-                        <Text style={Styles.formLabel}>Event </Text>
-                        <TextInput               
-                            onChangeText={(event) => this.setState({event})}
-                            style={[Styles.textBox, Styles.formEntry]}
-                        />
+                <ScrollView contentContainerStyle={{ flexGrow: 0, height:1000 }}>
+                    <View style={{flex:1}}>
+                        {IOSDatePickerModal}
+                        <View style={Styles.formRow}>
+                            <Text style={Styles.formLabel}>Event </Text>
+                            <TextInput               
+                                onChangeText={(event) => this.setState({event})}
+                                style={[Styles.textBox, Styles.formEntry]}
+                            />
+                        </View>
+                        <View style={Styles.formRow}>
+                            <Text style={Styles.formLabel}>Category </Text>
+                            {this.getCategoryPicker()}
+                        </View>
+                        <View style={Styles.formRow}>
+                            <Text style={Styles.formLabel}>Date </Text>
+                            <CustomButton
+                                text="Select Date"
+                                style={[{width:300}]}
+                                onPress={() => this.selectDatePickerFromOS()}
+                            />
+                        </View>
+                        {androidTimePicker}
+                        <View style={Styles.formRow}>
+                            <Text>{this.state.chosenDate.toString()}</Text>
+                        </View>
+                        <View style={Styles.formRow}>
+                            <Text>{this.state.startTime.toString()}</Text>
+                        </View>
+                        <View style={Styles.formRow}>
+                            <Text style={Styles.formLabel}>Location </Text>
+                            <TextInput               
+                                onChangeText={(location) => this.setState({location})}
+                                style={[Styles.textBox, Styles.formEntry]}
+                            />
+                        </View>
+                        <View style={Styles.formRow}>
+                            <Text style={Styles.formLabel}>Location Details </Text>
+                            <TextInput               
+                                onChangeText={(locationDetails) => this.setState({locationDetails})}
+                                style={[Styles.textBox, Styles.formEntry]}
+                                placeholder = "upstairs, room 149, etc."
+                            />
+                        </View>
+                        <View style ={Styles.formRow}>
+                            <Text style={Styles.formLabel}>Address </Text>
+                            <TextInput               
+                                onChangeText={(address) => this.setState({address})}
+                                style={[Styles.textBox, Styles.formEntry]}
+                            />
+                        </View>
+                        <View style={Styles.formRow}>
+                            <Text style={Styles.formLabel}>Description </Text>
+                            <TextInput               
+                                onChangeText={(description) => this.setState({description})}
+                                style={[Styles.textArea, Styles.formEntry]}
+                            />
+                        </View>
+                        <View style={Styles.formRow}>
+                            <Text style={Styles.formLabel}>Tags</Text>
+                        </View>
+                        <View style = {Styles.formRow}>
+                            <Text style={Styles.formLabel}></Text>
+                        </View>
                     </View>
-                    <View style={Styles.formRow}>
-                        <Text style={Styles.formLabel}>Category </Text>
-                        {this.getCategoryPicker()}
-                    </View>
-                    <View style={Styles.formRow}>
-                        <Text style={Styles.formLabel}>Date </Text>
-                        <CustomButton
-                            text="Select Date"
-                            style={[{width:300}]}
-                            onPress={() => this.selectDatePickerFromOS()}
-                        />
-                    </View>
-                    <View style={Styles.formRow}>
-                        <Text>{this.state.chosenDate.toString()}</Text>
-                    </View>
+                    
                 </ScrollView>
             );
         }
