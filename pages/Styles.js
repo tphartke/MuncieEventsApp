@@ -152,4 +152,12 @@ export default StyleSheet.create({
     longButtonTextStyle: {
         fontSize:18
     },
+
+    mediumButtonStyle: {
+        width:100
+    },
+
+    mediumButtonTextStyle:{
+        fontSize: 15
+    }
 });

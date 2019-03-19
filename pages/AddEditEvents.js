@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, TextInput} from 'react-native';
+import {Text, View, TextInput, ScrollView} from 'react-native';
 import Styles from './Styles';
 import CustomButton from "./CustomButton";
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -42,7 +42,12 @@ export default class AddEditEvent extends React.Component {
                 </Animatable.View>
                 </View>
                 {searchView}
-                {AddEventsView}
+                <Text style={Styles.title}>
+                    Add an Event
+                </Text>
+                <ScrollView style={Styles.content}>
+                    {AddEventsView}
+                </ScrollView>
             </View>
       );
     }
@@ -50,9 +55,6 @@ export default class AddEditEvent extends React.Component {
     getAddEventsView(){
         return(
             <View>
-                <Text style={Styles.title}>
-                    Add an Event
-                </Text>
                 <AddEventsForm />
             </View>
         )

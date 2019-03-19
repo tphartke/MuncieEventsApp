@@ -82,7 +82,8 @@ export default class AddEventsForm extends Component{
                 <View style={Styles.formRow}>
                     <Text style ={Styles.formLabel}>Time: </Text>
                     <CustomButton 
-                        style={Styles.formEntry}
+                        buttonStyle={Styles.mediumButtonStyle}
+                        textStyle={Styles.mediumButtonTextStyle}
                         text="Select Time"
                         onPress = {() => this.getAndroidTimePicker()}
                     />
@@ -150,12 +151,16 @@ export default class AddEventsForm extends Component{
                     {/*select button*/}
                     <CustomButton
                         text="Select"
+                        buttonStyle={Styles.mediumButtonStyle}
+                        textStyle={Styles.mediumButtonTextStyle}
                         onPress = {() => {
                             this.setState({chosenDate: this.highlightedDate, startTime: this.highlightedStartTime, endTime: this.highlightedEndTime, IOSModalVisible: false})
                     }}/>
                     {/*cancel button*/}
                     <CustomButton
                         text="Cancel"
+                        buttonStyle={Styles.mediumButtonStyle}
+                        textStyle={Styles.mediumButtonTextStyle}
                         onPress = {() => {
                             this.setState({IOSModalVisible: false})
                     }}/>
@@ -187,6 +192,11 @@ export default class AddEventsForm extends Component{
         }
     }
 
+    submitForm(){
+        console.log("The form was submitted")
+        console.log("Event: " + this.state.event)
+    }
+
     render(){
         IOSDatePickerModal = this.getIOSDatePicker()
         androidTimePicker = this.getAndroidTimeFields()
@@ -199,7 +209,7 @@ export default class AddEventsForm extends Component{
         }
         else{
             return(
-                <ScrollView contentContainerStyle={{ flexGrow: 0, height:1000 }}>
+                //<ScrollView contentContainerStyle={{ flexGrow: 0, height:1000 }}>
                     <View style={{flex:1}}>
                         {IOSDatePickerModal}
                         <View style={Styles.formRow}>
@@ -217,7 +227,8 @@ export default class AddEventsForm extends Component{
                             <Text style={Styles.formLabel}>Date </Text>
                             <CustomButton
                                 text="Select Date"
-                                style={[{width:300}]}
+                                buttonStyle={[Styles.mediumButtonStyle]}
+                                textStyle={Styles.mediumButtonTextStyle}
                                 onPress={() => this.selectDatePickerFromOS()}
                             />
                         </View>
@@ -258,14 +269,43 @@ export default class AddEventsForm extends Component{
                             />
                         </View>
                         <View style={Styles.formRow}>
-                            <Text style={Styles.formLabel}>Tags</Text>
+                            <Text style={Styles.formLabel}>Tags </Text>
                         </View>
                         <View style = {Styles.formRow}>
-                            <Text style={Styles.formLabel}></Text>
+                            <Text style={Styles.formLabel}>Cost </Text>
+                            <TextInput               
+                                onChangeText={(cost) => this.setState({cost})}
+                                style={[Styles.textBox, Styles.formEntry]}
+                                placeholder = "Leave this blank if the event is free"
+                            />
+                        </View>
+                        <View style = {Styles.formRow}>
+                            <Text style={Styles.formLabel}>Age Restriction </Text>
+                            <TextInput               
+                                onChangeText={(ageRestriction) => this.setState({ageRestriction})}
+                                style={[Styles.textBox, Styles.formEntry]}
+                                placeholder = "Leave this blank if there is no age restriction"
+                            />
+                        </View>
+                        <View style={Styles.formRow}>
+                            <Text style={Styles.formLabel}>Source </Text>
+                            <TextInput               
+                                onChangeText={(source) => this.setState({source})}
+                                style={[Styles.textBox, Styles.formEntry]}
+                                placeholder = "Did you get this information from a website, newspaper, flyer, etc?"
+                            />
+                        </View>
+                        <View style={Styles.formRow}>
+                            <CustomButton
+                                text="Submit"
+                                buttonStyle={Styles.mediumButtonStyle}
+                                textStyle={Styles.mediumButtonTextStyle}
+                                onPress={() => this.submitForm()}
+                            />
                         </View>
                     </View>
                     
-                </ScrollView>
+                //</ScrollView>
             );
         }
 
