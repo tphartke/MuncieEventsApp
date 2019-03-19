@@ -14,6 +14,11 @@ export default StyleSheet.create({
         paddingTop: 5
     },
 
+    widgetContent: {
+        padding: 10,
+        fontSize: 16        
+    },
+    
     eventRow: {
         backgroundColor:'#ddd', 
         fontSize: 14, 

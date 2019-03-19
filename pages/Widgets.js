@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, TextInput} from 'react-native';
+import {Linking, Text, View, TextInput} from 'react-native';
 import Styles from './Styles';
 import CustomButton from "./CustomButton";
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -52,9 +52,18 @@ getWidgetsView(){
             <Text style={Styles.title}>
                 Widgets
             </Text>
+            <Text style ={Styles.widgetContent}>Have a website? Support your community by adding a Muncie Events widget to it and keeping your visitors informed about local events. {"\n"}
+              To learn more about useing our widgets, just visit our{" "}  
+              <Text style={{color: 'blue'}}
+                onPress={() => Linking.openURL('https://muncieevents.com/widget')
+              }>
+               webpage.
+              </Text>
+            </Text>
         </View>
     )
 }
+
 
 getSearchView(){
     return(
