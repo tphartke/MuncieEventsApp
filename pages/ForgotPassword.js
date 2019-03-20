@@ -32,7 +32,6 @@ export default class ForgotPassword extends React.Component {
       }
     
       sendForgotPasswordRequest(){
-          console.log(this.state.email)
         fetch("https://api.muncieevents.com/v1/user/forgot-password?apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1", 
             {method: "POST",
                 headers: {
@@ -42,6 +41,7 @@ export default class ForgotPassword extends React.Component {
                 body: JSON.stringify({email: this.state.email})
         })
         .then((response) => response.json())
+        .then((responseJson) => console.log(responseJson))
         .then(this.setState({statusMessage: "Email sent with instructions on changing password to " + this.state.email}))
         .catch((error) =>{
             console.log(error)

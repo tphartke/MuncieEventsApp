@@ -50,7 +50,7 @@ export default class Register extends React.Component {
 
                 <CustomButton 
                     text="Register" 
-                    onPress={()=> this.RegisterNewUser()} 
+                    onPress={()=> this.registerNewUser()} 
                     buttonStyle={Styles.longButtonStyle}
                     textStyle={Styles.longButtonTextStyle}
                 />
