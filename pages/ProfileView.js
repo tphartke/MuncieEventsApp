@@ -2,7 +2,9 @@ import React from 'react';
 import {View, TextInput, Text} from 'react-native';
 import CustomButton from "./CustomButton";
 import Styles from './Styles';
-import EventList from '../EventList'
+import EventList from '../EventList';
+import APICacher from '../APICacher';
+import {AppLoading} from 'expo';
 
 export default class ProfileView extends React.Component {
     constructor(props){
@@ -13,11 +15,30 @@ export default class ProfileView extends React.Component {
                       userid: "",
                       isLoading: true, 
                       usereventsurl: "", 
-                      usereventsresponsejson: ""})
+                      usereventsresponsejson: "",
+                      isReady: false});
+                      this._startupCachingAsync = this._startupCachingAsync.bind(this);
+                      this.APICacher = new APICacher();
       }
 
       render(){
-        contentView = (<Text></Text>)
+        contentView = null
+        eventsView = null
+        if(!this.state.isReady){
+            eventsView=(<AppLoading 
+                          startAsync={this._startupCachingAsync}
+                          onFinish={() => this.setState({ isReady: true })}
+                          onError= {console.error} />)
+        }
+        else{
+            eventsView=(<View>
+                          <Text style={Styles.title}>EVENTS</Text>
+                          <View>
+                            <EventList/>
+                          </View>
+                        </View>)
+        }
+
         if(!this.state.email && this.state.userid){
           this.fetchUserData(this.state.userid)
           this.fetchUserEventsData()
@@ -28,6 +49,7 @@ export default class ProfileView extends React.Component {
           return(
             <View>
                 {contentView}
+                {eventsView}
             </View>
         );
       }
@@ -35,7 +57,6 @@ export default class ProfileView extends React.Component {
       componentDidMount(){
         this.setState({userid: this.props.userid, 
         usereventsurl: "https://api.muncieevents.com/v1/user/" + this.props.userid + "/events?apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1"});
-
       }
 
       fetchUserData(userid){
@@ -72,7 +93,17 @@ export default class ProfileView extends React.Component {
         })
       }
 
-      
+      async _startupCachingAsync(){
+        key = "userEvents"
+        url = this.state.usereventsurl
+        hasAPIData = await this.APICacher._hasAPIData(key)
+        if(hasAPIData){
+         await this.APICacher._refreshJSONFromStorage(key, url)
+        }
+        if(!hasAPIData){
+          await this.APICacher._cacheJSONFromAPIWithExpDate(key, url);
+        }
+    }
 
       fetchUserEventsData(){
         fetch(this.state.usereventsurl)        

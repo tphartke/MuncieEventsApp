@@ -42,16 +42,19 @@ export default class ForgotPassword extends React.Component {
         })
         .then((response) => response.json())
         .then((responseJson) => console.log(responseJson))
-        .then(this.setState({statusMessage: "Email sent with instructions on changing password to " + this.state.email}))
+        .then((responseJson) => this.getStatus(responseJson))
         .catch((error) =>{
             console.log(error)
-            if(error == 404){
-                this.setState({statusMessage: "No account with this email found"})
-            }
-            else{
-                this.setState({statusMessage: "Error reaching server: " + error})
-            }
         })
+      }
+
+      getStatus(responseJson){
+        try{
+            this.setState({statusMessage: responseJson.errors[0].detail})
+        }
+        catch(error){
+            this.setState({statusMessage: "Email sent with instructions on changing password to " + this.state.email})
+        }
       }
 
 }
