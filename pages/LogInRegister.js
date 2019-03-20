@@ -250,7 +250,6 @@ export default class LogInRegister extends React.Component {
     .then(() => this.logUserIn())
       .catch((error) =>{
          console.log(error)
-         this.setState({statusMessage: "Error reaching server: " + error})
       })
     }
 

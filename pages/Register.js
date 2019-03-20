@@ -62,7 +62,6 @@ export default class Register extends React.Component {
     registerNewUser(){
         if(this.isValidNewUser()){
             this.fetchAPIData()
-            this.setState({userregistered: true, statusMessage: this.state.name + " successfully registered!"});  
         }
         else{
             this.setState({statusMessage: "Please ensure your password matches and your email is valid"});
@@ -98,10 +97,18 @@ export default class Register extends React.Component {
               })
           })
           .then((response) => response.json())
-          .then((responseJson) => console.log(responseJson)) 
+          .then((responseJson) => this.getStatus(responseJson))
         .catch((error) =>{
             console.log(error)
-           this.setState({statusMessage: "Error reaching server: " + error})
         });
       }  
+
+    getStatus(responseJson){
+        try{
+            this.setState({statusMessage: responseJson.errors[0].detail})
+        }
+        catch(error){
+            this.setState({statusMessage: this.state.name + " successfully registered!"})
+        }
+    }
 }
