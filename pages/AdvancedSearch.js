@@ -7,6 +7,7 @@ import * as Animatable from 'react-native-animatable';
 import EventList from '../EventList';
 import APICacher from '../APICacher';
 import {AppLoading} from 'expo';
+import LoadingScreen from '../components/LoadingScreen';
 
 export default class AdvancedSearch extends React.Component {
   constructor(props){
@@ -27,6 +28,10 @@ export default class AdvancedSearch extends React.Component {
     this.categories=[]
     this.tags=[]
     this.APICacher = new APICacher();
+  }
+
+  componentDidMount(){
+    this._fetchTagAndCategoryData();
   }
 
   async _fetchTagAndCategoryData(){
@@ -51,7 +56,7 @@ export default class AdvancedSearch extends React.Component {
 
     this.tags = await this.APICacher._getJSONFromStorage(key)
     this.tags = this.tags.map((tag) => {return [tag.attributes.name, tag.id]})
-    this.setState({tagSelectedValue: this.tags[0]})
+    this.setState({tagSelectedValue: this.tags[0], isInitialLoading:false})
   }
 
   async _refreshData(key, url){
@@ -65,18 +70,10 @@ export default class AdvancedSearch extends React.Component {
   }
 
   render(){
-
-    mainView = () => {return(<Text></Text>)}
     title = "Advanced Search"
     
     if(this.state.isInitialLoading){
-      return(
-        <AppLoading 
-          startAsync={() => this._fetchTagAndCategoryData()}
-          onFinish={() => this.setState({isInitialLoading: false})}
-          onError= {console.error}
-        />
-      );
+      mainView = this.getLoadingScreen();
     }
     else if(this.state.resultsLoading){
       url = this.state.searchURL;
@@ -104,6 +101,14 @@ export default class AdvancedSearch extends React.Component {
         <View>
           {mainView}
         </View>
+      </View>
+    );
+  }
+
+  getLoadingScreen(){
+    return(
+      <View>
+        <LoadingScreen/>
       </View>
     );
   }

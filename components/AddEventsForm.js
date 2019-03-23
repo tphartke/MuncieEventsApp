@@ -1,8 +1,9 @@
 import React, {Component} from 'react';  
-import {View, Platform, ScrollView, Text, Picker, TextInput, Modal, DatePickerAndroid, TimePickerAndroid, DatePickerIOS} from 'react-native';
+import {View, Platform, Text, Picker, TextInput, Modal, DatePickerAndroid, TimePickerAndroid, DatePickerIOS} from 'react-native';
 import Styles from '../pages/Styles';
 import APICacher from '../APICacher'
 import CustomButton from '../pages/CustomButton';
+import LoadingScreen from "./LoadingScreen";
 
 export default class AddEventsForm extends Component{
     constructor(props){
@@ -205,13 +206,12 @@ export default class AddEventsForm extends Component{
         if(this.state.isLoading){;
             return(
             <View>
-                <Text>Loading...</Text>
+                <LoadingScreen/>
             </View>
             );
         }
         else{
             return(
-                //<ScrollView contentContainerStyle={{ flexGrow: 0, height:1000 }}>
                     <View style={{flex:1}}>
                         {IOSDatePickerModal}
                         <View style={Styles.formRow}>
@@ -307,7 +307,6 @@ export default class AddEventsForm extends Component{
                         </View>
                     </View>
                     
-                //</ScrollView>
             );
         }
 

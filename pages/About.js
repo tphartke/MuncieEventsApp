@@ -5,8 +5,8 @@ import CustomButton from './CustomButton'
 import Icon from 'react-native-vector-icons/Ionicons'
 import * as Animatable from 'react-native-animatable'
 import EventList from '../EventList'
-import {AppLoading} from 'expo';
 import APICacher from '../APICacher';
+import LoadingScreen from '../components/LoadingScreen';
 
 
 export default class About extends React.Component {
@@ -19,30 +19,46 @@ export default class About extends React.Component {
     this.APICacher = new APICacher();
   }
 
+  componentDidMount(){
+    this._getCachedDataAsync();
+  }
+
   render() {
     aboutUsTitle = "";
     aboutUsHTML = "";
     webView = null
     searchView = null
+    topBar = this.getTopBar();
     if(this.state.isLoading){
-      return(
-        <AppLoading 
-          startAsync={this._getCachedDataAsync}
-          onFinish={() => this.setState({ isLoading: false })}
-          onError= {console.error}
-        />
-      );
+      mainView = this.getLoadingScreen();
     }
     else if(this.state.url){
-      searchView = this.getSearchView();
+      mainView = this.getSearchView();
     }
     else{
       aboutUsTitle = this.state.dataSource.attributes.title;
       aboutUsHTML = this.state.dataSource.attributes.body;
-      webView = this.getWebView(aboutUsHTML)
+      mainView = this.getWebView(aboutUsHTML)
     }
     return (
       <View style={Styles.topBarPadding}>
+        {topBar}
+        <Text style ={Styles.title}> About Us </Text>
+        {mainView}
+      </View>
+    )
+  }
+
+  getLoadingScreen(){
+    return(
+      <View>
+        <LoadingScreen/>
+      </View>
+    );
+  }
+
+  getTopBar(){
+    return(
           <View style={Styles.topBarWrapper}>
             <Animatable.View animation = "slideInRight" duration={500} style={Styles.topBarContent}>
                 <CustomButton
@@ -58,13 +74,9 @@ export default class About extends React.Component {
                   />
                 <Icon name="ios-search" style={Styles.iosSearch}/>
               </Animatable.View>
-            </View>
-
-        <Text style ={Styles.title}> {aboutUsTitle} </Text>
-        {searchView}
-        {webView}
-      </View>
-    )
+          </View>
+    );
+    
   }
 
   async _getCachedDataAsync(){
@@ -78,7 +90,7 @@ export default class About extends React.Component {
         await this.APICacher._cacheJSONFromAPIWithExpDate(key, url)
     }
     await this.APICacher._getJSONFromStorage(key)
-      .then((response) => this.setState({dataSource: response}))
+      .then((response) => this.setState({dataSource: response, isLoading: false}))
   }
 
   getSearchView(){

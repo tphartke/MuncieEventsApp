@@ -7,6 +7,7 @@ import * as Animatable from 'react-native-animatable'
 import Styles from './Styles';
 import {AppLoading} from 'expo';
 import APICacher from '../APICacher';
+import LoadingScreen from '../components/LoadingScreen';
 
 export default class HomeScreen extends React.Component{
   constructor(props){
@@ -14,29 +15,27 @@ export default class HomeScreen extends React.Component{
     this.state={text: ''};
     this.state={url: 'https://api.muncieevents.com/v1/events/future?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ'};
     this.state={searchurl: ""}
-    this.state = {isReady: false};
+    this.state = {isLoading: true};
     this._startupCachingAsync = this._startupCachingAsync.bind(this);
     this.APICacher = new APICacher();
   }  
+
+      componentDidMount(){
+        this._startupCachingAsync();
+      }
+
       render(){
-        homeView = null
-        searchView = null
+        mainView = null
         if(this.state.searchurl){
-            searchView = this.getSearchView()
+            mainView = this.getSearchView();
         }
         else{
-            homeView = this.getHomeView()
+            mainView = this.getHomeView();
         }
-        if(!this.state.isReady && !this.state.searchurl){
-          return(
-            <AppLoading 
-              startAsync={this._startupCachingAsync}
-              onFinish={() => this.setState({ isReady: true })}
-              onError= {console.error}
-            />
-          );
+        if(this.state.isLoading && !this.state.searchurl){
+          mainView = this.getLoadingScreen();
         }
-        else if(!this.state.isReady && this.state.searchurl){
+        else if(this.state.isLoading && this.state.searchurl){
           return(
             <AppLoading 
               startAsync={() => this.startSearchSequence('https://api.muncieevents.com/v1/events/search?q=' + this.state.text +  '&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1')}
@@ -45,31 +44,36 @@ export default class HomeScreen extends React.Component{
             />
           );
         }
-        else{
-          return(
-            <View style={Styles.topBarPadding}>
-              <View style={Styles.topBarWrapper}>
-                <Animatable.View animation = "slideInRight" duration={500} style={Styles.topBarContent}>
-                    <CustomButton
-                        text="Menu"
-                        onPress={() => this.props.navigation.openDrawer()}/>
-                    <TextInput
-                        placeholder=' Search'
-                        value={this.state.text} 
-                        style={Styles.searchBar}
-                        onChangeText={(text) => this.setState({text})}
-                        onBlur={() => {this.setState({isReady: false, searchurl: true})}}
-                        showLoading='true'
-                      />
+        return(
+          <View style={Styles.topBarPadding}>
+            <View style={Styles.topBarWrapper}>
+              <Animatable.View animation = "slideInRight" duration={500} style={Styles.topBarContent}>
+                  <CustomButton
+                      text="Menu"
+                      onPress={() => this.props.navigation.openDrawer()}/>
+                  <TextInput
+                      placeholder=' Search'
+                      value={this.state.text} 
+                      style={Styles.searchBar}
+                      onChangeText={(text) => this.setState({text})}
+                      onBlur={() => {this.setState({isReady: false, searchurl: true})}}
+                      showLoading='true'
+                    />
                     <Icon name="ios-search" style={Styles.iosSearch}/>
                   </Animatable.View>
                 </View>
-                {searchView}
-                {homeView}
+                {mainView}
             </View>
           );
         }
-      } 
+
+      getLoadingScreen(){
+        return(
+          <View>
+            <LoadingScreen/>
+          </View>
+        );
+      }
 
       async _startupCachingAsync(){
           key = "APIData"
@@ -81,6 +85,7 @@ export default class HomeScreen extends React.Component{
           if(!hasAPIData){
             await this.APICacher._cacheJSONFromAPIWithExpDate(key, url);
           }
+          this.setState({isLoading:false})
       }
 
       getHomeView(){
