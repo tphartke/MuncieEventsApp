@@ -10,12 +10,12 @@ import {createDrawerNavigator} from 'react-navigation';
 
 const App = createDrawerNavigator({
     Home: { screen: HomeScreen },
-    AdvancedSearch: { screen: AdvancedSearch },
-    GoToDate: {screen: GoToDate},
-    AddEditEvents: {screen: AddEditEvents},
+    "Advanced Search": { screen: AdvancedSearch },
+    "Go To Date": {screen: GoToDate},
+    "Add Event": {screen: AddEditEvents},
     About: {screen: About},
     Contact: {screen: Contact},
-    LogInRegister: {screen: LogInRegister},
+    "Log In": {screen: LogInRegister},
     Widgets: {screen: Widgets},
   });
   
