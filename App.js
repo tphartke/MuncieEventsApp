@@ -15,7 +15,7 @@ const App = createDrawerNavigator({
     "Add Event": {screen: AddEditEvents},
     About: {screen: About},
     Contact: {screen: Contact},
-    "Log In": {screen: LogInRegister},
+    "My Profile": {screen: LogInRegister},
     Widgets: {screen: Widgets},
   });
   
