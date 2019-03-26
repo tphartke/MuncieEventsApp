@@ -5,6 +5,7 @@ import Styles from './Styles';
 import EventList from '../EventList';
 import APICacher from '../APICacher';
 import LoadingScreen from '../components/LoadingScreen';
+import ChangePassword from './ChangePassword'
 
 export default class ProfileView extends React.Component {
     constructor(props){
@@ -16,6 +17,7 @@ export default class ProfileView extends React.Component {
                       isLoading: true, 
                       usereventsurl: "", 
                       usereventsresponsejson: "",
+                      changePassword: false,
                       isReady: false});
                       this._startupCachingAsync = this._startupCachingAsync.bind(this);
                       this.APICacher = new APICacher();
@@ -27,21 +29,31 @@ export default class ProfileView extends React.Component {
         if(!this.state.isReady){
             eventsView= this.getLoadingView()
         }
+        else if(this.state.changePassword){
+            contentView = (<View>
+                              <ChangePassword userid={this.state.userid}/>
+                              <CustomButton 
+                                  text="Go Back" 
+                                  buttonStyle = {Styles.longButtonStyle}
+                                  textStyle = {Styles.longButtonTextStyle}
+                                  onPress = {()=>this.setState({changePassword: false})}
+                              />
+                          </View>)
+        }
         else{
-            eventsView=(<View>
-                          <Text style={Styles.title}>EVENTS</Text>
-                          <View>
-                          <EventList useSearchResults = {true} />
-                          </View>
-                        </View>)
-        }
-
-        if(!this.state.email && this.state.userid){
-          this.fetchUserData(this.state.userid)
-          this.fetchUserEventsData()
-        }
-        else if(this.state.userid){
-          contentView = this.getProfileInformation();
+          eventsView=(<View>
+            <Text style={Styles.title}>EVENTS</Text>
+            <View>
+            <EventList useSearchResults = {true} />
+            </View>
+          </View>)
+          if(!this.state.email && this.state.userid){
+              this.fetchUserData(this.state.userid)
+              this.fetchUserEventsData()
+          }
+          else if(this.state.userid){
+              contentView = this.getProfileInformation();
+          }
         }
           return(
             <View>
@@ -58,7 +70,6 @@ export default class ProfileView extends React.Component {
       }
 
       componentDidMount(){
-        console.log(this.props.userid + " profileView")
         url = "https://api.muncieevents.com/v1/user/" + this.props.userid + "/events?apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1";
         this.setState({userid: this.props.userid, 
         usereventsurl: url});
@@ -137,6 +148,12 @@ export default class ProfileView extends React.Component {
                     buttonStyle = {Styles.longButtonStyle}
                     textStyle = {Styles.longButtonTextStyle}
                     onPress = {()=>this.updateUserData()}
+                />
+                <CustomButton 
+                    text="Change Password" 
+                    buttonStyle = {Styles.longButtonStyle}
+                    textStyle = {Styles.longButtonTextStyle}
+                    onPress = {()=>this.setState({changePassword: true})}
                 />
               </View>
           )
