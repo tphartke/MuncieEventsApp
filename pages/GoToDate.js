@@ -6,7 +6,7 @@ import Styles from './Styles';
 import Icon from 'react-native-vector-icons/Ionicons'
 import * as Animatable from 'react-native-animatable'
 import APICacher from '../APICacher'
-import {AppLoading} from 'expo';
+import LoadingScreen from '../components/LoadingScreen';
 
 export default class GoToDate extends React.Component {
   constructor(props){
@@ -26,30 +26,34 @@ export default class GoToDate extends React.Component {
   }
 
     render() {
+      titleView = this.getTitle();
       mainView = this.getDatePicker()
       if(this.state.resultsLoaded){
         mainView = this.getResultsScreen()
       }
       else if(this.state.resultsLoading){
+        mainView = this.getLoadingScreen();
         url = this.state.searchURL
-        console.log("This is the URL about to be cached: " + url)
-        return(
-          <AppLoading 
-            startAsync={() => this._cacheSearchResults(url)}
-            onFinish={() => this.setState({ resultsLoaded: true, resultsLoading: false})}
-            onError= {console.error}
-          />
-        );
+        this._cacheSearchResults(url);
       }
       return (
         <View style={Styles.topBarPadding}>
           {this.getTopBar()}
           <View style={Styles.content}>
+            {titleView}
             {mainView}
           </View>
         </View>
       )
     }
+
+  getLoadingScreen(){
+    return(
+      <View>
+        <LoadingScreen/>
+      </View>
+    );
+  }
 
   getAndroidFormattedDate(newDate){
       day = newDate.getDate();
@@ -102,6 +106,14 @@ export default class GoToDate extends React.Component {
       )
     }
 
+    getTitle(){
+      return(
+        <Text style={Styles.title}>
+          EVENTS
+        </Text>
+      );
+    }
+
     updateEventView(date){
         if(Platform.OS == 'ios'){
           formattedDate = this.getIOSFormattedDate(date)
@@ -119,14 +131,12 @@ export default class GoToDate extends React.Component {
 
     async _cacheSearchResults(searchURL){
       await this.APICacher._cacheJSONFromAPIAsync("SearchResults", searchURL)
+      this.setState({ resultsLoaded: true, resultsLoading: false});
     }
 
     getResultsScreen(){
       return (   
         <View>        
-          <Text style={Styles.title}>
-          EVENTS
-          </Text>
           <CustomButton 
             text="Go Back"
             buttonStyle = {Styles.longButtonStyle}

@@ -4,7 +4,7 @@ import CustomButton from "./CustomButton";
 import Styles from './Styles';
 import EventList from '../EventList';
 import APICacher from '../APICacher';
-import {AppLoading} from 'expo';
+import LoadingScreen from '../components/LoadingScreen';
 
 export default class ProfileView extends React.Component {
     constructor(props){
@@ -25,16 +25,13 @@ export default class ProfileView extends React.Component {
         contentView = null
         eventsView = null
         if(!this.state.isReady){
-            eventsView=(<AppLoading 
-                          startAsync={this._startupCachingAsync}
-                          onFinish={() => this.setState({ isReady: true })}
-                          onError= {console.error} />)
+            eventsView= this.getLoadingView()
         }
         else{
             eventsView=(<View>
                           <Text style={Styles.title}>EVENTS</Text>
                           <View>
-                            <EventList/>
+                          <EventList useSearchResults = {true} />
                           </View>
                         </View>)
         }
@@ -54,9 +51,17 @@ export default class ProfileView extends React.Component {
         );
       }
 
+      getLoadingView(){
+        return(
+          <LoadingScreen/>
+        );
+      }
+
       componentDidMount(){
+        url = "https://api.muncieevents.com/v1/user/" + this.props.userid + "/events?apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1";
         this.setState({userid: this.props.userid, 
-        usereventsurl: "https://api.muncieevents.com/v1/user/" + this.props.userid + "/events?apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1"});
+        usereventsurl: url});
+        this._startupCachingAsync(url);
       }
 
       fetchUserData(userid){
@@ -93,16 +98,10 @@ export default class ProfileView extends React.Component {
         })
       }
 
-      async _startupCachingAsync(){
-        key = "userEvents"
-        url = this.state.usereventsurl
-        hasAPIData = await this.APICacher._hasAPIData(key)
-        if(hasAPIData){
-         await this.APICacher._refreshJSONFromStorage(key, url)
-        }
-        if(!hasAPIData){
-          await this.APICacher._cacheJSONFromAPIWithExpDate(key, url);
-        }
+      async _startupCachingAsync(url){
+        key = "SearchResults"
+        await this.APICacher._cacheJSONFromAPIAsync(key, url)
+        this.setState({isReady:true});
     }
 
       fetchUserEventsData(){
@@ -118,15 +117,6 @@ export default class ProfileView extends React.Component {
           console.error(error);
         });
       } 
-
-      
-      getLoadingView(){
-        return(
-            <View style={Styles.loadingViewPadding}>
-              <ActivityIndicator/>
-            </View>
-          );   
-      }
 
       getProfileInformation(){
           return(

@@ -6,7 +6,6 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import * as Animatable from 'react-native-animatable';
 import EventList from '../EventList';
 import APICacher from '../APICacher';
-import {AppLoading} from 'expo';
 import LoadingScreen from '../components/LoadingScreen';
 
 export default class AdvancedSearch extends React.Component {
@@ -76,14 +75,9 @@ export default class AdvancedSearch extends React.Component {
       mainView = this.getLoadingScreen();
     }
     else if(this.state.resultsLoading){
+      mainView = this.getLoadingScreen();
       url = this.state.searchURL;
-      return(
-        <AppLoading 
-          startAsync={() => this._cacheSearchResultsAsync(searchURL)}
-          onFinish={() => this.setState({ resultsLoaded: true, resultsLoading: false})}
-          onError= {console.error}
-        />
-      );
+      this._cacheSearchResultsAsync(searchURL)
     }
     else if(this.state.resultsLoaded){
       mainView = this.getResultsView();
@@ -249,7 +243,7 @@ export default class AdvancedSearch extends React.Component {
 
   async _cacheSearchResultsAsync(searchURL){
     await this.APICacher._cacheJSONFromAPIAsync("SearchResults", searchURL)
-    .then(this.setState({resultsLoaded: true}));
+    .then(this.setState({resultsLoaded: true, resultsLoading: false}));
   }
   
 }
