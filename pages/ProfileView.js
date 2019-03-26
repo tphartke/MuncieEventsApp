@@ -58,6 +58,7 @@ export default class ProfileView extends React.Component {
       }
 
       componentDidMount(){
+        console.log(this.props.userid + " profileView")
         url = "https://api.muncieevents.com/v1/user/" + this.props.userid + "/events?apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1";
         this.setState({userid: this.props.userid, 
         usereventsurl: url});

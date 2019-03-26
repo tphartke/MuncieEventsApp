@@ -8,6 +8,7 @@ import Styles from './Styles';
 import Icon from 'react-native-vector-icons/Ionicons'
 import * as Animatable from 'react-native-animatable'
 import EventList from '../EventList'
+import LoadingScreen from '../components/LoadingScreen';
 
 export default class LogInRegister extends React.Component {
     constructor(props){
@@ -23,31 +24,21 @@ export default class LogInRegister extends React.Component {
                     remail: "",
                     rtoken: "", 
                     credentialsAreCorrect: false, 
-                    statusMessage: "You are not logged in."}
+                    statusMessage: "You are not logged in.", 
+                    isLoading: true}
+        dataSource = ""
+        username = ""
+        name = ""
+        token = ""
     }
-    dataSource = ""
-    username = ""
-    name = ""
-    token = ""
+
+    componentDidMount(){
+      this.retrieveStoredToken()
+    }
     
     render() {
-      loginRegisterView = null
-      searchView = null
-      if(this.state.url){
-          searchView = this.getSearchView()
-      }
-      else if(this.state.isLoggedIn==true){
-          loginRegisterView = this.getProfileViewSequence()
-      }
-      else if(this.state.selectedPage=="Login"){
-          loginRegisterView = this.getLoginSequence()
-      }
-      else if(this.state.selectedPage=="ForgotPassword"){
-          loginRegisterView = this.getForgotPasswordSequence()
-      }
-      else{
-          loginRegisterView = this.getSignupSequence()
-      }
+      console.log(this.state.isLoading)
+      searchView = this.getDisplayedScreen()
       return(<View style={Styles.topBarPadding}>
                  <View style={Styles.topBarWrapper}>
                     <Animatable.View animation = "slideInRight" duration={500} style={Styles.topBarContent}>
@@ -66,8 +57,38 @@ export default class LogInRegister extends React.Component {
                       </Animatable.View>
                     </View>
                 {searchView}
-                {loginRegisterView}
             </View>)
+    }
+
+    getDisplayedScreen(){
+      searchView = null
+      if(this.state.isLoading){
+        searchView = this.getLoadingScreen()
+      }
+      else if(this.state.url){
+          searchView = this.getSearchView()
+      }
+      else if(this.state.isLoggedIn==true){
+          searchView = this.getProfileViewSequence()
+      }
+      else if(this.state.selectedPage=="Login"){
+          searchView = this.getLoginSequence()
+      }
+      else if(this.state.selectedPage=="ForgotPassword"){
+          searchView = this.getForgotPasswordSequence()
+      }
+      else{
+          searchView = this.getSignupSequence()
+      }
+      return searchView
+    }
+
+    getLoadingScreen(){
+      return(
+        <View>
+          <LoadingScreen/>
+        </View>
+      );
     }
 
     getSearchView(){
@@ -136,7 +157,7 @@ export default class LogInRegister extends React.Component {
             buttonStyle={Styles.longButtonStyle}
             textStyle={Styles.longButtonTextStyle}
           />
-          <ProfileView userid={this.state.rtoken}/>
+          <ProfileView userid={this.state.token}/>
        </View>
       );
     }
@@ -217,19 +238,27 @@ export default class LogInRegister extends React.Component {
        } catch (error) {
           return "NULL"
        }
-      
     }
 
     retrieveStoredToken = async() => {
       try {
-        const tkn = await AsyncStorage.getItem('Token');
-        if (tkn !== null) {
-          this.token = tkn;
-        }
+        const tkn = await AsyncStorage.getItem('Token')
+        this.determineLoginStatus(tkn);
        } catch (error) {
+          this.determineLoginStatus()
           return "NULL"
        }
-      
+    }
+
+    determineLoginStatus(tkn){
+      if(tkn){
+        console.log(tkn)
+        this.setState({isLoading: false, token: tkn, isLoggedIn: true})
+      }
+      else{
+        console.log("Not logged in")
+        this.setState({isLoading: false, token: tkn, isLoggedIn: false})
+      }
     }
 
     fetchAPILoginData(){
