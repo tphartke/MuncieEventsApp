@@ -58,7 +58,7 @@ class EventList extends React.Component {
 
       noEventsFound(){
         return(
-          <Text></Text>
+          <Text>No events found</Text>
         );
       }
 
