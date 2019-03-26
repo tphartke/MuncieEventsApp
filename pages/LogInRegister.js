@@ -39,7 +39,7 @@ export default class LogInRegister extends React.Component {
     render() {
       console.log(this.state.isLoading)
       searchView = this.getDisplayedScreen()
-      return(<View style={Styles.topBarPadding}>
+      return(<View style={Styles.wrapper}>
                  <View style={Styles.topBarWrapper}>
                     <Animatable.View animation = "slideInRight" duration={500} style={Styles.topBarContent}>
                       <CustomButton

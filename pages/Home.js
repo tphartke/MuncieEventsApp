@@ -45,7 +45,7 @@ export default class HomeScreen extends React.Component{
           );
         }
         return(
-          <View style={Styles.topBarPadding}>
+          <View style={Styles.wrapper}>
             <View style={Styles.topBarWrapper}>
               <Animatable.View animation = "slideInRight" duration={500} style={Styles.topBarContent}>
                   <CustomButton

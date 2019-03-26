@@ -41,7 +41,7 @@ export default class About extends React.Component {
       mainView = this.getWebView(aboutUsHTML)
     }
     return (
-      <View style={Styles.topBarPadding}>
+      <View style={Styles.wrapper}>
         {topBar}
         <Text style ={Styles.title}> About Us </Text>
         {mainView}

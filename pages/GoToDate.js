@@ -37,7 +37,7 @@ export default class GoToDate extends React.Component {
         this._cacheSearchResults(url);
       }
       return (
-        <View style={Styles.topBarPadding}>
+        <View style={Styles.wrapper}>
           {this.getTopBar()}
           <View style={Styles.content}>
             {titleView}

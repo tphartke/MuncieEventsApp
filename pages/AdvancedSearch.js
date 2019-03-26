@@ -87,7 +87,7 @@ export default class AdvancedSearch extends React.Component {
       mainView = this.getMainView()
     }
     return (
-      <View style={Styles.topBarPadding}>
+      <View style={Styles.wrapper}>
         {this.getTopBar()}
         <Text style={Styles.title}>
           {title}

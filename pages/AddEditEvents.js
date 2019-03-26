@@ -24,7 +24,7 @@ export default class AddEditEvent extends React.Component {
             AddEventsView = this.getAddEventsView()
         }
         return (
-            <View style={Styles.topBarPadding}>
+            <View style={Styles.wrapper}>
             <View style={Styles.topBarWrapper}>
                 <Animatable.View animation = "slideInRight" duration={500} style={Styles.topBarContent}>
                     <CustomButton

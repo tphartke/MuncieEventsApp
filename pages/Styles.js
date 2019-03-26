@@ -1,7 +1,6 @@
 import { StyleSheet } from "react-native"
 
 export default StyleSheet.create({
-
     title: {
         textAlign:"center",
         fontSize:30,
@@ -34,9 +33,10 @@ export default StyleSheet.create({
         padding: 20
     },
 
-    topBarPadding: {
+    wrapper: {
         paddingTop:20,
-        flex: 1
+        flex: 1,
+        backgroundColor: 'white'
     },
     
     topBarWrapper: {
