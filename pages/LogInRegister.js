@@ -21,14 +21,8 @@ export default class LogInRegister extends React.Component {
                     uniqueToken: "",
                     email: "",
                     password: "",
-                    runiqueToken: "",
-                    ruserid: "", 
-                    credentialsAreCorrect: false, 
                     statusMessage: "You are not logged in.", 
                     isLoading: true}
-        dataSource = ""
-        uniqueToken = ""
-        token = ""
     }
 
     componentDidMount(){
@@ -124,7 +118,7 @@ export default class LogInRegister extends React.Component {
           
           <CustomButton 
             text="Log In" 
-            onPress={()=> this.initiateLoginProcess()} 
+            onPress={()=> this.fetchAPILoginData()} 
             buttonStyle={Styles.longButtonStyle}
             textStyle={Styles.longButtonTextStyle}
           />
@@ -174,10 +168,6 @@ export default class LogInRegister extends React.Component {
       );
     }
 
-    initiateLoginProcess(){
-      this.fetchAPILoginData()
-    }
-
     getForgotPasswordSequence(){
       return(
         <View>
@@ -192,12 +182,24 @@ export default class LogInRegister extends React.Component {
       );
     }
     
-    logUserIn = async() => {
-      if(this.state.credentialsAreCorrect){
+    logUserIn = async(dataSource) => {
+      uid = ""
+      utkn = ""
+      credentialsAreCorrect = false
+      try{
+       uid = dataSource.data.id;
+       utkn = dataSource.data.attributes.token
+       credentialsAreCorrect = true
+      }
+      catch(error){
+        console.log("Error logging in")
+        this.setState({statusMessage: dataSource.errors[0].detail})
+      }
+      if(credentialsAreCorrect){
       try {
-        await AsyncStorage.setItem('UniqueToken', this.state.runiqueToken);
-        await AsyncStorage.setItem('Token', this.state.ruserid);
-        this.setState({isLoggedIn: true});
+        await AsyncStorage.setItem('UniqueToken', utkn);
+        await AsyncStorage.setItem('Token', uid);
+        this.setState({isLoggedIn: true, uniqueToken: utkn, userid: uid});
       } catch (error) {
         console.log("Error storing login information");
       }
@@ -208,7 +210,7 @@ export default class LogInRegister extends React.Component {
       try {
         await AsyncStorage.removeItem('UniqueToken');
         await AsyncStorage.removeItem('Token');
-        this.setState({isLoggedIn: false, credentialsAreCorrect: false, statusMessage: "You are not logged in", userid: "", uniqueToken: ""});
+        this.setState({isLoggedIn: false, statusMessage: "You are not logged in", userid: "", uniqueToken: ""});
       } catch (error) {
         console.log("Error logging user out");
       }
@@ -235,6 +237,7 @@ export default class LogInRegister extends React.Component {
     }
 
     fetchAPILoginData(){
+      console.log("Fetching API login data...")
       fetch("https://api.muncieevents.com/v1/user/login?apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1", 
         {method: "POST",
         headers: {
@@ -247,20 +250,9 @@ export default class LogInRegister extends React.Component {
         })
     })
     .then((response) => response.json())
-    .then((responseJson) =>  this.dataSource = responseJson)
-    .then(() => this.setLoginData(this.dataSource))
-    .then(() => this.logUserIn())
+    .then((responseJson) => this.logUserIn(responseJson))
       .catch((error) =>{
          console.log(error)
       })
-    }
-
-    setLoginData(dataSource){
-      try{
-        this.setState({ruserid: dataSource.data.id, runiqueToken: dataSource.data.attributes.token ,credentialsAreCorrect: true})
-      }
-      catch(error){
-        this.setState({statusMessage: dataSource.errors[0].detail})
-      }
     }
 }
