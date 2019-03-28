@@ -14,6 +14,7 @@ export default class ProfileView extends React.Component {
                       name: "", 
                       statusMessage: "", 
                       userid: "",
+                      token: "",
                       isLoading: true, 
                       usereventsurl: "", 
                       usereventsresponsejson: "",
@@ -71,7 +72,7 @@ export default class ProfileView extends React.Component {
 
       componentDidMount(){
         url = "https://api.muncieevents.com/v1/user/" + this.props.userid + "/events?apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1";
-        this.setState({userid: this.props.userid, 
+        this.setState({userid: this.props.userid, token: this.props.token,
         usereventsurl: url});
         this._startupCachingAsync(url);
       }
@@ -92,17 +93,17 @@ export default class ProfileView extends React.Component {
       } 
 
       updateUserData(){
-        fetch("https://api.muncieevents.com/v1/user/profile?userToken=" + this.state.userid +"apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1", 
+        fetch("https://api.muncieevents.com/v1/user/profile?userToken=" + this.state.token + "&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1", 
           {method: "PATCH",
           headers: {
-              Accept: 'application/vnd.api+json',
-              'Content-Type': 'application/json',
-              },
+            Accept: '*/*'
+            },
           body: JSON.stringify({
-            name: this.state.name,
-            email: this.state.email,
+              email: this.state.email, 
+              name: this.state.name,
           })
       })
+      .then((response)=>responseJson = response.json())
       .then((responseJson)=>console.log(responseJson))
         .catch((error) =>{
            console.log(error)
@@ -117,10 +118,9 @@ export default class ProfileView extends React.Component {
     }
 
       fetchUserEventsData(){
+        console.log(this.state.usereventsurl)
         fetch(this.state.usereventsurl)        
-        .then((response) => response.json())
         .then((responseJson) => {
-          console.log(responseJson)
           this.setState({
             usereventsresponsejson: responseJson
           });

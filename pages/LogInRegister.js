@@ -17,18 +17,17 @@ export default class LogInRegister extends React.Component {
                     selectedPage: "Login",
                     url: "",
                     text: "",
-                    token: "",
+                    userid: "",
+                    uniqueToken: "",
                     email: "",
                     password: "",
-                    rname: "",
-                    remail: "",
-                    rtoken: "", 
+                    runiqueToken: "",
+                    ruserid: "", 
                     credentialsAreCorrect: false, 
                     statusMessage: "You are not logged in.", 
                     isLoading: true}
         dataSource = ""
-        username = ""
-        name = ""
+        uniqueToken = ""
         token = ""
     }
 
@@ -37,7 +36,6 @@ export default class LogInRegister extends React.Component {
     }
     
     render() {
-      console.log(this.state.isLoading)
       searchView = this.getDisplayedScreen()
       return(<View style={Styles.wrapper}>
                  <View style={Styles.topBarWrapper}>
@@ -157,7 +155,7 @@ export default class LogInRegister extends React.Component {
             buttonStyle={Styles.longButtonStyle}
             textStyle={Styles.longButtonTextStyle}
           />
-          <ProfileView userid={this.state.token}/>
+          <ProfileView userid={this.state.userid} token={this.state.uniqueToken}/>
        </View>
       );
     }
@@ -197,9 +195,8 @@ export default class LogInRegister extends React.Component {
     logUserIn = async() => {
       if(this.state.credentialsAreCorrect){
       try {
-        await AsyncStorage.setItem('Username', this.state.remail);
-        await AsyncStorage.setItem('Name', this.state.rname);
-        await AsyncStorage.setItem('Token', this.state.rtoken);
+        await AsyncStorage.setItem('UniqueToken', this.state.runiqueToken);
+        await AsyncStorage.setItem('Token', this.state.ruserid);
         this.setState({isLoggedIn: true});
       } catch (error) {
         console.log("Error storing login information");
@@ -209,55 +206,31 @@ export default class LogInRegister extends React.Component {
 
     logUserOut = async() => {
       try {
-        await AsyncStorage.removeItem('Username');
-        await AsyncStorage.removeItem('Name');
+        await AsyncStorage.removeItem('UniqueToken');
         await AsyncStorage.removeItem('Token');
-        this.setState({isLoggedIn: false, credentialsAreCorrect: false, statusMessage: "You are not logged in"});
+        this.setState({isLoggedIn: false, credentialsAreCorrect: false, statusMessage: "You are not logged in", userid: "", uniqueToken: ""});
       } catch (error) {
         console.log("Error logging user out");
       }
     }
 
-    retrieveStoredUsername = async() => {
-      try {
-        const usrnme = await AsyncStorage.getItem('Username');
-        if (usrnme !== null) {
-            this.username = usrnme;
-        }
-       } catch (error) {
-          return "NULL"
-       }
-    }
-
-    retrieveStoredName = async() => {
-      try {
-        const nm = await AsyncStorage.getItem('Name');
-        if (nm !== null) {
-          this.name = nm;
-        }
-       } catch (error) {
-          return "NULL"
-       }
-    }
-
     retrieveStoredToken = async() => {
       try {
         const tkn = await AsyncStorage.getItem('Token')
-        this.determineLoginStatus(tkn);
+        const utoken = await AsyncStorage.getItem('UniqueToken')
+        this.determineLoginStatus(tkn, utoken);
        } catch (error) {
           this.determineLoginStatus()
           return "NULL"
        }
     }
 
-    determineLoginStatus(tkn){
-      if(tkn){
-        console.log(tkn)
-        this.setState({isLoading: false, token: tkn, isLoggedIn: true})
+    determineLoginStatus(tkn, utoken){
+      if(tkn && utoken){
+        this.setState({isLoading: false, userid: tkn, uniqueToken: utoken, isLoggedIn: true})
       }
       else{
-        console.log("Not logged in")
-        this.setState({isLoading: false, token: tkn, isLoggedIn: false})
+        this.setState({isLoading: false, userid: tkn, isLoggedIn: false})
       }
     }
 
@@ -284,7 +257,7 @@ export default class LogInRegister extends React.Component {
 
     setLoginData(dataSource){
       try{
-        this.setState({remail: dataSource.data.attributes.email, rname: dataSource.data.attributes.name, rtoken: dataSource.data.id, credentialsAreCorrect: true})
+        this.setState({ruserid: dataSource.data.id, runiqueToken: dataSource.data.attributes.token ,credentialsAreCorrect: true})
       }
       catch(error){
         this.setState({statusMessage: dataSource.errors[0].detail})

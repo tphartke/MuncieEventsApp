@@ -40,8 +40,6 @@ export default class ForgotPassword extends React.Component {
                 },
                 body: JSON.stringify({email: this.state.email})
         })
-        .then((response) => console.log(response))
-        .then((responseJson) => console.log(responseJson))
         .then((responseJson) => this.getStatus(responseJson))
         .catch((error) =>{
             console.log(error)

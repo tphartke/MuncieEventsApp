@@ -54,12 +54,14 @@ export default class ChangePassword extends React.Component {
     }
 
     updatePassword(){
-        fetch("https://api.muncieevents.com/v1/user/password?userToken=" + this.state.userid +"apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1", 
+        fetch("https://api.muncieevents.com/v1/user/password?apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1", 
           {method: "PATCH",
           headers: {
-              'Content-Type': 'application/json',
+                    Accept: 'application/vnd.api+json',
+                    'Content-Type': 'application/json',
               },
           body: JSON.stringify({
+            userToken: this.state.userid,
             password: this.state.newPassword
           })
       })
