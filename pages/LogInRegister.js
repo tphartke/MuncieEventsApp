@@ -129,11 +129,12 @@ export default class LogInRegister extends React.Component {
             textStyle={Styles.longButtonTextStyle}
             onPress={() => this.setState({selectedPage: "Signup"})}
           />
+
           <TouchableOpacity
-            onPress={() => this.setState({selectedPage: "ForgotPassword"})}
-          >
+            onPress={() => this.setState({selectedPage: "ForgotPassword"})}>
             <Text style={{color: 'blue'}}>Forgot Password?</Text>
           </TouchableOpacity>
+
           <Text>{this.state.statusMessage}</Text>
           <Text>{profileInfo}</Text>
         </View>
