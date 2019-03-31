@@ -120,6 +120,7 @@ class EventList extends React.Component {
             </Text>           
              <TouchableOpacity onPress={() => this.setState({selectedEvent: eventEntry})} style={Styles.eventRow}>
               <View style={{flexDirection:'row', flex:1}}>
+                {this.getCategoryImage(eventEntry)}
                <Text style={{flex:1}}>
                 {listText}
                </Text>
@@ -128,6 +129,102 @@ class EventList extends React.Component {
              </TouchableOpacity>
             </Animatable.View>
         )
+      }
+
+      getCategoryImage(eventEntry){
+        category = ""
+        switch(eventEntry.attributes.category.name){
+          case "Music":
+          return(
+            <View>
+              <Image
+              style={{flex: 1, resizeMode: 'contain', width: 60, height: 60}}
+              source={require('./assets/MuncieEventsAppIcons/music.png')}
+              />
+            </View>
+            )
+          case "Art":
+            return(
+              <View>
+                <Image
+                  style={{flex: 1, resizeMode: 'contain', width: 60, height: 60}}
+                  source ={require('./assets/MuncieEventsAppIcons/art.png')}
+                />
+              </View>
+            )
+          case "Activism":
+          return(
+            <View>
+              <Image
+              style={{flex: 1, resizeMode: 'contain', width: 60, height: 60}}
+              source ={require('./assets/MuncieEventsAppIcons/activism.png')}
+              />
+            </View>
+            )
+          case "Theater":
+          return(
+            <View>
+              <Image
+              style={{flex: 1, resizeMode: 'contain', width: 60, height: 60}}
+              source ={require('./assets/MuncieEventsAppIcons/theater.png')}
+              />
+            </View>
+            )
+          case "Film":
+          return(
+            <View>
+              <Image
+              style={{flex: 1, resizeMode: 'contain', width: 60, height: 60}}
+              source ={require('./assets/MuncieEventsAppIcons/film.png')}
+              />
+            </View>
+            )
+          case "Sports":
+          return(
+            <View>
+              <Image
+              style={{flex: 1, resizeMode: 'contain', width: 60, height: 60}}
+              source ={require('./assets/MuncieEventsAppIcons/sports.png')}
+              />
+            </View>
+            )
+          case "Education":
+          return(
+            <View>
+              <Image
+              style={{flex: 1, resizeMode: 'contain', width: 60, height: 60}}
+              source ={require('./assets/MuncieEventsAppIcons/education.png')}
+              />
+            </View>
+            )
+          case "Government":
+          return(
+            <View>
+              <Image
+              style={{flex: 1, resizeMode: 'contain', width: 60, height: 60}}
+              source ={require('./assets/MuncieEventsAppIcons/government.png')}
+              />
+            </View>
+            )
+          case "Religion":
+          return(
+            <View>
+              <Image
+              style={{flex: 1, resizeMode: 'contain', width: 60, height: 60}}
+              source ={require('./assets/MuncieEventsAppIcons/religion.png')}
+              />
+            </View>
+            )
+          default:
+          return(
+            <View>
+              <Image
+              style={{flex: 1, resizeMode: 'contain', width: 60, height: 60}}
+              source ={require('./assets/MuncieEventsAppIcons/general.png')}
+              />
+            </View>
+            )
+        }
       }
 
       setEventEntryText(eventEntry) {
