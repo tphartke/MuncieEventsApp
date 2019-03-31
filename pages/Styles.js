@@ -19,13 +19,28 @@ export default StyleSheet.create({
     },
     
     eventRow: {
-        backgroundColor:'#ddd', 
+        backgroundColor:'#eee', 
         fontSize: 14, 
         borderColor:'black', 
         borderWidth:1, 
         paddingHorizontal: 10,
         borderRadius: 5, 
-        marginHorizontal: 5
+        marginHorizontal: 5,
+        justifyContent: 'center', 
+        alignItems: 'center',
+        display: 'flex'
+    },
+
+    eventRowText: {
+        fontSize: 14, 
+        flex: 1,
+        textAlign: 'center', 
+        alignSelf: 'stretch'
+    },
+
+    eventRowImage: {
+        width: 60, 
+        height: 60
     },
 
     loadingViewPadding: {
@@ -36,6 +51,7 @@ export default StyleSheet.create({
     backgroundImage:{
         height: '100%',
         width: '100%',
+        opacity: 0.5
     },
 
     wrapper: {

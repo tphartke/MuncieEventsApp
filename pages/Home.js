@@ -45,7 +45,7 @@ export default class HomeScreen extends React.Component{
           );
         }
         return(
-          <View>
+          <View style={Styles.wrapper}>
             <View style={Styles.topBarWrapper}>
               <Animatable.View animation = "slideInRight" duration={500} style={Styles.topBarContent}>
                   <CustomButton
@@ -62,9 +62,7 @@ export default class HomeScreen extends React.Component{
                     <Icon name="ios-search" style={Styles.iosSearch}/>
                   </Animatable.View>
             </View>
-            <ImageBackground source ={require("../assets/boyum_map_cropped.png")} style={Styles.backgroundImage}>
                 {mainView}
-            </ImageBackground>
             </View>
           );
         }

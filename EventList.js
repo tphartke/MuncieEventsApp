@@ -121,7 +121,7 @@ class EventList extends React.Component {
              <TouchableOpacity onPress={() => this.setState({selectedEvent: eventEntry})} style={Styles.eventRow}>
               <View style={{flexDirection:'row', flex:1}}>
                 {this.getCategoryImage(eventEntry)}
-               <Text style={{flex:1}}>
+               <Text style={Styles.eventRowText}>
                 {listText}
                </Text>
                {this.getURLImage(imageURL)}
@@ -259,7 +259,7 @@ class EventList extends React.Component {
          return(
           <View>
             <Image
-            style={{width: 60, height: 60}}
+            style={Styles.eventRowImage}
             source = {{uri: imageURL}}
             />
           </View>
