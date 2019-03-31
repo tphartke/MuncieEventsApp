@@ -126,7 +126,7 @@ class EventList extends React.Component {
                {this.getURLImage(imageURL)}
                </View>
              </TouchableOpacity>
-             </Animatable.View>
+            </Animatable.View>
         )
       }
 

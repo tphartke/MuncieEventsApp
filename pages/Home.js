@@ -1,6 +1,6 @@
 import React from 'react';
 import EventList from "../EventList"
-import {TextInput, View, Text} from 'react-native';
+import {TextInput, View, Text, ImageBackground} from 'react-native';
 import CustomButton from "./CustomButton";
 import Icon from 'react-native-vector-icons/Ionicons'
 import * as Animatable from 'react-native-animatable'
@@ -45,7 +45,7 @@ export default class HomeScreen extends React.Component{
           );
         }
         return(
-          <View style={Styles.wrapper}>
+          <ImageBackground source ={require("C:\Users\Ronan\Documents\MuncieEventsApp\assets\boyum map - cropped.png")} style={Styles.backgroundImage}>
             <View style={Styles.topBarWrapper}>
               <Animatable.View animation = "slideInRight" duration={500} style={Styles.topBarContent}>
                   <CustomButton
@@ -63,7 +63,7 @@ export default class HomeScreen extends React.Component{
                   </Animatable.View>
                 </View>
                 {mainView}
-            </View>
+            </ImageBackground>
           );
         }
 
