@@ -45,7 +45,7 @@ export default class HomeScreen extends React.Component{
           );
         }
         return(
-          <ImageBackground source ={require("C:\Users\Ronan\Documents\MuncieEventsApp\assets\boyum map - cropped.png")} style={Styles.backgroundImage}>
+          <View>
             <View style={Styles.topBarWrapper}>
               <Animatable.View animation = "slideInRight" duration={500} style={Styles.topBarContent}>
                   <CustomButton
@@ -61,9 +61,11 @@ export default class HomeScreen extends React.Component{
                     />
                     <Icon name="ios-search" style={Styles.iosSearch}/>
                   </Animatable.View>
-                </View>
+            </View>
+            <ImageBackground source ={require("../assets/boyum_map_cropped.png")} style={Styles.backgroundImage}>
                 {mainView}
             </ImageBackground>
+            </View>
           );
         }
 

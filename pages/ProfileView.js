@@ -155,6 +155,12 @@ export default class ProfileView extends React.Component {
                     textStyle = {Styles.longButtonTextStyle}
                     onPress = {()=>this.setState({changePassword: true})}
                 />
+                <CustomButton 
+                    text="Edit Mailing List Settings" 
+                    buttonStyle = {Styles.longButtonStyle}
+                    textStyle = {Styles.longButtonTextStyle}
+                    onPress = {()=>{}}
+                />
               </View>
           )
       }
