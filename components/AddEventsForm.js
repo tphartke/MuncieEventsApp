@@ -69,6 +69,7 @@ export default class AddEventsForm extends Component{
                     selectedValue = {this.state.categorySelectedValue}
                     onValueChange={(value) => {
                     this.setState({categorySelectedValue: value, categorySelectedName: value.label});}}
+                    style={{height:100}}
                 >
                     {categorylist}
                 </Picker>
@@ -135,6 +136,7 @@ export default class AddEventsForm extends Component{
                             this.highlightedDate = date
                         }}
                         mode={'date'}
+                        style={{height:100}}
                     />
                     <Text>Start Time:</Text>
                     <DatePickerIOS 
@@ -142,7 +144,9 @@ export default class AddEventsForm extends Component{
                         mode= "time"
                         onDateChange={(time) => {
                             this.highlightedStartTime = time
-                        }}/>
+                        }}
+                        style={{height:100}}
+                        />
                     <Text>End Time:</Text>
                     <DatePickerIOS 
                         date={new Date()}
@@ -150,6 +154,7 @@ export default class AddEventsForm extends Component{
                         onDateChange={(time) => {
                             this.highlightedEndTime = time
                         }}
+                        style={{height:100}}
                     />
                     {/*select button*/}
                     <CustomButton
