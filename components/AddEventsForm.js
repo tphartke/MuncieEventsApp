@@ -64,12 +64,11 @@ export default class AddEventsForm extends Component{
             return <Picker.Item key={name[0]} value={name[1]} label={name[0]} />
         });
         return(
-            <View style = {[Styles.formEntry, {borderColor:'black', borderRadius: 10, borderWidth: 1}]}>
+            <View style = {[Styles.formEntry, {height: 50, borderColor:'black', borderRadius: 10, borderWidth: 1}]}>
                 <Picker     
                     selectedValue = {this.state.categorySelectedValue}
                     onValueChange={(value) => {
                     this.setState({categorySelectedValue: value, categorySelectedName: value.label});}}
-                    style={{height:100}}
                 >
                     {categorylist}
                 </Picker>
