@@ -1,11 +1,14 @@
 import React from 'react';
-import {Text, View, WebView, ScrollView, Image} from 'react-native';
+import {Text, View, WebView, ScrollView, Image, AsyncStorage, Alert} from 'react-native';
 import DateAndTimeParser from "../DateAndTimeParser";
 import{ withNavigation } from "react-navigation";
 import Styles from './Styles';
 import CustomButton from './CustomButton';
 import * as Animatable from 'react-native-animatable';
-import EventList from '../EventList'
+import EventList from '../EventList';
+import LoadingScreen from '../components/LoadingScreen';
+import EditEvents from './EditEvents'
+
 
 const script = `
   <script>
@@ -39,18 +42,54 @@ class ExpandedView extends React.Component {
         super(props);
         this.dateAndTimeParser = new DateAndTimeParser();
         this.state = {imageHeight:0,
-                      imageWidth:0}
+                      imageWidth:0,
+                      isLoading: true,
+                      userid: "", 
+                      editingEvent: false, 
+                      deletingEvent: false}
         this.eventData = null
         this.previousScreen = null
         this.state={selectedPreviousScreen:false}
       }
 
+    componentDidMount(){
+      this.retrieveStoredToken()
+    }
+
     render() {
-      renderedInfo = this.getExpandedView()
-      if(this.state.selectedPreviousScreen){
-        renderedInfo = (<EventList apicall = {this.previousScreen}/>)
-      }
+      renderedInfo = this.getDisplayedScreen()
       return(<View style={Styles.expandedView}>{renderedInfo}</View>)
+    }
+
+    getDisplayedScreen(){
+        renderedInfo = null
+        if(this.state.isLoading != false){
+          renderedInfo = this.getLoadingScreen();
+        }
+        else if(this.state.selectedPreviousScreen){
+          renderedInfo = (<EventList apicall = {this.previousScreen}/>)
+        }
+        else if(this.state.editingEvent){
+          renderedInfo = this.getEditEventsPage()
+        }
+        else{
+          renderedInfo = this.getExpandedView()
+        }
+        return renderedInfo
+    }
+
+    getEditEventsPage(){
+      return(
+            <View>
+                <CustomButton 
+                  text = "Go back"
+                  buttonStyle={Styles.longButtonStyle}
+                  textStyle = {Styles.longButtonTextStyle}
+                  onPress={() => this.setState({editingEvent: false})}
+                />
+                <EditEvents />
+            </View>
+      )
     }
 
     getExpandedView(){
@@ -65,15 +104,22 @@ class ExpandedView extends React.Component {
     }
     mainContent = this.getMainContent()
     return (
-      <ScrollView
-        style={Styles.expandedView}
-      >
-        <Animatable.View animation = 'slideInRight' duration = {600}>
+        <ScrollView
+          style={Styles.expandedView}
+        >
+          <Animatable.View animation = 'slideInRight' duration = {600}>
             {mainContent}
-        </Animatable.View>
-      </ScrollView>
+          </Animatable.View>
+        </ScrollView>
+      )
+    }
 
-    )
+    getLoadingScreen(){
+      return(
+        <View>
+          <LoadingScreen/>
+        </View>
+      );
     }
 
     getMainContent(){
@@ -89,13 +135,37 @@ class ExpandedView extends React.Component {
               textStyle = {Styles.longButtonTextStyle}
               onPress={() => this.goBackOnce()}
             />
+            {this.getEditEventButtons()}
             {this.getURLImage(imageURL)}
             {this.getTimeView()}
             {this.getLocationView()}
-            {this.getDescriptionView()}    
+            {this.getDescriptionView()}
           </View>
         </View>
       );
+    }
+
+    getEditEventButtons(){
+      currentUserCreatedEvent = ((this.state.userid == this.eventData.relationships.user.data.id) && (this.state.userid != ''))
+      if(currentUserCreatedEvent){
+        return(<View>
+            <CustomButton 
+              text = "Edit Event"
+              buttonStyle={Styles.longButtonStyle}
+              textStyle = {Styles.longButtonTextStyle}
+              onPress={() => this.setState({editingEvent: true})}
+            />
+            <CustomButton 
+              text = "Delete Event"
+              buttonStyle={Styles.longButtonStyle}
+              textStyle = {Styles.longButtonTextStyle}
+              onPress={() => this.getDeleteEventConfirmation()}
+            />
+        </View>)
+      }
+      else{
+        return null
+      }
     }
 
     goBackOnce(){
@@ -188,5 +258,26 @@ class ExpandedView extends React.Component {
       return " to " + this.dateAndTimeParser.extractTimeFromDate(this.eventData.attributes.time_end);
     }
     return "";
+  }
+
+  retrieveStoredToken = async() => {
+    try {
+      const tkn = await AsyncStorage.getItem('Token')
+      this.setState({userid: tkn, isLoading: false})
+     } catch (error) {
+       console.log("Error retrieving token")
+        return "NULL"
+     }
+  }
+
+  getDeleteEventConfirmation(){
+    Alert.alert(
+      'Are you sure you want to delete this event?',
+      '',
+      [
+        {text: 'No', onPress: () => {}, style: 'cancel'},
+        {text: 'Yes', onPress: () => this.setState({deletingEvent: true})},
+      ]
+    );
   }
 } export default withNavigation(ExpandedView)
