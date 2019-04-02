@@ -65,8 +65,9 @@ class ExpandedView extends React.Component {
     }
     mainContent = this.getMainContent()
     return (
-      <ScrollView>
+      <ScrollView
         style={Styles.expandedView}
+      >
         <Animatable.View animation = 'slideInRight' duration = {600}>
             {mainContent}
         </Animatable.View>
