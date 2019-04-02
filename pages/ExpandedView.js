@@ -70,12 +70,26 @@ class ExpandedView extends React.Component {
           renderedInfo = (<EventList apicall = {this.previousScreen}/>)
         }
         else if(this.state.editingEvent){
-          renderedInfo = (<EditEvents />)
+          renderedInfo = this.getEditEventsPage()
         }
         else{
           renderedInfo = this.getExpandedView()
         }
         return renderedInfo
+    }
+
+    getEditEventsPage(){
+      return(
+            <View>
+                <CustomButton 
+                  text = "Go back"
+                  buttonStyle={Styles.longButtonStyle}
+                  textStyle = {Styles.longButtonTextStyle}
+                  onPress={() => this.setState({editingEvent: false})}
+                />
+                <EditEvents />
+            </View>
+      )
     }
 
     getExpandedView(){
@@ -90,15 +104,14 @@ class ExpandedView extends React.Component {
     }
     mainContent = this.getMainContent()
     return (
-      <ScrollView
-        style={Styles.expandedView}
-      >
-        <Animatable.View animation = 'slideInRight' duration = {600}>
+        <ScrollView
+          style={Styles.expandedView}
+        >
+          <Animatable.View animation = 'slideInRight' duration = {600}>
             {mainContent}
-        </Animatable.View>
-      </ScrollView>
-
-    )
+          </Animatable.View>
+        </ScrollView>
+      )
     }
 
     getLoadingScreen(){
