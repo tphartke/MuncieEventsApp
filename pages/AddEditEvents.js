@@ -45,7 +45,7 @@ export default class AddEditEvent extends React.Component {
                 <Text style={Styles.title}>
                     Add an Event
                 </Text>
-                <ScrollView style={Styles.content}>
+                <ScrollView style={Styles.content} nestedScrollEnabled={true}>
                     {AddEventsView}
                 </ScrollView>
             </View>

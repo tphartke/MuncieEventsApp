@@ -1,5 +1,5 @@
 import React, {Component} from 'react';  
-import {View, Platform, Text, Picker, TextInput, Modal, DatePickerAndroid, TimePickerAndroid, DatePickerIOS} from 'react-native';
+import {View, Platform, Text, Picker, TextInput, Modal, DatePickerAndroid, TimePickerAndroid, DatePickerIOS, FlatList, CheckBox} from 'react-native';
 import Styles from '../pages/Styles';
 import APICacher from '../APICacher'
 import CustomButton from '../pages/CustomButton';
@@ -11,10 +11,14 @@ export default class AddEventsForm extends Component{
         this.state = {
             isLoading: true,
             IOSModalVisible: false,
+            tagModalVisable: false,
             chosenDate: new Date(),
             startTime: "12:00 PM",
-            endTime: null
+            endTime: null,
+            selectedTagArray: []
+
         }
+        this.tags=[]
         this.APICacher = new APICacher();
     }
 
@@ -78,11 +82,93 @@ export default class AddEventsForm extends Component{
         );
     }
 
+    getTagListModal(){
+        tagFlatList = this.getSelectableTagsList();
+        return(
+            <Modal
+            animationType ="slide"
+            transparent={false}
+            visible= {this.state.tagModalVisable}
+            onRequestClose={() => {
+                console.log("Modal has been closed")
+            }}>
+                {tagFlatList}
+            </Modal>
+        );
+
+    }
+
+    getSelectableTagsList(){
+        tagList = this.tags.map((name) =>{
+            return(name[0])
+        });
+        return(
+            <View style={{flex: 1}}>
+                <View style={{flex: .9}}>
+                    <FlatList
+                        data={tagList}
+                        renderItem={({item}) => 
+                            this.getSelectableTag(item)
+                        }
+                        ListEmptyComponent={() => this.getNoTagsFoundMessage()}
+                        nestedScrollEnabled= {true}
+                    />
+                </View>
+                <View style={{alignItems:"center"}}>
+                    <CustomButton
+                        text="Close"
+                        buttonStyle={[Styles.mediumButtonStyle]}
+                        textStyle={Styles.mediumButtonTextStyle}
+                        onPress={() => this.setState({tagModalVisable: false})}
+                    />
+                </View>
+                
+            </View>
+        );
+    }s
+
+    getSelectableTag(tag){
+        isTagAlreadySelected = this.isInSelectedTagList(tag)
+        return(
+            <View style={{flexDirection: 'row'}}>
+                <CheckBox
+                    value={isTagAlreadySelected}
+                    onValueChange={() => this.updateSelectedTagList(tag)}
+                />
+                <Text style={{alignSelf:"center"}}>{tag}</Text>
+            </View>
+        );
+    }
+
+    isInSelectedTagList(tag){
+        selectedTagList = this.state.selectedTagArray
+        return selectedTagList.includes(tag)
+    }
+
+    getNoTagsFoundMessage(){
+        return(
+            <Text>No tags found. Make sure you're phone is connected to the internet and try again.</Text>
+        );
+    }
+
+    updateSelectedTagList(tag){
+        selectedTagList = this.state.selectedTagArray
+        tagNeedsRemoved = this.isInSelectedTagList(tag)
+        if(tagNeedsRemoved){
+            index = selectedTagList.indexOf(tag)
+            selectedTagList.splice(index, 1)
+        }
+        else{
+            selectedTagList.push(tag)
+        }
+        this.setState({selectedTagArray: selectedTagList})
+    }
+
     getAndroidTimeFields(){
         if(Platform.OS == "android"){
             return(
                 <View style={Styles.formRow}>
-                    <Text style ={Styles.formLabel}>Time: </Text>
+                    <Text style ={Styles.formLabel}>Time </Text>
                     <CustomButton 
                         buttonStyle={Styles.mediumButtonStyle}
                         textStyle={Styles.mediumButtonTextStyle}
@@ -93,7 +179,7 @@ export default class AddEventsForm extends Component{
             );
         }
         else{
-            console.log("iOS")
+            //return nothing if on IOS
             return(
                 <View></View>
             );
@@ -115,6 +201,7 @@ export default class AddEventsForm extends Component{
             console.warn('Cannot open time picker', message);
           }
     }
+
 
     getIOSDatePicker(){
         highlightedDate = new Date()
@@ -206,8 +293,6 @@ export default class AddEventsForm extends Component{
     }
 
     render(){
-        IOSDatePickerModal = this.getIOSDatePicker()
-        androidTimePicker = this.getAndroidTimeFields()
         if(this.state.isLoading){;
             return(
             <View>
@@ -216,9 +301,13 @@ export default class AddEventsForm extends Component{
             );
         }
         else{
+            IOSDatePickerModal = this.getIOSDatePicker();
+            androidTimePicker = this.getAndroidTimeFields();
+            tagListModal = this.getTagListModal();
             return(
                     <View style={{flex:1}}>
                         {IOSDatePickerModal}
+                        {tagListModal}
                         <View style={Styles.formRow}>
                             <Text style={Styles.formLabel}>Event </Text>
                             <TextInput               
@@ -277,6 +366,16 @@ export default class AddEventsForm extends Component{
                         </View>
                         <View style={Styles.formRow}>
                             <Text style={Styles.formLabel}>Tags </Text>
+                            <CustomButton
+                                text="Add Tags"
+                                buttonStyle={[Styles.mediumButtonStyle]}
+                                textStyle={Styles.mediumButtonTextStyle}
+                                onPress={() => this.setState({tagModalVisable: true})}
+                            />
+                        </View>
+                        <View style={Styles.formRow}>
+                            <Text style={Styles.formLabel}>Chosen Tags: </Text>
+                            <Text style={Styles.formEntry}>{this.state.selectedTagArray.toString()}</Text>
                         </View>
                         <View style = {Styles.formRow}>
                             <Text style={Styles.formLabel}>Cost </Text>
