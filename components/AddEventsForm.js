@@ -1,5 +1,5 @@
 import React, {Component} from 'react';  
-import {View, Platform, Text, Picker, TextInput, Modal, DatePickerAndroid, TimePickerAndroid, DatePickerIOS, FlatList, CheckBox} from 'react-native';
+import {View, Platform, Text, Picker, TextInput, Modal, DatePickerAndroid, TimePickerAndroid, DatePickerIOS, FlatList, Switch} from 'react-native';
 import Styles from '../pages/Styles';
 import APICacher from '../APICacher'
 import CustomButton from '../pages/CustomButton';
@@ -131,7 +131,7 @@ export default class AddEventsForm extends Component{
         isTagAlreadySelected = this.isInSelectedTagList(tag)
         return(
             <View style={{flexDirection: 'row'}}>
-                <CheckBox
+                <Switch
                     value={isTagAlreadySelected}
                     onValueChange={() => this.updateSelectedTagList(tag)}
                 />
