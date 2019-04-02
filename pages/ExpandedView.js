@@ -140,13 +140,21 @@ class ExpandedView extends React.Component {
             {this.getTimeView()}
             {this.getLocationView()}
             {this.getDescriptionView()}
+            {this.getAuthorView()}
           </View>
         </View>
       );
     }
 
     getEditEventButtons(){
-      currentUserCreatedEvent = ((this.state.userid == this.eventData.relationships.user.data.id) && (this.state.userid != ''))
+      eventAuthorID=""
+      try{
+        eventAuthorID=this.eventData.relationships.user.data.id
+      }
+      catch(error){
+        eventAuthorID=''
+      }
+      currentUserCreatedEvent = ((this.state.userid == eventAuthorID) && (this.state.userid != ''))
       if(currentUserCreatedEvent){
         return(<View>
             <CustomButton 
@@ -183,7 +191,6 @@ class ExpandedView extends React.Component {
 
 
    getURLImage(imageURL){
-
     if(imageURL == "None"){
       return
     }else{
@@ -244,6 +251,23 @@ class ExpandedView extends React.Component {
         />
       </View>
      );
+   }
+
+   getAuthorView(){
+     try{
+        authorName = this.eventData.attributes.user.name
+     }
+     catch(error){
+        authorName = "Anonymous"
+     }
+     return(<View>
+               <Text style={Styles.header}>
+                  Author 
+              </Text>
+              <Text>
+                {authorName}
+              </Text>
+            </View>)
    }
 
    getNullableAttribute(eventAttribute){
