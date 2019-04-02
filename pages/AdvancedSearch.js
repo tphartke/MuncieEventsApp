@@ -70,7 +70,6 @@ export default class AdvancedSearch extends React.Component {
 
   render(){
     title = "Advanced Search"
-    
     if(this.state.isInitialLoading){
       mainView = this.getLoadingScreen();
     }
@@ -89,9 +88,6 @@ export default class AdvancedSearch extends React.Component {
     return (
       <View style={Styles.wrapper}>
         {this.getTopBar()}
-        <Text style={Styles.title}>
-          {title}
-        </Text>
         <View>
           {mainView}
         </View>
@@ -147,7 +143,7 @@ export default class AdvancedSearch extends React.Component {
           buttonStyle = {Styles.longButtonStyle}
           textStyle = {Styles.longButtonTextStyle}
           onPress={() => this.setState({resultsLoaded: false})}/>
-        <EventList useSearchResults = {true} />
+        <EventList useSearchResults = {true} style={Styles.advancedSearchResults}/>
     </View>
 
   );}
@@ -226,14 +222,14 @@ export default class AdvancedSearch extends React.Component {
   returnSearchResults(criteria){
     if(criteria == "tag"){
       searchURL = 'https://api.muncieevents.com/v1/events/future?withTags[]=' + this.state.tagSelectedValue + "&apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ"
-      newTitle = "Tag: " + this.state.tagSelectedValue
+      //newTitle = "Tag: " + this.state.tagSelectedValue
     }
     else if(criteria == "category"){
       searchURL = 'https://api.muncieevents.com/v1/events/category/' + this.state.categorySelectedValue + "?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ"
-      newTitle = "Category: " + this.state.categorySelectedValue
+      //newTitle = "Category: " + this.state.categorySelectedValue
     }
     console.log(searchURL)
-    this.state.title = newTitle;
+    //this.state.title = newTitle;
     this.state.url = searchURL;
     this.setState({
       resultsLoading: true

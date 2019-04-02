@@ -1,6 +1,6 @@
 import { StyleSheet, Dimensions} from "react-native"
-const eventListHeight = Dimensions.get('window').height*0.815
-const expandedViewHeight = Dimensions.get('window').height*0.82
+const contentHeight = Dimensions.get('window').height*0.815
+const advancedSearchHeight = Dimensions.get('window').height*0.08
 
 export default StyleSheet.create({
     title: {
@@ -22,12 +22,17 @@ export default StyleSheet.create({
 
     eventList: {
         flex: 1,
-        flexBasis: eventListHeight
+        flexBasis: contentHeight
     },
 
     expandedView: {
         flex: 1,
-        flexBasis: expandedViewHeight
+        flexBasis: contentHeight
+    },
+
+    advancedSearchResults: {
+        flex: 1,
+        flexBasis: advancedSearchHeight
     },
     
     eventRow: {

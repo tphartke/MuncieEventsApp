@@ -95,7 +95,7 @@ export default class HomeScreen extends React.Component{
               EVENTS
             </Text>
             <View>
-              <EventList/>
+              <EventList style={Styles.eventList}/>
             </View>
           </View>)
       }
