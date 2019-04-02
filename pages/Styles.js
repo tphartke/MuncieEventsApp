@@ -1,4 +1,6 @@
-import { StyleSheet } from "react-native"
+import { StyleSheet, Dimensions} from "react-native"
+const eventListHeight = Dimensions.get('window').height*0.815
+const expandedViewHeight = Dimensions.get('window').height*0.82
 
 export default StyleSheet.create({
     title: {
@@ -10,12 +12,22 @@ export default StyleSheet.create({
     },
 
     content: {
-        paddingTop: 5
+        paddingTop: 5,
     },
 
     widgetContent: {
         padding: 10,
         fontSize: 16        
+    },
+
+    eventList: {
+        flex: 1,
+        flexBasis: eventListHeight
+    },
+
+    expandedView: {
+        flex: 1,
+        flexBasis: expandedViewHeight
     },
     
     eventRow: {
@@ -57,7 +69,9 @@ export default StyleSheet.create({
     wrapper: {
         paddingTop:20,
         flex: 1,
-        backgroundColor: 'white'
+        backgroundColor: 'white',
+        flexBasis: '100%'
+
     },
     
     topBarWrapper: {
@@ -65,7 +79,7 @@ export default StyleSheet.create({
         backgroundColor: '#aaa', 
         paddingTop: 10, 
         paddingHorizontal: 10, 
-        flexDirection: 'row'
+        flexDirection: 'row',
     },
 
     topBarContent: {

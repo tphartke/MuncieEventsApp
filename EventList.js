@@ -24,10 +24,6 @@ class EventList extends React.Component {
         this.APICacher = new APICacher();
       }
 
-      componentDidMount(){
-        //this.setState({apicall: this.props.apicall});
-      }
-
       componentWillReceiveProps({apicall}) {
         this.previousUrl = this.state.apicall
         this.setState({apicall: apicall})
@@ -46,6 +42,7 @@ class EventList extends React.Component {
         return(
           <View>
             <FlatList
+              style={Styles.eventList}
               data={dataSource}
               renderItem={({item}) => 
                 this.generateEventEntryView(item)
