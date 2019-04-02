@@ -133,7 +133,7 @@ class ExpandedView extends React.Component {
     }
 
     getEditEventButtons(){
-      currentUserCreatedEvent = (this.state.userid == this.eventData.relationships.user.data.id)
+      currentUserCreatedEvent = ((this.state.userid == this.eventData.relationships.user.data.id) && (this.state.userid != ''))
       if(currentUserCreatedEvent){
         return(<View>
             <CustomButton 
