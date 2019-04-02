@@ -1,5 +1,5 @@
 import { StyleSheet, Dimensions} from "react-native"
-const contentHeight = Dimensions.get('window').height*0.815
+const contentHeight = Dimensions.get('window').height*0.848
 const advancedSearchHeight = Dimensions.get('window').height*0.08
 
 export default StyleSheet.create({
@@ -59,7 +59,7 @@ export default StyleSheet.create({
     eventRowText: {
         fontSize: 14, 
         flex: 1,
-        textAlign: 'center', 
+        textAlign: 'left', 
         alignSelf: 'stretch'
     },
 

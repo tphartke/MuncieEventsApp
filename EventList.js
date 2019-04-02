@@ -232,7 +232,7 @@ class EventList extends React.Component {
         if (eventEntry.attributes.time_end != null) {
           endTimeText = " to " + this.dateAndTimeParser.extractTimeFromDate(eventEntry.attributes.time_end);
         }
-        var listText = title + '\n' + startTimeText + endTimeText + " @ " + locationText;
+        var listText = title + '\n' + startTimeText + endTimeText + "\n" + locationText;
         return listText;
       }
 
