@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, Platform, DatePickerAndroid, DatePickerIOS, TextInput} from 'react-native';
+import {Text, View, Platform, DatePickerAndroid, DatePickerIOS, TextInput, TouchableOpacity} from 'react-native';
 import CustomButton from "./CustomButton";
 import EventList from "../EventList"
 import Styles from './Styles';
@@ -75,9 +75,9 @@ export default class GoToDate extends React.Component {
       return(
         <View style={Styles.topBarWrapper}>
         <Animatable.View animation = "slideInRight" duration={500} style={Styles.topBarContent}>
-            <CustomButton
-                text="Menu"
-                onPress={() => this.props.navigation.openDrawer()}/>
+        <Icon name="ios-menu" style = {Styles.menuIcon} size={34}
+                   onPress={() => this.props.navigation.openDrawer()}/>
+                    
             <TextInput
                 placeholder=' Search'
                 value={this.state.text} 
@@ -106,10 +106,10 @@ export default class GoToDate extends React.Component {
       )
     }
 
-    getTitle(){
+   getTitle(){
       return(
         <Text style={Styles.title}>
-          EVENTS
+          GO TO DATE
         </Text>
       );
     }

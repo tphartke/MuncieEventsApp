@@ -7,8 +7,16 @@ export default StyleSheet.create({
         textAlign:"center",
         fontSize:30,
         fontWeight:"bold",
-        color:'#efe0d5',
-        backgroundColor: '#cb532b',
+        color:'#cb532b',
+    },
+
+    menuIcon:{
+        zIndex: 9,
+        left: 5,
+        top: 5,
+        alignItems: 'flex-start',
+        position: 'absolute'
+
     },
 
     content: {
@@ -83,21 +91,21 @@ export default StyleSheet.create({
         height: 65, 
         backgroundColor: '#aaa', 
         paddingTop: 10, 
-        paddingHorizontal: 10, 
+        paddingHorizontal: 5, 
         flexDirection: 'row',
     },
 
     topBarContent: {
-        height: 45, 
-        flex: 1, 
-        flexDirection: 'row', 
+        height: 45,
+        flexDirection: 'row',
+        paddingTop: 5, 
         paddingHorizontal: 5,
-        paddingLeft: 5, 
+        paddingLeft: 7, 
         justifyContent: 'center',
         borderColor: 'black', 
-        borderRadius: 10, 
+        borderRadius: 35, 
         borderWidth: 1, 
-        width: 320, 
+        width: 360, 
         backgroundColor: '#fff', 
         alignItems: 'center'
     },
@@ -190,7 +198,9 @@ export default StyleSheet.create({
     },
 
     longButtonStyle: {
-        width:400, 
+        width: '100%',
+        alignItems: 'center',
+        textAlign: 'center',
         height:50
     },
 
