@@ -101,7 +101,8 @@ export default class Register extends React.Component {
               body: JSON.stringify({
                 password: this.state.password,
                 email: this.state.email,
-                name: this.state.name
+                name: this.state.name,
+                join_mailing_list: this.state.mailingList
               })
           })
           .then((response) => response.json())
