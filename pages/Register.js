@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, TextInput} from 'react-native';
+import {Text, View, TextInput, Switch} from 'react-native';
 import CustomButton from './CustomButton';
 import Styles from './Styles';
 
@@ -11,7 +11,8 @@ export default class Register extends React.Component {
                         email: "",
                         name: "",
                         userregistered: false,
-                        statusMessage: ""})
+                        statusMessage: "",
+                        mailingList: false})
         dataSource = null
       }
 
@@ -47,6 +48,13 @@ export default class Register extends React.Component {
                     placeholder="Retype Password"
                     secureTextEntry={true}
                 />
+                <Text>Join mailing list</Text>
+                <Switch
+                    value={this.state.mailingList}
+                    onValueChange={(value) => this.setState({mailingList: value})}
+                />
+                <Text>The personalized mailing list delivers daily or weekly emails about all upcoming events or only the categories 
+                that you're interested in. After registering, you'll be able to go to a page where you can customize your subscription.</Text>
 
                 <CustomButton 
                     text="Register" 
