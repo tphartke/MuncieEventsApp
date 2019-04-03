@@ -2,32 +2,47 @@ import React from 'react';
 import {View, TextInput, Text} from 'react-native';
 import CustomButton from "./CustomButton";
 import Styles from './Styles';
+import LogInRegister from './LogInRegister'
 
 export default class ChangePassword extends React.Component {
     constructor(props){
         super(props);
         this.state = ({
-                    userid: "",
+                    userToken: "",
                     newPassword: "", 
                     confirmNewPassword: "", 
-                    statusMessage: ""
+                    statusMessage: "",
+                    passwordChanged: false
         })
     }
 
     componentDidMount(){
-        this.setState({userid: this.props.userid});
+        this.setState({userToken: this.props.userToken});
     }
     render(){
+        renderedScreen = null
+        if(!this.state.passwordChanged){
+            renderedScreen = this.getChangePasswordScreen()
+        }
+        else{
+            renderedScreen = (<Text>{this.state.statusMessage}</Text>)
+        }
+        return(renderedScreen)
+    }
+
+    getChangePasswordScreen(){
         return(
             <View>
                 <TextInput 
                     onChangeText={(newPassword) => this.setState({newPassword})}
                     style={Styles.textBox}
                     placeholder="Enter new password"
+                    value={this.state.newPassword}
                     secureTextEntry={true}/>
                 <TextInput 
                     onChangeText={(confirmNewPassword) => this.setState({confirmNewPassword})}
                     style={Styles.textBox}
+                    value={this.state.confirmNewPassword}
                     placeholder="Confirm new password"
                     secureTextEntry={true}/>
                 <CustomButton 
@@ -54,18 +69,17 @@ export default class ChangePassword extends React.Component {
     }
 
     updatePassword(){
-        fetch("https://api.muncieevents.com/v1/user/password?apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1", 
+        fetch("https://api.muncieevents.com/v1/user/password?userToken=" + this.state.userToken + "&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1", 
           {method: "PATCH",
           headers: {
                     Accept: 'application/vnd.api+json',
                     'Content-Type': 'application/json',
               },
           body: JSON.stringify({
-            userToken: this.state.userid,
-            password: this.state.newPassword
+            password: this.state.newPassword,
           })
       })
-      .then((responseJson)=>console.log(responseJson))
+      .then(this.setState({statusMessage: "Password changed successfully", confirmNewPassword: "", newPassword: "", passwordChanged: true}))
         .catch((error) =>{
            console.log(error)
            this.setState({statusMessage: "Error reaching server: " + error})

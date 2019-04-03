@@ -32,7 +32,7 @@ export default class ProfileView extends React.Component {
         }
         else if(this.state.changePassword){
             contentView = (<View>
-                              <ChangePassword userid={this.state.userid}/>
+                              <ChangePassword userToken={this.state.token}/>
                               <CustomButton 
                                   text="Go Back" 
                                   buttonStyle = {Styles.longButtonStyle}
@@ -96,7 +96,8 @@ export default class ProfileView extends React.Component {
         fetch("https://api.muncieevents.com/v1/user/profile?userToken=" + this.state.token + "&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1", 
           {method: "PATCH",
           headers: {
-            Accept: '*/*'
+            Accept: 'application/vnd.api+json',
+            'Content-Type': 'application/json',
             },
           body: JSON.stringify({
               email: this.state.email, 
