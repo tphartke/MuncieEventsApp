@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Muncie Events",
+    "name": "MuncieEvents",
     "description": "Muncie Events Mobile App",
     "slug": "MuncieEvents",
     "privacy": "public",
@@ -21,10 +21,14 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+
     },
     "android": {
-      "package": "com.muncieevents.MuncieEvents"
+      "package": "com.muncieevents.MuncieEvents",
+      "permissions": [
+        "CAMERA",
+        "MANAGE_DOCUMENTS"
+      ]
     }
   }
 }
