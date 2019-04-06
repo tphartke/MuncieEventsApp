@@ -16,7 +16,8 @@ export default class AddEventsForm extends Component{
             startTime: "12:00 PM",
             endTime: null,
             selectedTagArray: [],
-            filter: null
+            filter: null,
+            statusMessage: ""
         }
         this.tags=[]
         this.APICacher = new APICacher();
@@ -455,5 +456,24 @@ export default class AddEventsForm extends Component{
             );
         }
 
+    }
+
+    submitEvent(){
+        fetch("https://api.muncieevents.com/v1/user/login?apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1", 
+        {method: "POST",
+        headers: {
+            Accept: 'application/vnd.api+json',
+            'Content-Type': 'application/json',
+            },
+        body: JSON.stringify({
+          password: this.state.password,
+          email: this.state.email,
+        })
+    })
+    .then((response) => response.json())
+    .then((responseJson) => this.logUserIn(responseJson))
+      .catch((error) =>{
+         console.log(error)
+      })
     }
 }

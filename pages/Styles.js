@@ -35,7 +35,7 @@ export default StyleSheet.create({
 
     expandedView: {
         flex: 1,
-        flexBasis: contentHeight
+        flexBasis: contentHeight,
     },
 
     advancedSearchResults: {

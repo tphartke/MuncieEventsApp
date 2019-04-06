@@ -137,9 +137,13 @@ class ExpandedView extends React.Component {
             />
             {this.getEditEventButtons()}
             {this.getURLImage(imageURL)}
+            {this.getCostView()}
+            {this.getAgeRestrictions()}
             {this.getTimeView()}
             {this.getLocationView()}
             {this.getDescriptionView()}
+            {this.getTags()}
+            {this.getSource()}
             {this.getAuthorView()}
           </View>
         </View>
@@ -203,6 +207,60 @@ class ExpandedView extends React.Component {
       </View>
       ) 
      }
+   }
+
+   getCostView(){
+    if(this.eventData.attributes.cost){
+      return(<View>
+                <Text style={Styles.header}>Cost</Text>
+                <Text>{this.eventData.attributes.cost}</Text>
+            </View>)
+   }
+   else{
+      return null
+   }
+ }
+
+   getAgeRestrictions(){
+    if(this.eventData.attributes.age_restriction){
+      return(<View>
+                <Text style={Styles.header}>Age Restrictions</Text>
+                <Text>{this.eventData.attributes.age_restriction}</Text>
+            </View>)
+    }
+    else{
+        return null
+    }
+   }
+
+   getTags(){
+     tagView = ""
+     if(this.eventData.attributes.tags){
+       tags = this.eventData.attributes.tags;
+      for(i = 0; i < tags.length; i++){
+        tagView += tags[i].name + ", "
+      }
+      tagView = tagView.slice(0, -2);
+      return(<View>
+        <Text style={Styles.header}>Tags</Text>
+        <Text>{tagView}</Text>
+      </View>)
+     }
+     else{
+       return null
+     }
+   }
+
+   getSource(){
+    if(this.eventData.attributes.source){
+      return(<View>
+                <Text style={Styles.header}>Source</Text>
+                <Text>{this.eventData.attributes.source}</Text>
+            </View>)
+    }
+    else{
+        return null
+    }
    }
 
    getTimeView(){
