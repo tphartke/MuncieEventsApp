@@ -45,9 +45,28 @@ export default class HomeScreen extends React.Component{
           );
         }
         return(
-          <View style={Styles.wrapper}>
-                {mainView}
+          <View>
+            <Icon name="ios-menu" style = {Styles.menuIcon} size={34}
+              onPress={() => this.props.navigation.openDrawer()}
+            />
+            <Text style={Styles.title}>
+              EVENTS
+            </Text>
+            <Animatable.View animation = "slideInRight" duration={500} style={Styles.topBarContent}>
+              <TextInput
+                placeholder=' Search'
+                value={this.state.text} 
+                style={Styles.searchBar}
+                onChangeText={(text) => this.setState({text})}
+                onBlur={() => {this.setState({isReady: false, searchurl: true})}}
+                showLoading='true'
+              />
+              <Icon name="ios-search" style={Styles.iosSearch} size={34}/>
+          </Animatable.View>
+            <View style={Styles.wrapper}>
+              {mainView}
             </View>
+          </View>
           );
         }
 
@@ -74,28 +93,11 @@ export default class HomeScreen extends React.Component{
 
       getHomeView(){
         return(
-          <View>
-            <Icon name="ios-menu" style = {Styles.menuIcon} size={34}
-                   onPress={() => this.props.navigation.openDrawer()}/>
-            <Text style={Styles.title}>
-              EVENTS
-            </Text>
-            <Animatable.View animation = "slideInRight" duration={500} style={Styles.topBarContent}>
-                  <TextInput
-                      placeholder=' Search'
-                      value={this.state.text} 
-                      style={Styles.searchBar}
-                      onChangeText={(text) => this.setState({text})}
-                      onBlur={() => {this.setState({isReady: false, searchurl: true})}}
-                      showLoading='true'
-                    />
-                    <Icon name="ios-search" style={Styles.iosSearch} size={34}/>
-                  </Animatable.View>
             <View>
               <EventList style={Styles.eventList}/>
             </View>
-          </View>)
-      }
+            )
+        }
 
       async startSearchSequence(searchurl){
         console.log(searchurl)
