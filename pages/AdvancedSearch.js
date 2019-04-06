@@ -50,7 +50,7 @@ export default class AdvancedSearch extends React.Component {
 
   async _fetchTagData(){
     key = "Tags"
-    url = "https://api.muncieevents.com/v1/tags/future?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ"
+    url = "https://api.muncieevents.com/v1/tags/tree?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ"
     await this._refreshData(key, url)
 
     this.tags = await this.APICacher._getJSONFromStorage(key)
