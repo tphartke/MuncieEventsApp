@@ -12,8 +12,8 @@ export default StyleSheet.create({
 
     menuIcon:{
         zIndex: 9,
-        left: 5,
-        top: 5,
+        left: 10,
+        top: 20,
         alignItems: 'flex-start',
         position: 'absolute'
 
@@ -83,8 +83,6 @@ export default StyleSheet.create({
         paddingTop:20,
         flex: 1,
         backgroundColor: 'white',
-        flexBasis: '100%'
-
     },
     
     topBarWrapper: {
