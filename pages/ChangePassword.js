@@ -2,7 +2,6 @@ import React from 'react';
 import {View, TextInput, Text} from 'react-native';
 import CustomButton from "./CustomButton";
 import Styles from './Styles';
-import LogInRegister from './LogInRegister'
 
 export default class ChangePassword extends React.Component {
     constructor(props){

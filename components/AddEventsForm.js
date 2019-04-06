@@ -1,5 +1,5 @@
 import React, {Component} from 'react';  
-import {View, Platform, Text, Picker, TextInput, Modal, DatePickerAndroid, TimePickerAndroid, DatePickerIOS, FlatList, Switch, KeyboardAvoidingView} from 'react-native';
+import {View, Platform, Text, Picker, TextInput, Modal, DatePickerAndroid, TimePickerAndroid, DatePickerIOS, FlatList, Switch, KeyboardAvoidingView, ScrollView, Dimensions} from 'react-native';
 import Styles from '../pages/Styles';
 import APICacher from '../APICacher'
 import CustomButton from '../pages/CustomButton';
@@ -68,10 +68,11 @@ export default class AddEventsForm extends Component{
             return <Picker.Item key={name[0]} value={name[1]} label={name[0]} />
         });
         return(
-            <View style = {[Styles.formEntry, {borderColor:'black', borderRadius: 10, borderWidth: 1}]}>
+            <View style = {[{borderColor:'black', borderRadius: 10, borderWidth: 1}]}>
                 <Picker     
                     selectedValue = {this.state.categorySelectedValue}
-                    style={{height:50}}
+                    style={{height:50}} 
+                    itemStyle={{height:50}}
                     onValueChange={(value) => {
                     this.setState({categorySelectedValue: value, categorySelectedName: value.label});}}
                 >
@@ -249,50 +250,57 @@ export default class AddEventsForm extends Component{
                 onRequestClose={() => {
                     console.log("Modal has been closed")
             }}>
-                <View>
-                    <DatePickerIOS 
-                        date={this.state.chosenDate}
-                        onDateChange={(date) => {
-                            this.highlightedDate = date
-                        }}
-                        mode={'date'}
-                        style={{height:100}}
-                    />
-                    <Text>Start Time:</Text>
-                    <DatePickerIOS 
-                        date={new Date()}
-                        mode= "time"
-                        onDateChange={(time) => {
-                            this.highlightedStartTime = time
-                        }}
-                        style={{height:100}}
+                <ScrollView style={{paddingTop: 10}}>
+                    <Text style={Styles.title}>Date:</Text>
+                    <View style = {[{borderColor:'black', borderRadius: 10, borderWidth: 1}]}>
+                        <DatePickerIOS 
+                            date={this.state.chosenDate}
+                            onDateChange={(date) => {
+                                this.highlightedDate = date
+                            }}
+                            mode={'date'}
+                            itemStyle={{height:50}}
                         />
-                    <Text>End Time:</Text>
-                    <DatePickerIOS 
-                        date={new Date()}
-                        mode= "time"
-                        onDateChange={(time) => {
-                            this.highlightedEndTime = time
-                        }}
-                        style={{height:100}}
-                    />
+                    </View>
+                    <Text style={Styles.title}>Start Time:</Text>
+                    <View style = {[{borderColor:'black', borderRadius: 10, borderWidth: 1}]}>
+                        <DatePickerIOS 
+                            date={new Date()}
+                            mode= "time"
+                            onDateChange={(time) => {
+                                this.highlightedStartTime = time
+                            }}
+                            itemStyle={{height:50}}
+                        />
+                    </View>
+                    <Text style={Styles.title}>End Time:</Text>
+                    <View style = {[{borderColor:'black', borderRadius: 10, borderWidth: 1}]}>
+                        <DatePickerIOS 
+                            date={new Date()}
+                            mode= "time"
+                            onDateChange={(time) => {
+                                this.highlightedEndTime = time
+                            }}
+                            itemStyle={{height:50}}
+                        />
+                    </View>
                     {/*select button*/}
                     <CustomButton
                         text="Select"
-                        buttonStyle={Styles.mediumButtonStyle}
-                        textStyle={Styles.mediumButtonTextStyle}
+                        buttonStyle={Styles.longButtonStyle}
+                        textStyle={Styles.longButtonTextStyle}
                         onPress = {() => {
                             this.setState({chosenDate: this.highlightedDate, startTime: this.highlightedStartTime, endTime: this.highlightedEndTime, IOSModalVisible: false})
                     }}/>
                     {/*cancel button*/}
                     <CustomButton
                         text="Cancel"
-                        buttonStyle={Styles.mediumButtonStyle}
-                        textStyle={Styles.mediumButtonTextStyle}
+                        buttonStyle={Styles.longButtonStyle}
+                        textStyle={Styles.longButtonTextStyle}
                         onPress = {() => {
                             this.setState({IOSModalVisible: false})
                     }}/>
-                </View>
+                </ScrollView>
             </Modal>
         );
     }
@@ -437,8 +445,8 @@ export default class AddEventsForm extends Component{
                         <View style={Styles.formRow}>
                             <CustomButton
                                 text="Submit"
-                                buttonStyle={Styles.mediumButtonStyle}
-                                textStyle={Styles.mediumButtonTextStyle}
+                                buttonStyle={Styles.longButtonStyle}
+                                textStyle={Styles.longButtonTextStyle}
                                 onPress={() => this.submitForm()}
                             />
                         </View>

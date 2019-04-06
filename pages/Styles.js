@@ -173,7 +173,8 @@ export default StyleSheet.create({
 
     formRow:{
         //flexDirection: 'row',
-        paddingBottom: 10
+        paddingBottom: 10,
+        flex: 1
     },
 
     formLabel:{
