@@ -1,5 +1,5 @@
 import React, {Component} from 'react';  
-import {View, Platform, Text, Picker, TextInput, Modal, DatePickerAndroid, TimePickerAndroid, DatePickerIOS, FlatList, Switch} from 'react-native';
+import {View, Platform, Text, Picker, TextInput, Modal, DatePickerAndroid, TimePickerAndroid, DatePickerIOS, FlatList, Switch, KeyboardAvoidingView} from 'react-native';
 import Styles from '../pages/Styles';
 import APICacher from '../APICacher'
 import CustomButton from '../pages/CustomButton';
@@ -15,8 +15,8 @@ export default class AddEventsForm extends Component{
             chosenDate: new Date(),
             startTime: "12:00 PM",
             endTime: null,
-            selectedTagArray: []
-
+            selectedTagArray: [],
+            filter: null
         }
         this.tags=[]
         this.APICacher = new APICacher();
@@ -99,14 +99,43 @@ export default class AddEventsForm extends Component{
     }
 
     getSelectableTagsList(){
-        tagList = this.tags.map((name) =>{
+        fullTagList = this.tags.map((name) =>{
             return(name[0])
         });
+        if(this.state.filter){
+            filteredTagList = fullTagList.filter(tag => tag.includes(this.state.filter.toLowerCase()))
+        }
+        else{
+            filteredTagList = fullTagList
+        }
         return(
             <View style={{flex: 1}}>
-                <View style={{flex: .9}}>
+                <View>
+                    <Text style={Styles.title}>Select Tags</Text>
+                </View>
+                <View style={{flex: .1, paddingBottom: 35}}>
+                {/*Second view for just padding was added to avoid spacing issues with the filter textinput and the clear button*/}
+                    <View style={{paddingBottom: 5}}>
+                        <TextInput               
+                            onChangeText={(userInput) => this.setState({filter: userInput})}
+                            style={[Styles.textBox]}
+                            ref={input => this.filterInput = input}
+                            placeholder="Filter tags"
+                        />
+                    </View>
+                    <CustomButton
+                        text="Clear Filter"
+                        buttonStyle={[Styles.mediumButtonStyle, {alignSelf:"center"}]}
+                        textStyle={Styles.mediumButtonTextStyle}
+                        onPress={() => {
+                            this.filterInput.clear()
+                            this.setState({filter:null})
+                        }}
+                    />
+                </View>
+                <View style={{flex: .80, backgroundColor:'#eee'}}>
                     <FlatList
-                        data={tagList}
+                        data={filteredTagList}
                         renderItem={({item}) => 
                             this.getSelectableTag(item)
                         }
@@ -114,12 +143,17 @@ export default class AddEventsForm extends Component{
                         nestedScrollEnabled= {true}
                     />
                 </View>
-                <View style={{alignItems:"center"}}>
+                {/*Due to issues with how flatlists use padding, there needed to be a seperate view that was just padding.*/}
+                <View style={{paddingBottom:5}}></View>
+                <View style={{alignItems:"center", flex: .1}}>
                     <CustomButton
                         text="Close"
                         buttonStyle={[Styles.mediumButtonStyle]}
                         textStyle={Styles.mediumButtonTextStyle}
-                        onPress={() => this.setState({tagModalVisable: false})}
+                        onPress={() => {
+                            this.filterInput.clear()
+                            this.setState({tagModalVisable: false, filter: null})}
+                        }
                     />
                 </View>
                 
@@ -147,7 +181,7 @@ export default class AddEventsForm extends Component{
 
     getNoTagsFoundMessage(){
         return(
-            <Text>No tags found. Make sure you're phone is connected to the internet and try again.</Text>
+            <Text>No tags found.</Text>
         );
     }
 
@@ -215,7 +249,6 @@ export default class AddEventsForm extends Component{
                 onRequestClose={() => {
                     console.log("Modal has been closed")
             }}>
-
                 <View>
                     <DatePickerIOS 
                         date={this.state.chosenDate}
@@ -374,7 +407,7 @@ export default class AddEventsForm extends Component{
                             />
                         </View>
                         <View style={Styles.formRow}>
-                            <Text style={Styles.formLabel}>Chosen Tags: </Text>
+                            <Text style={Styles.formLabel}>Chosen Tags </Text>
                             <Text style={Styles.formEntry}>{this.state.selectedTagArray.toString()}</Text>
                         </View>
                         <View style = {Styles.formRow}>
