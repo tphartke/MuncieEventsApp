@@ -5,26 +5,32 @@ import Styles from './Styles';
 import APICacher from '../APICacher';
 import TopBar from './top_bar';
 import LoadingScreen from '../components/LoadingScreen';
+import InternetError from '../components/InternetError';
 
 export default class SearchResults extends React.Component{
     constructor(props){
         super(props)
-        this.state={isLoading:true}
+        this.state={isLoading:true,
+        failedToLoad: false}
         const {navigation} = this.props;
         this.searchInput = navigation.getParam('searchInput', 'No Results Found')
     }
 
     componentDidMount(){
-        beginningSearchURL = 'https://api.muncieevents.com/v1/events/search?q='
-        endingSearchURL = '&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1'
-        searchURL = beginningSearchURL + this.searchInput + endingSearchURL
-        this._cacheSearchResults(searchURL)
+        this._cacheSearchResults().catch(error => this.catchError())
+    }
+
+    catchError(){
+        this.setState({isLoading:false, failedToLoad:true});
     }
 
     render(){
         mainView = null
         if(this.state.isLoading){
             mainView = this.getLoadingView()
+        }
+        else if(this.state.failedToLoad){
+            mainView = this.getErrorMessage()
         }
         else{
             mainView = this.getSearchResultsView()
@@ -40,7 +46,16 @@ export default class SearchResults extends React.Component{
                 </View>
             </View>
             );
-          }
+        }
+    
+    getErrorMessage(){
+        return(
+            <InternetError onRefresh = {() => {
+                this.setState({isLoading:true, failedToLoad:false})
+                this._cacheSearchResults().catch(error => this.catchError())
+            }}/>
+        );
+    }
 
     getLoadingView(){
         return(
@@ -58,8 +73,12 @@ export default class SearchResults extends React.Component{
         );
     }
 
-    async _cacheSearchResults(searchURL){
+    async _cacheSearchResults(){
+        beginningSearchURL = 'https://api.muncieevents.com/v1/events/search?q='
+        endingSearchURL = '&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1'
+        searchURL = beginningSearchURL + this.searchInput + endingSearchURL
         key = "SearchResults"
+
         this.APICacher = new APICacher();
         await this.APICacher._cacheJSONFromAPIAsync(key, searchURL)
         this.setState({isLoading:false})

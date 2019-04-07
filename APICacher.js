@@ -3,18 +3,28 @@ export default class APICacher{
 
     async _cacheJSONFromAPIAsync(key, url){
         console.log("Beginning fetch for " + key + ", the url is: " + url)
-        await fetch(url)
-        .then((response) => response.json())
-        .then((responseJson) => {
-            this._cacheStringAsync(key, JSON.stringify(responseJson.data))
-        })
-        .then(console.log("Fetch completed for " + key))
-        .catch(error => console.log(error)); 
+        try{
+            await fetch(url)
+            .then((response) => response.json())
+            .then((responseJson) => {
+                this._cacheStringAsync(key, JSON.stringify(responseJson.data))
+            })
+            .then(console.log("Fetch completed for " + key))
+        }
+        catch(error){
+            throw error;
+        }
     }
 
     async _cacheJSONFromAPIWithExpDate(key, url){
-        await this._cacheJSONFromAPIAsync(key, url);
-        await this._cacheExpirationDate(key);
+        try{
+            await this._cacheJSONFromAPIAsync(key, url);
+            await this._cacheExpirationDate(key);
+        }
+        catch(error){
+            throw error;
+        }
+
     }
 
     async _cacheStringAsync(key, string){
@@ -79,7 +89,12 @@ export default class APICacher{
         hasExpired = await this._hasExpired(key)
         if(hasExpired){
             console.log("The data for " + key + " has expired!")
-            await this._cacheJSONFromAPIWithExpDate(key, url)
+            try{
+                await this._cacheJSONFromAPIWithExpDate(key, url)
+            }
+            catch(error){
+                throw error;
+            }
         }
         return await this._getJSONFromStorage(key)
     }

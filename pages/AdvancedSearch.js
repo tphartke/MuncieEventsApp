@@ -6,12 +6,14 @@ import EventList from '../EventList';
 import APICacher from '../APICacher';
 import LoadingScreen from '../components/LoadingScreen';
 import TopBar from './top_bar';
+import InternetError from '../components/InternetError';
 
 export default class AdvancedSearch extends React.Component {
   constructor(props){
     super(props);
     this.state ={ 
                 isInitialLoading: true,
+                failedToLoad: false,
                 categorySelectedValue: "",
                 categorySelectedName: "",
                 tagSelectedValue: "",
@@ -26,7 +28,20 @@ export default class AdvancedSearch extends React.Component {
   }
 
   componentDidMount(){
-    this._fetchTagAndCategoryData();
+    this._fetchTagAndCategoryData().catch(error => this.catchError());
+  }
+
+  catchError(){
+    this.setState({isInitialLoading:false, failedToLoad:true})
+  }
+
+  getErrorMessage(){
+    return(
+      <InternetError onRefresh = {() => {
+        this.setState({isInitialLoading:true, failedToLoad:false})
+        this._fetchTagAndCategoryData().catch(error => this.catchError())
+      }}/>
+    );
   }
 
   async _fetchTagAndCategoryData(){
@@ -71,8 +86,11 @@ export default class AdvancedSearch extends React.Component {
     }
     else if(this.state.isSearching){
       mainView = this.getLoadingScreen();
-      url = this.state.searchURL;
-      this._cacheSearchResultsAsync(searchURL)
+      url = this.state.url;
+      this._cacheSearchResultsAsync(url)
+    }
+    else if(this.state.failedToLoad){
+      mainView = this.getErrorMessage();
     }
     else if(this.state.searchResultsHaveBeenFound){
       mainView = this.getResultsView();

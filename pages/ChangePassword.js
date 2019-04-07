@@ -2,6 +2,7 @@ import React from 'react';
 import {View, TextInput, Text} from 'react-native';
 import CustomButton from "./CustomButton";
 import Styles from './Styles';
+import InternetError from '../components/InternetError';
 
 export default class ChangePassword extends React.Component {
     constructor(props){
@@ -11,22 +12,35 @@ export default class ChangePassword extends React.Component {
                     newPassword: "", 
                     confirmNewPassword: "", 
                     statusMessage: "",
-                    passwordChanged: false
+                    passwordChanged: false,
+                    failedToLoad:false
         })
     }
 
     componentDidMount(){
         this.setState({userToken: this.props.userToken});
     }
+
     render(){
         renderedScreen = null
-        if(!this.state.passwordChanged){
-            renderedScreen = this.getChangePasswordScreen()
+        if(this.state.failedToLoad){
+            renderedScreen = this.getErrorMessage();
+        }
+        else if(!this.state.passwordChanged){
+            renderedScreen = this.getChangePasswordScreen();
         }
         else{
             renderedScreen = (<Text>{this.state.statusMessage}</Text>)
         }
         return(renderedScreen)
+    }
+
+    getErrorMessage(){
+        return(
+            <InternetError onRefresh = {() => {
+                this.setState({failedToLoad:false})
+            }}/>
+        );
     }
 
     getChangePasswordScreen(){
@@ -80,8 +94,7 @@ export default class ChangePassword extends React.Component {
       })
       .then(this.setState({statusMessage: "Password changed successfully", confirmNewPassword: "", newPassword: "", passwordChanged: true}))
         .catch((error) =>{
-           console.log(error)
-           this.setState({statusMessage: "Error reaching server: " + error})
+           this.setState({failedToLoad:true, passwordChanged: false})
         })
       }
 

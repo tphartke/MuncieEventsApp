@@ -3,6 +3,7 @@ import {Text, View, TextInput} from 'react-native';
 import CustomButton from "./CustomButton";
 import Styles from './Styles';
 import TopBar from './top_bar';
+import InternetError from '../components/InternetError';
 
 export default class Contact extends React.Component {
     constructor(props){
@@ -12,22 +13,37 @@ export default class Contact extends React.Component {
                      name: 'Timothy Hartke',
                      messageSent: false,
                      statusMessage: "",
+                     failedToLoad:false
                     })
     }
 
-    render() {
-      contactView = this.getContactView();
-      return (
-        <View style={Styles.wrapper}>
-          <View style={Styles.topBarWrapper}>
-            <TopBar/>
-          </View>
-          <View style={Styles.mainViewContent}>
-            {contactView}
-          </View>
-        </View>
-      );
+  render() {
+    if(this.state.failedToLoad){
+      contactView = this.getErrorMessage();
     }
+    else{
+      contactView = this.getContactView();
+    }
+    return (
+      <View style={Styles.wrapper}>
+        <View style={Styles.topBarWrapper}>
+          <TopBar/>
+        </View>
+        <View style={Styles.mainViewContent}>
+          {contactView}
+        </View>
+      </View>
+    );
+  }
+
+  getErrorMessage(){
+    return(
+      <InternetError onRefresh = {() => {
+        this.setState({failedToLoad:false})
+      }}/>
+    );
+  }
+  
 
   getContactView(){
     return(
@@ -108,11 +124,10 @@ export default class Contact extends React.Component {
         body: this.state.message
       }),
   })
-  .then((response) => console.log(response))
-  .then((responseJSON) => console.log(responseJSON))
+    .then((response) => console.log(response))
+    .then((responseJSON) => console.log(responseJSON))
     .catch((error) =>{
-        console.log(error)
-       this.setState({statusMessage: "Error reaching server: " + error})
+        this.setState({failedToLoad:true})
     });
   }
 }

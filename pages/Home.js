@@ -5,26 +5,36 @@ import Styles from './Styles';
 import APICacher from '../APICacher';
 import TopBar from './top_bar';
 import LoadingScreen from '../components/LoadingScreen';
+import InternetError from '../components/InternetError';
 
 export default class HomeScreen extends React.Component{
   constructor(props){
     super(props);
     this.state={url: 'https://api.muncieevents.com/v1/events/future?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ'};
-    this.state = {isLoading: true};
+    this.state = {isLoading: true,
+                  failedToLoad: false};
     this._startupCachingAsync = this._startupCachingAsync.bind(this);
     this.APICacher = new APICacher();
   }  
 
       componentDidMount(){
-        this._startupCachingAsync();
+        this._startupCachingAsync().catch(error => this.catchError())
+      }
+
+      catchError(){
+        this.setState({failedToLoad:true, isLoading: false})
       }
 
       render(){
+        console.log("Lot of tests")
         if(this.state.isLoading){
           mainView = this.getLoadingScreen();
         }
+        else if(this.state.failedToLoad){
+          mainView = this.getErrorView();
+        }
         else{
-            mainView = this.getHomeView();
+          mainView = this.getHomeView();
         }
         return(
           <View style={Styles.wrapper}>
@@ -37,6 +47,15 @@ export default class HomeScreen extends React.Component{
           </View>
           );
         }
+
+      getErrorView(){
+        return(
+          <InternetError onRefresh = {() => {
+            this.setState({isLoading:true, failedToLoad:false})
+            this._startupCachingAsync().catch(error => this.catchError())
+          }}/>
+        );
+      }
 
       getLoadingScreen(){
         return(

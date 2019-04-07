@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, WebView} from 'react-native';
+import {View, WebView} from 'react-native';
 import Styles from './Styles';
 import APICacher from '../APICacher';
 import LoadingScreen from '../components/LoadingScreen';
@@ -8,9 +8,9 @@ import TopBar from './top_bar';
 export default class About extends React.Component {
   constructor(props){
     super(props);
-    this.state ={isLoading: true}
+    this.state ={isLoading: true,
+    failedToLoad: false}
     this.APICacher = new APICacher();
-    //this._getCachedDataAsync = this._getCachedDataAsync.bind(this);
   }
 
   componentDidMount(){
@@ -21,6 +21,9 @@ export default class About extends React.Component {
     mainView = null
     if(this.state.isLoading){
       mainView = this.getLoadingScreen();
+    }
+    else if(this.state.failedToLoad){
+      mainView = this.getErrorView();
     }
     else{
       aboutUsHTML = this.state.dataSource.attributes.body;
@@ -36,6 +39,15 @@ export default class About extends React.Component {
         </View>
       </View>
     );
+  }
+
+  getErrorView(){
+    return(
+      <InternetError onRefresh = {() => {
+        this.setState({isLoading:true, failedToLoad:false})
+        this._getCachedDataAsync().catch(error => this.catchError())
+      }}/>
+    )
   }
 
   getLoadingScreen(){
