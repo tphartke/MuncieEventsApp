@@ -1,5 +1,5 @@
 import { StyleSheet, Dimensions} from "react-native"
-const contentHeight = Dimensions.get('window').height*0.848
+const contentHeight = Dimensions.get('window').height*0.82
 const advancedSearchHeight = Dimensions.get('window').height*0.08
 
 export default StyleSheet.create({
@@ -40,6 +40,8 @@ export default StyleSheet.create({
     expandedView: {
         flex: 1,
         flexBasis: contentHeight,
+        paddingLeft: 5,
+        paddingRight: 5
     },
 
     advancedSearchResults: {
@@ -90,7 +92,9 @@ export default StyleSheet.create({
     },
     
     topBarWrapper: {
-        flex:.15
+        flex:.15,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
 
     topBarContent: {
@@ -110,7 +114,7 @@ export default StyleSheet.create({
 
     searchBar: {
         flex:1, 
-        width: 50
+        width: 50,
     },
 
     iosSearch: {
