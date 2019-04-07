@@ -81,15 +81,15 @@ class ExpandedView extends React.Component {
 
     getEditEventsPage(){
       return(
-            <View>
+              <ScrollView style={Styles.content} nestedScrollEnabled={true}>
                 <CustomButton 
                   text = "Go back"
                   buttonStyle={Styles.longButtonStyle}
                   textStyle = {Styles.longButtonTextStyle}
                   onPress={() => this.setState({editingEvent: false})}
                 />
-                <EditEvents />
-            </View>
+                <EditEvents eventData={this.eventData}/>
+            </ScrollView>
       )
     }
 
@@ -345,7 +345,7 @@ class ExpandedView extends React.Component {
   retrieveStoredToken = async() => {
     try {
       const tkn = await AsyncStorage.getItem('Token')
-      this.setState({userid: tkn, isLoading: false})
+      this.setState({userid: '245', isLoading: false})
      } catch (error) {
        console.log("Error retrieving token")
         return "NULL"

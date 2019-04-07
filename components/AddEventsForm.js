@@ -418,6 +418,7 @@ export default class AddEventsForm extends Component{
                             <TextInput               
                                 onChangeText={(description) => this.setState({description})}
                                 style={[Styles.textArea, Styles.formEntry]}
+                                multiline={true}
                             />
                         </View>
                         <View style={Styles.formRow}>

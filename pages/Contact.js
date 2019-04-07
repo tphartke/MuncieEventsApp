@@ -54,6 +54,7 @@ export default class Contact extends React.Component {
       onChangeText={(message) => this.setState({message})}
       style={Styles.textArea}
       placeholder="Type message here..."
+      multiline={true}
       />
 
       <CustomButton 
