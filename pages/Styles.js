@@ -34,14 +34,15 @@ export default StyleSheet.create({
 
     eventList: {
         flex: 1,
-        flexBasis: contentHeight
+        flexBasis: contentHeight,
+        paddingLeft: 0,
+        paddingRight: 0
     },
 
     expandedView: {
         flex: 1,
         flexBasis: contentHeight,
-        paddingLeft: 5,
-        paddingRight: 5
+        marginHorizontal: 5
     },
 
     advancedSearchResults: {
@@ -187,6 +188,10 @@ export default StyleSheet.create({
 
     formEntry:{
         flex: 1,
+    },
+
+    requiredField:{
+        color: 'red'
     },
 
     defaultButtonStyle: {

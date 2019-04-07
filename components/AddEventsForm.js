@@ -1,5 +1,5 @@
 import React, {Component} from 'react';  
-import {View, Platform, Text, Picker, TextInput, Modal, DatePickerAndroid, TimePickerAndroid, DatePickerIOS, FlatList, Switch, KeyboardAvoidingView, ScrollView, Dimensions} from 'react-native';
+import {View, Platform, Text, Picker, TextInput, Modal, DatePickerAndroid, TimePickerAndroid, DatePickerIOS, FlatList, Switch, KeyboardAvoidingView, ScrollView, AsyncStorage} from 'react-native';
 import Styles from '../pages/Styles';
 import APICacher from '../APICacher'
 import CustomButton from '../pages/CustomButton';
@@ -15,9 +15,21 @@ export default class AddEventsForm extends Component{
             chosenDate: new Date(),
             startTime: "12:00 PM",
             endTime: null,
-            selectedTagArray: [],
+            selectedTagArray: ["ball state university","food","writing"],
             filter: null,
-            statusMessage: ""
+            statusMessage: "",
+            userToken: null,
+            location: "LaFollette egg between KE and BC",
+            categorySelectedName: null,
+            categorySelectedValue: 24,
+            tagSelectedValue: null,
+            event: "Dear High School Me...",
+            source: null,
+            ageRestriction: null,
+            cost: null,
+            description: "What do you wish you knew about college as a high school senior? Come write letters of encouragement to Muncie central high school students about furthering their education.",
+            address: null,
+            locationDetails: "Ball State"
         }
         this.tags=[]
         this.APICacher = new APICacher();
@@ -31,7 +43,9 @@ export default class AddEventsForm extends Component{
         console.log("Fetching tag and category data")
         await this._fetchCategoryData();
         await this._fetchTagData();
-        this.setState({isLoading: false});
+        utoken = await this.retrieveStoredToken();
+        console.log(utoken)
+        this.setState({isLoading: false, userToken: utoken});
     }
 
     async _fetchCategoryData(){
@@ -351,18 +365,18 @@ export default class AddEventsForm extends Component{
                         {IOSDatePickerModal}
                         {tagListModal}
                         <View style={Styles.formRow}>
-                            <Text style={Styles.formLabel}>Event </Text>
+                            <Text style={Styles.formLabel}>Title <Text style={Styles.requiredField}>*required</Text></Text>
                             <TextInput               
                                 onChangeText={(event) => this.setState({event})}
                                 style={[Styles.textBox, Styles.formEntry]}
                             />
                         </View>
                         <View style={Styles.formRow}>
-                            <Text style={Styles.formLabel}>Category </Text>
+                            <Text style={Styles.formLabel}>Category <Text style={Styles.requiredField}>*required</Text></Text>
                             {this.getCategoryPicker()}
                         </View>
                         <View style={Styles.formRow}>
-                            <Text style={Styles.formLabel}>Date </Text>
+                            <Text style={Styles.formLabel}>Date <Text style={Styles.requiredField}>*required</Text></Text>
                             <CustomButton
                                 text="Select Date"
                                 buttonStyle={[Styles.mediumButtonStyle]}
@@ -378,7 +392,7 @@ export default class AddEventsForm extends Component{
                             <Text>{this.state.startTime.toString()}</Text>
                         </View>
                         <View style={Styles.formRow}>
-                            <Text style={Styles.formLabel}>Location </Text>
+                            <Text style={Styles.formLabel}>Location <Text style={Styles.requiredField}>*required</Text></Text>
                             <TextInput               
                                 onChangeText={(location) => this.setState({location})}
                                 style={[Styles.textBox, Styles.formEntry]}
@@ -400,7 +414,7 @@ export default class AddEventsForm extends Component{
                             />
                         </View>
                         <View style={Styles.formRow}>
-                            <Text style={Styles.formLabel}>Description </Text>
+                            <Text style={Styles.formLabel}>Description <Text style={Styles.requiredField}>*required</Text></Text>
                             <TextInput               
                                 onChangeText={(description) => this.setState({description})}
                                 style={[Styles.textArea, Styles.formEntry]}
@@ -448,32 +462,111 @@ export default class AddEventsForm extends Component{
                                 text="Submit"
                                 buttonStyle={Styles.longButtonStyle}
                                 textStyle={Styles.longButtonTextStyle}
-                                onPress={() => this.submitForm()}
+                                onPress={() => this.submitEvent()}
                             />
                         </View>
+                        <Text>{this.state.statusMessage}</Text>
                     </View>
-                    
             );
         }
+    }
 
+    retrieveStoredToken = async() => {
+        try {
+          const utoken = await AsyncStorage.getItem('UniqueToken')
+          return utoken
+         } catch (error) {
+            return "NULL"
+         }
+      }
+
+    attemptEventSubmission(){
+        if(this.requiredFieldsAreFilled()){
+            this.submitEvent()
+        }
+        else{
+            this.setState({statusMessage: "ERROR: One or more required fields not completed"})
+        }
+    }
+
+    requiredFieldsAreFilled(){
+        console.log("date: " + this.state.chosenDate + '\n' + 
+                    "start: " + this.state.startTime  + '\n' + 
+                    "end: " + this.state.endTime + '\n' + 
+                    "tag_names: " + this.state.selectedTagArray + '\n' + 
+                    "location: " + this.state.location + '\n' + 
+                    "category_id: " + this.state.categorySelectedValue + '\n' + 
+                    "title: " + this.state.event + '\n' + 
+                    "source: " + this.state.source + '\n' + 
+                    "age_restriction: " + this.state.ageRestriction + '\n' + 
+                    "cost: " + this.state.cost + '\n' + 
+                    "description: " + this.state.description + '\n' + 
+                    "address: " + this.state.address + '\n' + 
+                    "location_details: " + this.state.locationDetails)
+        if(this.state.category_id && this.state.event && this.state.chosenDate && this.state.startTime 
+            && this.state.description && this.state.location){
+                return true;
+        }
+        return false;
     }
 
     submitEvent(){
-        fetch("https://api.muncieevents.com/v1/user/login?apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1", 
+        console.log("date: " + this.state.chosenDate + '\n' + 
+                    "time_start: " + this.state.startTime  + '\n' + 
+                    "time_end: " + this.state.endTime + '\n' + 
+                    "tag_names: " + this.state.selectedTagArray + '\n' + 
+                    "location: " + this.state.location + '\n' + 
+                    "category_id: " + this.state.categorySelectedValue + '\n' + 
+                    "title: " + this.state.event + '\n' + 
+                    "source: " + this.state.source + '\n' + 
+                    "age_restriction: " + this.state.ageRestriction + '\n' + 
+                    "cost: " + this.state.cost + '\n' + 
+                    "description: " + this.state.description + '\n' + 
+                    "address: " + this.state.address + '\n' + 
+                    "location_details: " + this.state.locationDetails)
+        if(this.state.userToken){
+            url = "https://api.muncieevents.com/v1/events?userToken=" + this.state.userToken + "&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1"
+        }
+        else{
+            url = "https://api.muncieevents.com/v1/events?apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1"
+        }
+        fetch(url,
         {method: "POST",
         headers: {
             Accept: 'application/vnd.api+json',
             'Content-Type': 'application/json',
             },
         body: JSON.stringify({
-          password: this.state.password,
-          email: this.state.email,
+            date: this.state.chosenDate,
+            start: this.state.startTime,
+            time_end: this.state.endTime,
+            tag_names: this.state.selectedTagArray,
+            location: this.state.location,
+            category_id: this.state.categorySelectedValue,
+            title: this.state.event,
+            source: this.state.source,
+            age_restriction: this.state.ageRestriction,
+            cost: this.state.cost,
+            description: this.state.description,
+            address: this.state.address,
+            location_details: this.state.locationDetails
         })
     })
     .then((response) => response.json())
-    .then((responseJson) => this.logUserIn(responseJson))
+    .then((responseJson) => console.log(responseJson))
+    .then((responseJson) => this.handelAPIResponse(responseJson))
       .catch((error) =>{
          console.log(error)
       })
+    }
+
+    handelAPIResponse(responseJson){
+        try{
+            this.setState({statusMessage: responseJson.errors[0].detail})
+        }
+        catch(error){
+            this.setState({statusMessage: "Event successfully submitted!"})
+        }
+
     }
 }
