@@ -1,38 +1,35 @@
 import React from 'react';
 import{ withNavigation } from "react-navigation";
 import DateAndTimeParser from "./DateAndTimeParser";
-import {View, ActivityIndicator, Text, TouchableOpacity, FlatList, Image} from 'react-native';
+import {View, Text, TouchableOpacity, FlatList, Image} from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import Styles from './pages/Styles';
 import ExpandedView from './pages/ExpandedView';
-import {AppLoading} from 'expo';
 import APICacher from './APICacher';
 import PropTypes from 'prop-types';
+import LoadingScreen from './components/LoadingScreen';
 
 class EventList extends React.Component {
     constructor(props){
         super(props);
-        this.state ={ isReady: false,
-                    lastUsedDate: null,
-                    text: '',
-                    apicall: '',
-                    selectedEvent: null,
-                  }
-        this.previousUrl = ''
+        this.state ={
+          isLoading: true,
+          lastUsedDate: null,
+          selectedEvent: null,
+        }
         this.dateAndTimeParser = new DateAndTimeParser();
         this._getCachedDataAsync = this._getCachedDataAsync.bind(this);
         this.APICacher = new APICacher();
       }
 
-      componentWillReceiveProps({apicall}) {
-        this.previousUrl = this.state.apicall
-        this.setState({apicall: apicall})
-      }  
+    componentDidMount(){
+      this._getCachedDataAsync()
+    }
 
     getLoadingView(){
         return(
-            <View style={Styles.loadingViewPadding}>
-              <ActivityIndicator/>
+            <View>
+              <LoadingScreen/>
             </View>
           );   
       }
@@ -60,16 +57,12 @@ class EventList extends React.Component {
       }
 
       render(){
-        if(!this.state.isReady){
-          return(
-            <AppLoading 
-              startAsync={this._getCachedDataAsync}
-              onFinish={() => this.setState({ isReady: true})}
-              onError= {console.error}
-            />
-          );
+        if(this.state.isLoading){
+          contentView = this.getLoadingView()
         }
-        var contentView = this.getDisplayedPage();
+        else{
+          contentView = this.getDisplayedPage();
+        }
         return (
           <View>
             {contentView}
@@ -84,11 +77,10 @@ class EventList extends React.Component {
           key = "SearchResults"
         }
         data = await this.APICacher._getJSONFromStorage(key);
-        this.setState({dataSource: data})
+        this.setState({dataSource: data, isLoading:false})
       }
 
       getDisplayedPage(){
-        var contentView = this.getLoadingView();
         if(!this.state.selectedEvent){
           contentView = this.getEventDataView();
         }
@@ -99,7 +91,8 @@ class EventList extends React.Component {
       }
 
       getExpandedView(){
-        return(<ExpandedView event={this.state.selectedEvent} previousScreen={this.state.apicall}/>)
+        const {useSearchResults} = this.props;
+        return(<ExpandedView event={this.state.selectedEvent} isFromSearch = {useSearchResults}/>)
       }
 
       generateEventEntryView(eventEntry){   

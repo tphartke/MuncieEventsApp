@@ -48,8 +48,8 @@ class ExpandedView extends React.Component {
                       editingEvent: false, 
                       deletingEvent: false}
         this.eventData = null
-        this.previousScreen = null
         this.state={selectedPreviousScreen:false}
+
       }
 
     componentDidMount(){
@@ -67,7 +67,8 @@ class ExpandedView extends React.Component {
           renderedInfo = this.getLoadingScreen();
         }
         else if(this.state.selectedPreviousScreen){
-          renderedInfo = (<EventList apicall = {this.previousScreen}/>)
+          useSearchResults = this.props.isFromSearch;
+          renderedInfo = (<EventList useSearchResults = {useSearchResults}/>)
         }
         else if(this.state.editingEvent){
           renderedInfo = this.getEditEventsPage()
@@ -95,7 +96,6 @@ class ExpandedView extends React.Component {
     getExpandedView(){
       if(!this.eventData){
         this.eventData = this.props.event;
-        this.previousScreen = this.props.previousScreen;
     }
     if(this.eventData.attributes.images[0] == null){
       imageURL = "None"
