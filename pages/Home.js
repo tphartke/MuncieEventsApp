@@ -7,6 +7,7 @@ import * as Animatable from 'react-native-animatable'
 import Styles from './Styles';
 import {AppLoading} from 'expo';
 import APICacher from '../APICacher';
+import TopBar from './top_bar';
 import LoadingScreen from '../components/LoadingScreen';
 
 export default class HomeScreen extends React.Component{
@@ -26,15 +27,18 @@ export default class HomeScreen extends React.Component{
 
       render(){
         mainView = null
+        /*
         if(this.state.searchurl){
-            mainView = this.getSearchView();
+            mainView = this. getSearchView();
+        }
+        */
+        if(this.state.isLoading /*&& !this.state.searchurl*/){
+          mainView = this.getLoadingScreen();
         }
         else{
             mainView = this.getHomeView();
         }
-        if(this.state.isLoading && !this.state.searchurl){
-          mainView = this.getLoadingScreen();
-        }
+        /*
         else if(this.state.isLoading && this.state.searchurl){
           return(
             <AppLoading 
@@ -44,25 +48,10 @@ export default class HomeScreen extends React.Component{
             />
           );
         }
+        */
         return(
           <View style={Styles.wrapper}>
-            <Icon name="ios-menu" style = {Styles.menuIcon} size={34}
-              onPress={() => this.props.navigation.openDrawer()}
-            />
-            <Text style={Styles.title}>
-              EVENTS
-            </Text>
-            <Animatable.View animation = "slideInRight" duration={500} style={Styles.topBarContent}>
-              <TextInput
-                placeholder=' Search'
-                value={this.state.text} 
-                style={Styles.searchBar}
-                onChangeText={(text) => this.setState({text})}
-                onBlur={() => {this.setState({isReady: false, searchurl: true})}}
-                showLoading='true'
-              />
-              <Icon name="ios-search" style={Styles.iosSearch} size={34}/>
-          </Animatable.View>
+            <TopBar/>
             <View>
               {mainView}
             </View>
@@ -117,8 +106,9 @@ export default class HomeScreen extends React.Component{
               <EventList useSearchResults={true} />
           </View>
         )
-        }
-    async searchOnString(arbitraryString){
-      await this.APICacher._cacheJSONFromAPIAsync("SearchResults", arbitraryString)
-    }
-}
+      }
+
+      async searchOnString(arbitraryString){
+        await this.APICacher._cacheJSONFromAPIAsync("SearchResults", arbitraryString)
+      }
+  }
