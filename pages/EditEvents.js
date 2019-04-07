@@ -22,7 +22,7 @@ export default class EditEvents extends React.Component {
         userToken: null,
         location: null,
         categorySelectedName: null,
-        categorySelectedValue: 24,
+        categorySelectedValue: null,
         tagSelectedValue: null,
         event: null,
         source: null,
@@ -40,16 +40,26 @@ export default class EditEvents extends React.Component {
 
 
     componentDidMount(){
-      this._fetchTagAndCategoryData()
+      //this._fetchTagAndCategoryData()
+  }
+
+  async _awaitStartupMethods(){
+    console.log("Start")
+    await this._fetchTagAndCategoryData()
+    console.log("Fetched tags and categories")
+    await this.setStatesForEventData()
+    console.log("Set states")
+    utoken = await this.retrieveStoredToken();
+    console.log("Retrieved token")
+    this.setState({isLoading: false, userToken: utoken});
   }
 
   async _fetchTagAndCategoryData(){
       console.log("Fetching tag and category data")
       await this._fetchCategoryData();
       await this._fetchTagData();
-      utoken = await this.retrieveStoredToken();
+
       console.log(utoken)
-      this.setState({isLoading: false, userToken: utoken});
   }
 
   async _fetchCategoryData(){
@@ -176,10 +186,9 @@ export default class EditEvents extends React.Component {
                       }
                   />
               </View>
-              
           </View>
       );
-  }s
+  }
 
   getSelectableTag(tag){
       isTagAlreadySelected = this.isInSelectedTagList(tag)
@@ -355,7 +364,7 @@ export default class EditEvents extends React.Component {
   render(){
       if(!this.event){
         this.event = this.props.eventData
-        this.setStatesForEventData()
+        this._awaitStartupMethods()
       }
       if(this.state.isLoading){;
           return(
@@ -395,10 +404,10 @@ export default class EditEvents extends React.Component {
                       </View>
                       {androidTimePicker}
                       <View style={Styles.formRow}>
-                          <Text>{this.state.chosenDate.toString()}</Text>
+                          <Text>Date of Event: {this.state.chosenDate.toString()}</Text>
                       </View>
                       <View style={Styles.formRow}>
-                          <Text>{this.state.startTime.toString()}</Text>
+                          <Text>Start Time: {this.state.startTime.toString()}</Text>
                       </View>
                       <View style={Styles.formRow}>
                           <Text style={Styles.formLabel}>Location <Text style={Styles.requiredField}>*required</Text></Text>
@@ -489,24 +498,55 @@ export default class EditEvents extends React.Component {
       }
   }
 
-  setStatesForEventData(){
+   async setStatesForEventData(){
     this.setState({
-      chosenDate: new Date(this.event.attributes.date),
-      startTime: new Date(this.event.attributes.time_start),
-      endTime: new Date(this.event.attributes.time_end),
-      selectedTagArray: this.getTags(),
-      location: this.event.attributes.location,
-      categorySelectedName: this.event.attributes.category.name,
-      categorySelectedValue: this.event.relationships.category.data.id,
-      event: this.event.attributes.title,
-      source: this.event.attributes.source,
-      ageRestriction: this.event.attributes.age_restriction,
-      cost: this.event.attributes.cost,
-      description: this.event.attributes.description,
-      address: this.event.attributes.address,
-      locationDetails: this.event.attributes.location_details,
-      id: this.event.id,
+        chosenDate: new Date(this.event.attributes.date),
+        startTime: new Date(this.event.attributes.time_start),
+        endTime: new Date(this.event.attributes.time_end),
+        selectedTagArray: this.getTags(),
+        location: this.event.attributes.location,
+        categorySelectedName: this.event.attributes.category.name,
+        categorySelectedValue: this.event.relationships.category.data.id,
+        event: this.event.attributes.title,
+        source: this.event.attributes.source,
+        ageRestriction: this.event.attributes.age_restriction,
+        cost: this.event.attributes.cost,
+        description: this.event.attributes.description,
+        address: this.event.attributes.address,
+        locationDetails: this.event.attributes.location_details,
+        id: this.event.id,
     })
+    console.log("Expected: ")
+    console.log("date: " + new Date(this.event.attributes.date).toString()+ '\n' + 
+    "time_start: " + new Date(this.event.attributes.time_start).toString()  + '\n' + 
+    "time_end: " + new Date(this.event.attributes.time_end).toString() + '\n' + 
+    "tag_names: " + this.getTags().toString() + '\n' + 
+    "location: " + this.event.attributes.location + '\n' + 
+    "category_id: " + this.event.relationships.category.data.id + '\n' + 
+    "title: " + this.event.attributes.title + '\n' + 
+    "source: " + this.event.attributes.source + '\n' + 
+    "age_restriction: " + this.event.attributes.age_restriction + '\n' + 
+    "cost: " +this.event.attributes.cost + '\n' + 
+    "description: " + this.event.attributes.description + '\n' + 
+    "address: " + this.event.attributes.address + '\n' + 
+    "location_details: " + this.event.attributes.location_details + '\n',
+    "id: " + this.event.id + '\n')
+
+    console.log("Actual: ")
+    console.log("date: " + this.state.chosenDate + '\n' + 
+    "time_start: " + this.state.startTime  + '\n' + 
+    "time_end: " + this.state.endTime + '\n' + 
+    "tag_names: " + this.state.selectedTagArray + '\n' + 
+    "location: " + this.state.location + '\n' + 
+    "category_id: " + this.state.categorySelectedValue + '\n' + 
+    "title: " + this.state.event + '\n' + 
+    "source: " + this.state.source + '\n' + 
+    "age_restriction: " + this.state.ageRestriction + '\n' + 
+    "cost: " + this.state.cost + '\n' + 
+    "description: " + this.state.description + '\n' + 
+    "address: " + this.state.address + '\n' + 
+    "location_details: " + this.state.locationDetails + '\n',
+    "id: " + this.state.id)
   }
 
   getTags(){
@@ -573,14 +613,9 @@ export default class EditEvents extends React.Component {
                   "description: " + this.state.description + '\n' + 
                   "address: " + this.state.address + '\n' + 
                   "location_details: " + this.state.locationDetails)
-      if(this.state.userToken){
-          url = "https://api.muncieevents.com/v1/events?userToken=" + this.state.userToken + "&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1"
-      }
-      else{
-          url = "https://api.muncieevents.com/v1/events?apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1"
-      }
+      url = "https://api.muncieevents.com/v1/events/" +this.state.id + "?userToken=" + this.state.userToken + "&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1"
       fetch(url,
-      {method: "POST",
+      {method: "PATCH",
       headers: {
           Accept: 'application/vnd.api+json',
           'Content-Type': 'application/json',
@@ -616,6 +651,5 @@ export default class EditEvents extends React.Component {
       catch(error){
           this.setState({statusMessage: "Event successfully submitted!"})
       }
-
   }
 }
