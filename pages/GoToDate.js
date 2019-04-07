@@ -1,12 +1,11 @@
 import React from 'react';
-import {Text, View, Platform, DatePickerAndroid, DatePickerIOS, TextInput, TouchableOpacity} from 'react-native';
+import {Text, View, Platform, DatePickerAndroid, DatePickerIOS} from 'react-native';
 import CustomButton from "./CustomButton";
 import EventList from "../EventList"
 import Styles from './Styles';
-import Icon from 'react-native-vector-icons/Ionicons'
-import * as Animatable from 'react-native-animatable'
 import APICacher from '../APICacher'
 import LoadingScreen from '../components/LoadingScreen';
+import TopBar from './top_bar';
 
 export default class GoToDate extends React.Component {
   constructor(props){
@@ -14,11 +13,9 @@ export default class GoToDate extends React.Component {
     this.state = {formattedDate: '', 
                   lastUsedDate: null, 
                   chosenDate: new Date(), 
-                  eventView: null,
                   searchURL: "",
-                  text: '',
-                  resultsLoaded: false,
-                  resultsLoading: false
+                  searchResultsFound: false,
+                  isSearching: false
                 }  
     this.dateSelected = false; 
     this.setDate = this.setDate.bind(this);
@@ -28,18 +25,20 @@ export default class GoToDate extends React.Component {
     render() {
       titleView = this.getTitle();
       mainView = this.getDatePicker()
-      if(this.state.resultsLoaded){
+      if(this.state.searchResultsFound){
         mainView = this.getResultsScreen()
       }
-      else if(this.state.resultsLoading){
+      else if(this.state.isSearching){
         mainView = this.getLoadingScreen();
         url = this.state.searchURL
         this._cacheSearchResults(url);
       }
       return (
         <View style={Styles.wrapper}>
-          {this.getTopBar()}
-          <View style={Styles.content}>
+          <View style={Styles.topBarWrapper}>
+            <TopBar/>
+          </View>
+          <View style={Styles.mainViewContent}>
             {titleView}
             {mainView}
           </View>
@@ -71,41 +70,6 @@ export default class GoToDate extends React.Component {
       return formattedDate;
   }
 
-    getTopBar(){
-      return(
-        <View style={Styles.topBarWrapper}>
-        <Animatable.View animation = "slideInRight" duration={500} style={Styles.topBarContent}>
-        <Icon name="ios-menu" style = {Styles.menuIcon} size={34}
-                   onPress={() => this.props.navigation.openDrawer()}/>
-                    
-            <TextInput
-                placeholder=' Search'
-                value={this.state.text} 
-                style={Styles.searchBar}
-                onChangeText={(text) => this.setState({text})}
-                onBlur={() => this.setState({searchurl:'https://api.muncieevents.com/v1/events/search?q=' + this.state.text +  '&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1'})}
-                showLoading='true'
-              />
-            <Icon name="ios-search" style={Styles.iosSearch}/>
-          </Animatable.View>
-        </View>
-      );
-    }
-
-    getSearchView(){
-      return(
-        <View>
-          <CustomButton 
-            text="Go Back"
-            buttonStyle = {Styles.longButtonStyle}
-            textStyle = {Styles.longButtonTextStyle}
-            onPress={() => this.setState({searchurl: ""})}/>
-          />
-          <EventList useSearchResults= {true}/>
-        </View>
-      )
-    }
-
    getTitle(){
       return(
         <Text style={Styles.title}>
@@ -125,13 +89,9 @@ export default class GoToDate extends React.Component {
         this.setState({searchURL: url, chosenDate: date});
     }
 
-    startLoadingResults(){
-      this.setState({resultsLoading: true})
-    }
-
     async _cacheSearchResults(searchURL){
       await this.APICacher._cacheJSONFromAPIAsync("SearchResults", searchURL)
-      this.setState({ resultsLoaded: true, resultsLoading: false});
+      this.setState({ searchResultsFound: true, isSearching: false});
     }
 
     getResultsScreen(){
@@ -141,7 +101,7 @@ export default class GoToDate extends React.Component {
             text="Go Back"
             buttonStyle = {Styles.longButtonStyle}
             textStyle = {Styles.longButtonTextStyle}
-            onPress={() => this.setState({resultsLoaded: false})}/>
+            onPress={() => this.setState({searchResultsFound: false})}/>
           <EventList useSearchResults = {true} />
         </View> 
         );
@@ -158,7 +118,7 @@ export default class GoToDate extends React.Component {
                 />
                 <CustomButton
                   text="Search"
-                  onPress={()=>this.setState({resultsLoading: true})}
+                  onPress={()=>this.setState({isSearching: true})}
                   buttonStyle={Styles.longButtonStyle}
                   textStyle={Styles.longButtonTextStyle}
                   />
@@ -184,7 +144,7 @@ export default class GoToDate extends React.Component {
         if (action == DatePickerAndroid.dateSetAction) {
           newDate = new Date(year, month, day);
           this.updateEventView(newDate);
-          this.setState({resultsLoading: true});
+          this.setState({isSearching: true});
         }
       } catch ({code, message}) {
         console.warn('Cannot open date picker', message);

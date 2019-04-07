@@ -1,22 +1,16 @@
 import React from 'react';
-import {Text, View, WebView, TextInput} from 'react-native';
+import {Text, View, WebView} from 'react-native';
 import Styles from './Styles';
-import CustomButton from './CustomButton'
-import Icon from 'react-native-vector-icons/Ionicons'
-import * as Animatable from 'react-native-animatable'
-import EventList from '../EventList'
 import APICacher from '../APICacher';
 import LoadingScreen from '../components/LoadingScreen';
-
+import TopBar from './top_bar';
 
 export default class About extends React.Component {
   constructor(props){
     super(props);
-    this.state ={ isLoading: true,                
-                  url: "",
-                  text: ""}
-    this._getCachedDataAsync = this._getCachedDataAsync.bind(this);
+    this.state ={isLoading: true}
     this.APICacher = new APICacher();
+    //this._getCachedDataAsync = this._getCachedDataAsync.bind(this);
   }
 
   componentDidMount(){
@@ -24,29 +18,24 @@ export default class About extends React.Component {
   }
 
   render() {
-    aboutUsTitle = "";
-    aboutUsHTML = "";
-    webView = null
-    searchView = null
-    topBar = this.getTopBar();
+    mainView = null
     if(this.state.isLoading){
       mainView = this.getLoadingScreen();
     }
-    else if(this.state.url){
-      mainView = this.getSearchView();
-    }
     else{
-      aboutUsTitle = this.state.dataSource.attributes.title;
       aboutUsHTML = this.state.dataSource.attributes.body;
-      mainView = this.getWebView(aboutUsHTML)
+      mainView = this.getWebView(aboutUsHTML);
     }
     return (
       <View style={Styles.wrapper}>
-        {topBar}
-        <Text style ={Styles.title}> About Us </Text>
-        {mainView}
+        <View style={Styles.topBarWrapper}>
+          <TopBar/>
+        </View>
+        <View style={Styles.mainViewContent}>
+          {mainView}
+        </View>
       </View>
-    )
+    );
   }
 
   getLoadingScreen(){
@@ -55,28 +44,6 @@ export default class About extends React.Component {
         <LoadingScreen/>
       </View>
     );
-  }
-
-  getTopBar(){
-    return(
-          <View style={Styles.topBarWrapper}>
-            <Animatable.View animation = "slideInRight" duration={500} style={Styles.topBarContent}>
-                <CustomButton
-                    text="Menu"
-                    onPress={() => this.props.navigation.openDrawer()}/>
-                <TextInput
-                    placeholder=' Search'
-                    value={this.state.text} 
-                    style={Styles.searchBar}
-                    onChangeText={(text) => this.setState({text})}
-                    onBlur={() => this.setState({url:'https://api.muncieevents.com/v1/events/search?q=' + this.state.text +  '&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1'})}
-                    showLoading='true'
-                  />
-                <Icon name="ios-search" style={Styles.iosSearch}/>
-              </Animatable.View>
-          </View>
-    );
-    
   }
 
   async _getCachedDataAsync(){
@@ -91,20 +58,6 @@ export default class About extends React.Component {
     }
     await this.APICacher._getJSONFromStorage(key)
       .then((response) => this.setState({dataSource: response, isLoading: false}))
-  }
-
-  getSearchView(){
-    return(
-      <View>
-        <CustomButton 
-          text="Go Back"
-          buttonStyle = {Styles.longButtonStyle}
-          textStyle = {Styles.longButtonTextStyle}
-          onPress={() => this.setState({url: ""})}/>
-        />
-        <EventList apicall={this.state.url} />
-      </View>
-    )
   }
 
   getWebView(html){

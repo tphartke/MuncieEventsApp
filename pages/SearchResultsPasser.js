@@ -6,19 +6,21 @@ import LoadingScreen from '../components/LoadingScreen';
 
 export default class SearchResultsPasser extends React.Component{
 
+    //NOTE This page is a middle man for navigational purposes. All it does is pass the URL to the main search page. Whenever you are searching, navigate to this page instead.
+
     componentDidMount(){
         const {navigation} = this.props;
-        const searchURL = navigation.getParam('searchURL', 'No URL Found')
-        this.props.navigation.navigate("Search Results", {searchURL: searchURL});
+        const userInput = navigation.getParam('searchInput', 'No Results Found')
+        this.props.navigation.navigate("Search Results", {searchInput: userInput});
     }
     
     render(){
         return(
             <View style={Styles.wrapper}>
-                <View style={{flex:.15}}>
+                <View style={Styles.topBarWrapper}>
                     <TopBar/>
                 </View>
-                <View style={{flex:.75}}>
+                <View style={Styles.mainViewContent}>
                     <LoadingScreen/>
                 </View>
             </View>

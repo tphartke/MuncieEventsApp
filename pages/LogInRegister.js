@@ -5,18 +5,14 @@ import Register from "./Register"
 import ForgotPassword from "./ForgotPassword"
 import ProfileView from "./ProfileView"
 import Styles from './Styles';
-import Icon from 'react-native-vector-icons/Ionicons'
-import * as Animatable from 'react-native-animatable'
-import EventList from '../EventList'
 import LoadingScreen from '../components/LoadingScreen';
+import TopBar from './top_bar';
 
 export default class LogInRegister extends React.Component {
     constructor(props){
       super(props);      
       this.state = {isLoggedIn: false,
                     selectedPage: "Login",
-                    url: "",
-                    text: "",
                     userid: "",
                     uniqueToken: "",
                     email: "",
@@ -30,49 +26,35 @@ export default class LogInRegister extends React.Component {
     }
     
     render() {
-      searchView = this.getDisplayedScreen()
-      return(<View style={Styles.wrapper}>
-                 <View style={Styles.topBarWrapper}>
-                    <Animatable.View animation = "slideInRight" duration={500} style={Styles.topBarContent}>
-                      <CustomButton
-                        text="Menu"
-                        onPress={() => this.props.navigation.openDrawer()}/>
-                      <TextInput
-                        placeholder=' Search'
-                        value={this.state.text} 
-                        style={Styles.searchBar}
-                        onChangeText={(text) => this.setState({text})}
-                        onBlur={() => this.setState({url:'https://api.muncieevents.com/v1/events/search?q=' + this.state.text +  '&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1'})}
-                        showLoading='true'
-                        />
-                        <Icon name="ios-search" style={Styles.iosSearch}/>
-                      </Animatable.View>
-                    </View>
-                {searchView}
-            </View>)
+      mainView = this.getDisplayedScreen()
+      return(
+        <View style={Styles.wrapper}>
+          <View style={Styles.topBarWrapper}>
+            <TopBar/>    
+          </View>
+          <View style={Styles.mainViewContent}>
+            {mainView}
+          </View>
+        </View>
+        );
     }
 
     getDisplayedScreen(){
-      searchView = null
       if(this.state.isLoading){
-        searchView = this.getLoadingScreen()
-      }
-      else if(this.state.url){
-          searchView = this.getSearchView()
+        return this.getLoadingScreen()
       }
       else if(this.state.isLoggedIn==true){
-          searchView = this.getProfileViewSequence()
+        return this.getProfileViewSequence()
       }
       else if(this.state.selectedPage=="Login"){
-          searchView = this.getLoginSequence()
+        return this.getLoginSequence()
       }
       else if(this.state.selectedPage=="ForgotPassword"){
-          searchView = this.getForgotPasswordSequence()
+        return this.getForgotPasswordSequence()
       }
       else{
-          searchView = this.getSignupSequence()
+        return this.getSignupSequence()
       }
-      return searchView
     }
 
     getLoadingScreen(){
@@ -81,20 +63,6 @@ export default class LogInRegister extends React.Component {
           <LoadingScreen/>
         </View>
       );
-    }
-
-    getSearchView(){
-      return(
-        <View>
-          <CustomButton 
-            text="Go Back"
-            buttonStyle = {Styles.longButtonStyle}
-            textStyle = {Styles.longButtonTextStyle}
-            onPress={() => this.setState({url: ""})}/>
-          />
-          <EventList apicall={this.state.url} />
-        </View>
-      )
     }
 
     getLoginSequence(){

@@ -1,10 +1,8 @@
 import React from 'react';
 import {Text, View, TextInput} from 'react-native';
 import CustomButton from "./CustomButton";
-import Icon from 'react-native-vector-icons/Ionicons'
-import * as Animatable from 'react-native-animatable'
-import EventList from '../EventList'
 import Styles from './Styles';
+import TopBar from './top_bar';
 
 export default class Contact extends React.Component {
     constructor(props){
@@ -14,56 +12,21 @@ export default class Contact extends React.Component {
                      name: 'Timothy Hartke',
                      messageSent: false,
                      statusMessage: "",
-                     dataSource: "",
-                     url: "",
-                     text: ""})
+                    })
     }
+
     render() {
-      contactView = null
-      searchView = null
-      if(this.state.url){
-        searchView = this.getSearchView();
-      }
-      else{
-        contactView = this.getContactView();
-      }
+      contactView = this.getContactView();
       return (
         <View style={Styles.wrapper}>
-           <View style={Styles.topBarWrapper}>
-            <Animatable.View animation = "slideInRight" duration={500} style={Styles.topBarContent}>
-                <CustomButton
-                    text="Menu"
-                    onPress={() => this.props.navigation.openDrawer()}/>
-                <TextInput
-                    placeholder=' Search'
-                    value={this.state.text} 
-                    style={Styles.searchBar}
-                    onChangeText={(text) => this.setState({text})}
-                    onBlur={() => this.setState({url:'https://api.muncieevents.com/v1/events/search?q=' + this.state.text +  '&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1'})}
-                    showLoading='true'
-                  />
-                <Icon name="ios-search" style={Styles.iosSearch}/>
-              </Animatable.View>
-            </View>
-          {searchView}
-          {contactView}
+          <View style={Styles.topBarWrapper}>
+            <TopBar/>
+          </View>
+          <View style={Styles.mainViewContent}>
+            {contactView}
+          </View>
         </View>
-
-      )
-    }
-
-    getSearchView(){
-      return(
-        <View>
-          <CustomButton 
-            text="Go Back"
-            buttonStyle = {Styles.longButtonStyle}
-            textStyle = {Styles.longButtonTextStyle}
-            onPress={() => this.setState({url: ""})}/>
-          />
-          <EventList apicall={this.state.url} />
-        </View>
-      )
+      );
     }
 
   getContactView(){

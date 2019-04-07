@@ -23,6 +23,10 @@ export default StyleSheet.create({
         paddingTop: 5,
     },
 
+    mainViewContent:{
+        flex:.75
+    },
+
     widgetContent: {
         padding: 10,
         fontSize: 16        
@@ -86,11 +90,7 @@ export default StyleSheet.create({
     },
     
     topBarWrapper: {
-        height: 65, 
-        backgroundColor: '#aaa', 
-        paddingTop: 10, 
-        paddingHorizontal: 5, 
-        flexDirection: 'row',
+        flex:.15
     },
 
     topBarContent: {

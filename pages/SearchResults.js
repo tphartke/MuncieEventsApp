@@ -1,6 +1,6 @@
 import React from 'react';
 import EventList from "../EventList"
-import {View} from 'react-native';
+import {View, Text} from 'react-native';
 import Styles from './Styles';
 import APICacher from '../APICacher';
 import TopBar from './top_bar';
@@ -10,13 +10,14 @@ export default class SearchResults extends React.Component{
     constructor(props){
         super(props)
         this.state={isLoading:true}
+        const {navigation} = this.props;
+        this.searchInput = navigation.getParam('searchInput', 'No Results Found')
     }
 
-    
-
     componentDidMount(){
-        const {navigation} = this.props;
-        const searchURL = navigation.getParam('searchURL', 'No URL Found')
+        beginningSearchURL = 'https://api.muncieevents.com/v1/events/search?q='
+        endingSearchURL = '&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1'
+        searchURL = beginningSearchURL + this.searchInput + endingSearchURL
         this._cacheSearchResults(searchURL)
     }
 
@@ -30,10 +31,11 @@ export default class SearchResults extends React.Component{
         }
         return(
             <View style={Styles.wrapper}>
-                <View style={{flex:.15}}>
+                <View style={Styles.topBarWrapper}>
                     <TopBar/>
                 </View>
-                <View style={{flex:.75}}>
+                <View style={Styles.mainViewContent}>
+                    <Text style={Styles.title}>Search Results For "{this.searchInput}"</Text>
                     {mainView}
                 </View>
             </View>

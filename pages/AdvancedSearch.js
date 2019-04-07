@@ -1,12 +1,11 @@
 import React from 'react';
-import {View, Text, Picker, TextInput} from 'react-native';
+import {View, Text, Picker} from 'react-native';
 import Styles from './Styles';
 import CustomButton from './CustomButton';
-import Icon from 'react-native-vector-icons/Ionicons';
-import * as Animatable from 'react-native-animatable';
 import EventList from '../EventList';
 import APICacher from '../APICacher';
 import LoadingScreen from '../components/LoadingScreen';
+import TopBar from './top_bar';
 
 export default class AdvancedSearch extends React.Component {
   constructor(props){
@@ -17,12 +16,9 @@ export default class AdvancedSearch extends React.Component {
                 categorySelectedName: "",
                 tagSelectedValue: "",
                 tag: "",
-                searchCriteria: "",
-                searchResults: null,
                 url: "",
-                text: "",
-                resultsLoaded: false,
-                resultsLoading: false
+                searchResultsHaveBeenFound: false,
+                isSearching: false
               }
     this.categories=[]
     this.tags=[]
@@ -50,7 +46,7 @@ export default class AdvancedSearch extends React.Component {
 
   async _fetchTagData(){
     key = "Tags"
-    url = "https://api.muncieevents.com/v1/tags/tree?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ"
+    url = "https://api.muncieevents.com/v1/tags/future?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ"
     await this._refreshData(key, url)
 
     this.tags = await this.APICacher._getJSONFromStorage(key)
@@ -73,22 +69,25 @@ export default class AdvancedSearch extends React.Component {
     if(this.state.isInitialLoading){
       mainView = this.getLoadingScreen();
     }
-    else if(this.state.resultsLoading){
+    else if(this.state.isSearching){
       mainView = this.getLoadingScreen();
       url = this.state.searchURL;
       this._cacheSearchResultsAsync(searchURL)
     }
-    else if(this.state.resultsLoaded){
+    else if(this.state.searchResultsHaveBeenFound){
       mainView = this.getResultsView();
-      title = "Search by " + this.state.title
+      //title = "Search by " + this.state.title
     }
     else{
       mainView = this.getMainView()
     }
     return (
       <View style={Styles.wrapper}>
-        {this.getTopBar()}
-        <View>
+        <View style={Styles.topBarWrapper}>
+          <TopBar/>
+        </View>
+        <View style={Styles.mainViewContent}>
+          <Text style={Styles.title}>{title}</Text>
           {mainView}
         </View>
       </View>
@@ -113,27 +112,6 @@ export default class AdvancedSearch extends React.Component {
       </View>
     );
   }
-
-  getTopBar(){
-    return(
-      <View style={Styles.topBarWrapper}>
-      <Animatable.View animation = "slideInRight" duration={500} style={Styles.topBarContent}>
-          <CustomButton
-              text="Menu"
-              onPress={() => this.props.navigation.openDrawer()}/>
-          <TextInput
-              placeholder=' Search'
-              value={this.state.text} 
-              style={Styles.searchBar}
-              onChangeText={(text) => this.setState({text})}
-              onBlur={() => this.setState({url:'https://api.muncieevents.com/v1/events/search?q=' + this.state.text +  '&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1'})}
-              showLoading='true'
-            />
-          <Icon name="ios-search" style={Styles.iosSearch}/>
-        </Animatable.View>
-    </View>
-    )
-  }
   
   getResultsView(){
     return(
@@ -142,26 +120,11 @@ export default class AdvancedSearch extends React.Component {
           text="Go Back"
           buttonStyle = {Styles.longButtonStyle}
           textStyle = {Styles.longButtonTextStyle}
-          onPress={() => this.setState({resultsLoaded: false})}/>
+          onPress={() => this.setState({searchResultsHaveBeenFound: false})}/>
         <EventList useSearchResults = {true} style={Styles.advancedSearchResults}/>
     </View>
 
   );}
-  
-
-  getSearchView(){
-    return(
-      <View>
-        <CustomButton 
-          text="Go Back"
-          buttonStyle = {Styles.longButtonStyle}
-          textStyle = {Styles.longButtonTextStyle}
-          onPress={() => this.setState({url: ""})}/>
-        />
-        <EventList apicall={this.state.url} />
-      </View>
-    )
-  }
 
   getCategorySearch(){
     categorylist = this.categories.map( (name) => {
@@ -232,14 +195,14 @@ export default class AdvancedSearch extends React.Component {
     //this.state.title = newTitle;
     this.state.url = searchURL;
     this.setState({
-      resultsLoading: true
+      isSearching: true
     });
     
   }
 
   async _cacheSearchResultsAsync(searchURL){
     await this.APICacher._cacheJSONFromAPIAsync("SearchResults", searchURL)
-    .then(this.setState({resultsLoaded: true, resultsLoading: false}));
+    this.setState({searchResultsHaveBeenFound: true, isSearching: false});
   }
   
 }
