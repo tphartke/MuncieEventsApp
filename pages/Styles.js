@@ -21,6 +21,7 @@ export default StyleSheet.create({
 
     content: {
         paddingTop: 5,
+        marginHorizontal: 5
     },
 
     mainViewContent:{
@@ -42,7 +43,6 @@ export default StyleSheet.create({
     expandedView: {
         flex: 1,
         flexBasis: contentHeight,
-        marginHorizontal: 5
     },
 
     advancedSearchResults: {
@@ -72,7 +72,9 @@ export default StyleSheet.create({
 
     eventRowImage: {
         width: 60, 
-        height: 60
+        height: 60,
+        flex: 1, 
+        resizeMode: 'contain', 
     },
 
     loadingViewPadding: {
@@ -90,6 +92,8 @@ export default StyleSheet.create({
         paddingTop:20,
         flex: 1,
         backgroundColor: 'white',
+        paddingLeft: 5,
+        paddingRight: 5
     },
     
     topBarWrapper: {

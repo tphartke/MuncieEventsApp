@@ -491,9 +491,9 @@ export default class EditEvents extends React.Component {
 
   setStatesForEventData(){
     this.setState({
-      chosenDate: this.event.attributes.date,
-      startTime: this.event.attributes.time_start,
-      endTime: this.event.attributes.time_end,
+      chosenDate: new Date(this.event.attributes.date),
+      startTime: new Date(this.event.attributes.time_start),
+      endTime: new Date(this.event.attributes.time_end),
       selectedTagArray: this.getTags(),
       location: this.event.attributes.location,
       categorySelectedName: this.event.attributes.category.name,
