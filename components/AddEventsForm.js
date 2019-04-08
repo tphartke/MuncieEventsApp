@@ -16,21 +16,21 @@ export default class AddEventsForm extends Component{
             chosenDate: new Date(),
             startTime: null,
             endTime: null,
-            selectedTagArray: [],
+            selectedTagArray: ['ball state university','writing','food'],
             filter: null,
             statusMessage: "",
             userToken: null,
-            location: null,
+            location: "Lafollette Egg",
             categorySelectedName: null,
             categorySelectedValue: null,
             tagSelectedValue: null,
-            event: null,
-            source: null,
-            ageRestriction: null,
-            cost: null,
-            description: null,
-            address: null,
-            locationDetails: null,
+            event: "Dear High School Me...",
+            source: "",
+            ageRestriction: "",
+            cost: "",
+            description: "What do you wish you knew about college while in high school? Share your knowledge by writing to a Muncie Central High School student about what college is like and why the shouldn't give up on education after high school. There is free food for anyone who writes a letter.",
+            address: "",
+            locationDetails: "Between Knotts-Edwards and Brayton-Clevenger; near the parking lot",
             failedToLoad: false
         }
         this.tags=[]
@@ -517,25 +517,29 @@ export default class AddEventsForm extends Component{
     }
 
     submitEvent(){
-        console.log("date: " + this.state.chosenDate + '\n' + 
-                    "time_start: " + this.state.startTime  + '\n' + 
-                    "time_end: " + this.state.endTime + '\n' + 
-                    "tag_names: " + this.state.selectedTagArray + '\n' + 
-                    "location: " + this.state.location + '\n' + 
-                    "category_id: " + this.state.categorySelectedValue + '\n' + 
-                    "title: " + this.state.event + '\n' + 
-                    "source: " + this.state.source + '\n' + 
-                    "age_restriction: " + this.state.ageRestriction + '\n' + 
-                    "cost: " + this.state.cost + '\n' + 
-                    "description: " + this.state.description + '\n' + 
-                    "address: " + this.state.address + '\n' + 
-                    "location_details: " + this.state.locationDetails)
         if(this.state.userToken){
-            url = "https://api.muncieevents.com/v1/events?userToken=" + this.state.userToken + "&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1"
+            url = "https://api.muncieevents.com/v1/event?userToken=" + this.state.userToken + "&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1"
         }
         else{
-            url = "https://api.muncieevents.com/v1/events?apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1"
+            url = "https://api.muncieevents.com/v1/event?apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1"
         }
+
+        start = this.state.startTime.toLocaleTimeString().split(':')
+        startampm = start[2].split(' ')[1]
+        startTime = start[0]+':'+start[1]+startampm.toLowerCase()
+
+        end = this.state.endTime.toLocaleTimeString().split(':')
+        endampm = end[2].split(' ')[1]
+        endTime = end[0]+':'+end[1]+endampm.toLowerCase()
+    
+        chosenDate = [this.state.chosenDate.getFullYear() + '-' + ('0' + (this.state.chosenDate.getMonth()+1)).slice(-2) + '-' + ('0' + this.state.chosenDate.getDate()).slice(-2)]
+        
+        console.log(startTime)
+        console.log(endTime)
+        console.log(chosenDate)
+
+        console.log(url)
+
         fetch(url,
         {method: "POST",
         headers: {
@@ -543,9 +547,9 @@ export default class AddEventsForm extends Component{
             'Content-Type': 'application/json',
             },
         body: JSON.stringify({
-            date: this.state.chosenDate,
-            start: this.state.startTime,
-            time_end: this.state.endTime,
+            date: chosenDate,
+            time_start: startTime,
+            time_end: endTime,
             tag_names: this.state.selectedTagArray,
             location: this.state.location,
             category_id: this.state.categorySelectedValue,
@@ -574,5 +578,13 @@ export default class AddEventsForm extends Component{
             this.setState({statusMessage: "Event successfully submitted!"})
         }
 
+    }
+
+    addZeroPadding(num){
+        console.log(num.toString().length)
+        if(num.length < 2){
+            return "0" + num.toString().slice(-2)
+        }
+        return num.toString()
     }
 }

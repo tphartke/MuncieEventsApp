@@ -41,11 +41,7 @@ export default class EditEvents extends React.Component {
 
 
     componentDidMount(){
-<<<<<<< HEAD
-      this._fetchTagAndCategoryData().catch(error => this.setState({failedToLoad: true}))
-    }
-=======
-      this._awaitStartupMethods()
+        this._awaitStartupMethods()
   }
 
   async _awaitStartupMethods(){
@@ -55,12 +51,10 @@ export default class EditEvents extends React.Component {
     utoken = await this.retrieveStoredToken();
     this.setState({isLoading: false, userToken: utoken});
   }
->>>>>>> 02cef39101493aa688b1a8a4a7d9fd465b61cbf5
 
   async _fetchTagAndCategoryData(){
       console.log("Fetching tag and category data")
       await this._fetchCategoryData();
-      await this._fetchTagData();
   }
 
   async _fetchCategoryData(){
@@ -543,7 +537,8 @@ export default class EditEvents extends React.Component {
     }
 
   submitEvent(){
-      url = "https://api.muncieevents.com/v1/events/" +this.state.id + "?userToken=" + this.state.userToken + "&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1"
+      url = "https://api.muncieevents.com/v1/event/" +this.state.id + "?userToken=" + this.state.userToken + "&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1"
+      console.log(url)
       fetch(url,
       {method: "PATCH",
       headers: {

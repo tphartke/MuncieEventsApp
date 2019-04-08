@@ -9,6 +9,7 @@ import Widgets from './pages/Widgets';
 import SearchResults from './pages/SearchResults'
 import SearchResultsPasser from './pages/SearchResultsPasser';
 import {createDrawerNavigator} from 'react-navigation';
+import ExpandedView from './pages/ExpandedView';
 
 const App = createDrawerNavigator({
   Home: { screen: HomeScreen },
@@ -21,7 +22,7 @@ const App = createDrawerNavigator({
   Widgets: {screen: Widgets},
   "Search Results": {screen: SearchResults, navigationOptions: {drawerLabel: () => null}},
   "Search Results Passer": {screen: SearchResultsPasser, navigationOptions: {drawerLabel: () => null}},
-},
+  "Expanded View":{screen: ExpandedView, navigationOptions: {drawerLabel: () => null}}},
   {
     initialRouteName:"Home"
   }
