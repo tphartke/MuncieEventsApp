@@ -26,6 +26,7 @@ export default class HomeScreen extends React.Component{
       }
 
       render(){
+        console.log("Crash fix")
         if(this.state.isLoading){
           mainView = this.getLoadingScreen();
         }

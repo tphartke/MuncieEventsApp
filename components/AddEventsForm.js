@@ -1,5 +1,5 @@
 import React, {Component} from 'react';  
-import {View, Platform, Text, Picker, TextInput, Modal, DatePickerAndroid, TimePickerAndroid, DatePickerIOS, FlatList, Switch, KeyboardAvoidingView, ScrollView, AsyncStorage} from 'react-native';
+import {View, Platform, Text, Picker, TextInput, Modal, DatePickerAndroid, TimePickerAndroid, DatePickerIOS, FlatList, Switch, ScrollView, AsyncStorage} from 'react-native';
 import Styles from '../pages/Styles';
 import APICacher from '../APICacher'
 import CustomButton from '../pages/CustomButton';
@@ -38,7 +38,7 @@ export default class AddEventsForm extends Component{
     }
 
     componentDidMount(){
-        this._fetchTagAndCategoryData().catch(error => this.setState({failedToLoad:true}))
+        this._fetchTagAndCategoryData().catch(error => this.setState({isLoading:false, failedToLoad:true}))
     }
 
     async _fetchTagAndCategoryData(){
@@ -361,8 +361,8 @@ export default class AddEventsForm extends Component{
         else if(this.state.failedToLoad){
             return(
                 <InternetError onRefresh={()=>{
-                    this._fetchTagAndCategoryData().catch(error => this.setState({failedToLoad:true}))
                     this.setState({failedToLoad:false, isLoading:true})
+                    this._fetchTagAndCategoryData().catch(error => this.setState({isLoading: false, failedToLoad:true}))
                 }}/>
             );
         }
@@ -468,7 +468,7 @@ export default class AddEventsForm extends Component{
                                 text="Submit"
                                 buttonStyle={Styles.longButtonStyle}
                                 textStyle={Styles.longButtonTextStyle}
-                                onPress={() => this.submitEvent()}
+                                onPress={() => this.attemptEventSubmission()}
                             />
                         </View>
                         <Text>{this.state.statusMessage}</Text>
@@ -509,11 +509,8 @@ export default class AddEventsForm extends Component{
                     "description: " + this.state.description + '\n' + 
                     "address: " + this.state.address + '\n' + 
                     "location_details: " + this.state.locationDetails)
-        if(this.state.category_id && this.state.event && this.state.chosenDate && this.state.startTime 
-            && this.state.description && this.state.location){
-                return true;
-        }
-        return false;
+        return (this.state.category_id && this.state.event && this.state.chosenDate && this.state.startTime 
+            && this.state.description && this.state.location)
     }
 
     submitEvent(){
@@ -524,15 +521,21 @@ export default class AddEventsForm extends Component{
             url = "https://api.muncieevents.com/v1/event?apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1"
         }
 
-        start = this.state.startTime.toLocaleTimeString().split(':')
-        startampm = start[2].split(' ')[1]
-        startTime = start[0]+':'+start[1]+startampm.toLowerCase()
+        if(this.state.startTime){
+            start = this.state.startTime.toLocaleTimeString().split(':')
+            startampm = start[2].split(' ')[1]
+            startTime = start[0]+':'+start[1]+startampm.toLowerCase()
+        }
 
-        end = this.state.endTime.toLocaleTimeString().split(':')
-        endampm = end[2].split(' ')[1]
-        endTime = end[0]+':'+end[1]+endampm.toLowerCase()
-    
-        chosenDate = [this.state.chosenDate.getFullYear() + '-' + ('0' + (this.state.chosenDate.getMonth()+1)).slice(-2) + '-' + ('0' + this.state.chosenDate.getDate()).slice(-2)]
+        if(this.state.endTime){
+            end = this.state.endTime.toLocaleTimeString().split(':')
+            endampm = end[2].split(' ')[1]
+            endTime = end[0]+':'+end[1]+endampm.toLowerCase()
+        }
+
+        if(this.state.chosenDate){
+            chosenDate = [this.state.chosenDate.getFullYear() + '-' + ('0' + (this.state.chosenDate.getMonth()+1)).slice(-2) + '-' + ('0' + this.state.chosenDate.getDate()).slice(-2)]
+        }
         
         console.log(startTime)
         console.log(endTime)
@@ -541,36 +544,34 @@ export default class AddEventsForm extends Component{
         console.log(url)
 
         fetch(url,
-        {method: "POST",
-        headers: {
-            Accept: 'application/vnd.api+json',
-            'Content-Type': 'application/json',
-            },
-        body: JSON.stringify({
-            date: chosenDate,
-            time_start: startTime,
-            time_end: endTime,
-            tag_names: this.state.selectedTagArray,
-            location: this.state.location,
-            category_id: this.state.categorySelectedValue,
-            title: this.state.event,
-            source: this.state.source,
-            age_restriction: this.state.ageRestriction,
-            cost: this.state.cost,
-            description: this.state.description,
-            address: this.state.address,
-            location_details: this.state.locationDetails
+            {method: "POST",
+            headers: {
+                Accept: 'application/vnd.api+json',
+                'Content-Type': 'application/json',
+                },
+            body: JSON.stringify({
+                date: chosenDate,
+                time_start: startTime,
+                time_end: endTime,
+                tag_names: this.state.selectedTagArray,
+                location: this.state.location,
+                category_id: this.state.categorySelectedValue,
+                title: this.state.event,
+                source: this.state.source,
+                age_restriction: this.state.ageRestriction,
+                cost: this.state.cost,
+                description: this.state.description,
+                address: this.state.address,
+                location_details: this.state.locationDetails
+            })
         })
-    })
-    .then((response) => response.json())
-    .then((responseJson) => console.log(responseJson))
-    .then((responseJson) => this.handelAPIResponse(responseJson))
-      .catch((error) =>{
-         this.setState({failedToLoad:true})
-      })
+        .then((response) => response.json())
+        .then((responseJson) => console.log(responseJson))
+        .then((responseJson) => this.handleAPIResponse(responseJson))
+        .catch(error =>{this.setState({failedToLoad:true})});
     }
 
-    handelAPIResponse(responseJson){
+    handleAPIResponse(responseJson){
         try{
             this.setState({statusMessage: responseJson.errors[0].detail})
         }
