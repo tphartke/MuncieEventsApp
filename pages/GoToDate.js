@@ -43,8 +43,8 @@ export default class GoToDate extends React.Component {
           <View style={Styles.topBarWrapper}>
             <TopBar/>
           </View>
+          {titleView}
           <View style={Styles.mainViewContent}>
-            {titleView}
             {mainView}
           </View>
         </View>
@@ -120,7 +120,9 @@ export default class GoToDate extends React.Component {
             buttonStyle = {Styles.longButtonStyle}
             textStyle = {Styles.longButtonTextStyle}
             onPress={() => this.setState({searchResultsFound: false})}/>
-          <EventList useSearchResults = {true} />
+          <View style={Styles.GoToDateSearchResults}>
+            <EventList useSearchResults = {true}/>
+          </View>
         </View> 
         );
     }

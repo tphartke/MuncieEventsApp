@@ -1,6 +1,4 @@
 import { StyleSheet, Dimensions} from "react-native"
-const contentHeight = Dimensions.get('window').height*0.82
-const advancedSearchHeight = Dimensions.get('window').height*0.08
 
 export default StyleSheet.create({
     title: {
@@ -25,7 +23,7 @@ export default StyleSheet.create({
     },
 
     mainViewContent:{
-        flex:1
+        flex:1,
     },
 
     widgetContent: {
@@ -35,21 +33,29 @@ export default StyleSheet.create({
 
     eventList: {
         flex: 1,
-        flexBasis: contentHeight,
-        paddingLeft: 0,
-        paddingRight: 0
+        flexBasis: '100%',
     },
 
     expandedView: {
         flex: 1,
-        flexBasis: contentHeight,
+        flexBasis: '100%',
     },
 
     advancedSearchResults: {
         flex: 1,
-        flexBasis: advancedSearchHeight
+        flexBasis: '84%'
     },
     
+    GoToDateSearchResults: {
+        flex: 1,
+        flexBasis: '100%',
+    },
+
+    searchResults: {
+        flex: 1,
+        flexBasis: '10%',
+    },
+
     eventRow: {
         backgroundColor:'#eee', 
         fontSize: 14, 

@@ -67,7 +67,7 @@ export default class SearchResults extends React.Component{
 
     getSearchResultsView(){
         return(
-            <View>
+            <View style={Styles.searchResults}>
                 <EventList useSearchResults = {true} style={Styles.eventList}/>
             </View>
         );

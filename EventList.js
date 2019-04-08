@@ -39,7 +39,6 @@ class EventList extends React.Component {
         return(
           <View>
             <FlatList
-              style={Styles.eventList}
               data={dataSource}
               renderItem={({item}) => 
                 this.generateEventEntryView(item)

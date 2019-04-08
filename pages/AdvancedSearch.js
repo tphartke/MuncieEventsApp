@@ -139,7 +139,9 @@ export default class AdvancedSearch extends React.Component {
           buttonStyle = {Styles.longButtonStyle}
           textStyle = {Styles.longButtonTextStyle}
           onPress={() => this.setState({searchResultsHaveBeenFound: false})}/>
-        <EventList useSearchResults = {true} style={Styles.advancedSearchResults}/>
+        <View style={Styles.advancedSearchResults}>
+          <EventList useSearchResults = {true}/>
+        </View>
     </View>
 
   );}

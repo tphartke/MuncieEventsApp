@@ -80,7 +80,7 @@ export default class HomeScreen extends React.Component{
       getHomeView(){
         return(
             <View>
-              <EventList style={Styles.eventList}/>
+              <EventList/>
             </View>
             );
         }
