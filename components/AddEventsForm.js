@@ -13,23 +13,23 @@ export default class AddEventsForm extends Component{
             IOSModalVisible: false,
             tagModalVisable: false,
             chosenDate: new Date(),
-            startTime: "12:00 PM",
+            startTime: null,
             endTime: null,
-            selectedTagArray: ["ball state university","food","writing"],
+            selectedTagArray: [],
             filter: null,
             statusMessage: "",
             userToken: null,
-            location: "LaFollette egg between KE and BC",
+            location: null,
             categorySelectedName: null,
-            categorySelectedValue: 24,
+            categorySelectedValue: null,
             tagSelectedValue: null,
-            event: "Dear High School Me...",
+            event: null,
             source: null,
             ageRestriction: null,
             cost: null,
-            description: "What do you wish you knew about college as a high school senior? Come write letters of encouragement to Muncie central high school students about furthering their education.",
+            description: null,
             address: null,
-            locationDetails: "Ball State"
+            locationDetails: null
         }
         this.tags=[]
         this.APICacher = new APICacher();
