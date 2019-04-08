@@ -13,7 +13,7 @@ export default class AddEventsForm extends Component{
             isLoading: true,
             IOSModalVisible: false,
             tagModalVisable: false,
-            chosenDate: new Date(),
+            chosenDate: null,
             startTime: null,
             endTime: null,
             selectedTagArray: [],
@@ -246,8 +246,19 @@ export default class AddEventsForm extends Component{
               is24Hour: false,
             });
             if (action !== TimePickerAndroid.dismissedAction) {
-              time = hour + ":" + minute
-              this.setState({startTime: time})
+                modifier = "AM"
+                if(minute == 0){
+                    minute += "0"
+                }
+                else if(minute < 10){
+                    minute = "0" + minute
+                }
+                if(hour > 12){
+                    hour -= 12
+                    modifier = "PM"
+                }
+                time = hour + ":" + minute + ":" + "00 " + modifier
+                this.setState({startTime: time})
             }
           } catch ({code, message}) {
             console.warn('Cannot open time picker', message);
@@ -307,7 +318,7 @@ export default class AddEventsForm extends Component{
                         buttonStyle={Styles.longButtonStyle}
                         textStyle={Styles.longButtonTextStyle}
                         onPress = {() => {
-                            this.setState({chosenDate: this.highlightedDate, startTime: this.highlightedStartTime, endTime: this.highlightedEndTime, IOSModalVisible: false})
+                            this.setState({chosenDate: this.highlightedDate, startTime: this.highlightedStartTime.toLocaleTimeString(), endTime: this.highlightedEndTime.toLocaleTimeString(), IOSModalVisible: false})
                     }}/>
                     {/*cancel button*/}
                     <CustomButton
@@ -329,12 +340,14 @@ export default class AddEventsForm extends Component{
             });
             if (action == DatePickerAndroid.dateSetAction) {
               newDate = new Date(year, month, day);
+              console.log(newDate)
               this.setState({chosenDate: newDate})
             }
           } catch ({code, message}) {
             console.warn('Cannot open date picker', message);
           }
     }
+
 
     selectDatePickerFromOS(){
         if(Platform.OS == "ios"){
@@ -496,45 +509,75 @@ export default class AddEventsForm extends Component{
     }
 
     requiredFieldsAreFilled(){
-        console.log("date: " + this.state.chosenDate + '\n' + 
-                    "start: " + this.state.startTime  + '\n' + 
-                    "end: " + this.state.endTime + '\n' + 
-                    "tag_names: " + this.state.selectedTagArray + '\n' + 
-                    "location: " + this.state.location + '\n' + 
-                    "category_id: " + this.state.categorySelectedValue + '\n' + 
-                    "title: " + this.state.event + '\n' + 
-                    "source: " + this.state.source + '\n' + 
-                    "age_restriction: " + this.state.ageRestriction + '\n' + 
-                    "cost: " + this.state.cost + '\n' + 
-                    "description: " + this.state.description + '\n' + 
-                    "address: " + this.state.address + '\n' + 
-                    "location_details: " + this.state.locationDetails)
-        return (this.state.category_id && this.state.event && this.state.chosenDate && this.state.startTime 
-            && this.state.description && this.state.location)
+        chosenDate = this.state.chosenDate;
+        startTime = this.state.startTime;
+        endTime = this.state.endTime;
+        tagNames = this.state.selectedTagArray;
+        location = this.state.location;
+        categoryID = this.state.categorySelectedValue;
+        title = this.state.event;
+        source = this.state.source;
+        ageRestriction = this.state.ageRestriction;
+        cost = this.state.cost;
+        description = this.state.description;
+        address = this.state.address;
+        locationDetails = this.state.locationDetails;
+        console.log("date: " + chosenDate + '\n' + 
+                    "start: " + startTime  + '\n' + 
+                    "end: " + endTime + '\n' + 
+                    "tag_names: " + tagNames + '\n' + 
+                    "location: " + location + '\n' + 
+                    "category_id: " + categoryID + '\n' + 
+                    "title: " + title + '\n' + 
+                    "source: " + source + '\n' + 
+                    "age_restriction: " + ageRestriction + '\n' + 
+                    "cost: " + cost + '\n' + 
+                    "description: " + description + '\n' + 
+                    "address: " + address + '\n' + 
+                    "location_details: " + locationDetails);
+        return (categoryID && title && chosenDate && startTime 
+            && description && location);
+    }
+
+    formatTimeForAPI(time){
+        splitTime = time.split(':')
+        timeampm = splitTime[2].split(' ')[1]
+        return splitTime[0]+':'+splitTime[1]+timeampm.toLowerCase()
     }
 
     submitEvent(){
-        if(this.state.userToken){
-            url = "https://api.muncieevents.com/v1/event?userToken=" + this.state.userToken + "&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1"
+        userToken = this.state.userToken
+        startTime = this.state.startTime
+        endTime = this.state.endTime
+        tagNames = this.state.selectedTagArray
+        location = this.state.location
+        categoryID = this.state.categorySelectedValue
+        title =this.state.event
+        source = this.state.source
+        ageRestriction = this.state.ageRestriction
+        cost = this.state.cost
+        description = this.state.description
+        address = this.state.address
+        locationDetails = this.state.locationDetails
+        chosenDate = this.state.chosenDate
+
+        if(userToken){
+            url = "https://api.muncieevents.com/v1/event?userToken=" + userToken + "&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1"
         }
         else{
             url = "https://api.muncieevents.com/v1/event?apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1"
         }
 
-        if(this.state.startTime){
-            start = this.state.startTime.toLocaleTimeString().split(':')
-            startampm = start[2].split(' ')[1]
-            startTime = start[0]+':'+start[1]+startampm.toLowerCase()
+        if(startTime){
+            startTime = this.formatTimeForAPI(startTime)
         }
 
-        if(this.state.endTime){
-            end = this.state.endTime.toLocaleTimeString().split(':')
-            endampm = end[2].split(' ')[1]
-            endTime = end[0]+':'+end[1]+endampm.toLowerCase()
+        if(endTime){
+            endTime = this.formatTimeForAPI(endTime) 
         }
 
-        if(this.state.chosenDate){
-            chosenDate = [this.state.chosenDate.getFullYear() + '-' + ('0' + (this.state.chosenDate.getMonth()+1)).slice(-2) + '-' + ('0' + this.state.chosenDate.getDate()).slice(-2)]
+        if(chosenDate){
+            chosenDate = [chosenDate.getFullYear() + '-' + ('0' + (chosenDate.getMonth()+1)).slice(-2) + '-' + ('0' + chosenDate.getDate()).slice(-2)]
         }
         
         console.log(startTime)
@@ -553,16 +596,16 @@ export default class AddEventsForm extends Component{
                 date: chosenDate,
                 time_start: startTime,
                 time_end: endTime,
-                tag_names: this.state.selectedTagArray,
-                location: this.state.location,
-                category_id: this.state.categorySelectedValue,
-                title: this.state.event,
-                source: this.state.source,
-                age_restriction: this.state.ageRestriction,
-                cost: this.state.cost,
-                description: this.state.description,
-                address: this.state.address,
-                location_details: this.state.locationDetails
+                tag_names: tagNames,
+                location: location,
+                category_id: categoryID,
+                title: title,
+                source: source,
+                age_restriction: ageRestriction,
+                cost: cost,
+                description: description,
+                address: address,
+                location_details: locationDetails
             })
         })
         .then((response) => response.json())

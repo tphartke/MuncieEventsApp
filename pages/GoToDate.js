@@ -44,7 +44,7 @@ export default class GoToDate extends React.Component {
             <TopBar/>
           </View>
           <View style={Styles.mainViewContent}>
-          {titleView}
+            {titleView}
             {mainView}
           </View>
         </View>
