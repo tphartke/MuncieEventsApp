@@ -48,7 +48,7 @@ export default StyleSheet.create({
     
     GoToDateSearchResults: {
         flex: 1,
-        flexBasis: '100%',
+        flexBasis: '84%',
     },
 
     searchResults: {
