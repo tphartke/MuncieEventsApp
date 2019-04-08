@@ -73,8 +73,7 @@ export default StyleSheet.create({
     eventRowImage: {
         width: 60, 
         height: 60,
-        flex: 1, 
-        resizeMode: 'contain', 
+        flex: 1, resizeMode: 'contain', 
     },
 
     loadingViewPadding: {

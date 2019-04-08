@@ -22,7 +22,7 @@ export default class EditEvents extends React.Component {
         userToken: null,
         location: null,
         categorySelectedName: null,
-        categorySelectedValue: 24,
+        categorySelectedValue: null,
         tagSelectedValue: null,
         event: null,
         source: null,
@@ -41,16 +41,26 @@ export default class EditEvents extends React.Component {
 
 
     componentDidMount(){
+<<<<<<< HEAD
       this._fetchTagAndCategoryData().catch(error => this.setState({failedToLoad: true}))
     }
+=======
+      this._awaitStartupMethods()
+  }
+
+  async _awaitStartupMethods(){
+    this.event = this.props.eventData
+    await this._fetchTagAndCategoryData()
+    await this.setStatesForEventData()
+    utoken = await this.retrieveStoredToken();
+    this.setState({isLoading: false, userToken: utoken});
+  }
+>>>>>>> 02cef39101493aa688b1a8a4a7d9fd465b61cbf5
 
   async _fetchTagAndCategoryData(){
       console.log("Fetching tag and category data")
       await this._fetchCategoryData();
       await this._fetchTagData();
-      utoken = await this.retrieveStoredToken();
-      console.log(utoken)
-      this.setState({isLoading: false, userToken: utoken});
   }
 
   async _fetchCategoryData(){
@@ -176,10 +186,9 @@ export default class EditEvents extends React.Component {
                       }
                   />
               </View>
-              
           </View>
       );
-  }s
+  }
 
   getSelectableTag(tag){
       isTagAlreadySelected = this.isInSelectedTagList(tag)
@@ -284,7 +293,7 @@ export default class EditEvents extends React.Component {
                   <Text style={Styles.title}>Start Time:</Text>
                   <View style = {[{borderColor:'black', borderRadius: 10, borderWidth: 1}]}>
                       <DatePickerIOS 
-                          date={new Date()}
+                          date={this.state.startTime}
                           mode= "time"
                           onDateChange={(time) => {
                               this.highlightedStartTime = time
@@ -295,7 +304,7 @@ export default class EditEvents extends React.Component {
                   <Text style={Styles.title}>End Time:</Text>
                   <View style = {[{borderColor:'black', borderRadius: 10, borderWidth: 1}]}>
                       <DatePickerIOS 
-                          date={new Date()}
+                          date={this.state.endTime}
                           mode= "time"
                           onDateChange={(time) => {
                               this.highlightedEndTime = time
@@ -353,10 +362,6 @@ export default class EditEvents extends React.Component {
   }
 
   render(){
-      if(!this.event){
-        this.event = this.props.eventData
-        this.setStatesForEventData()
-      }
       if(this.state.isLoading){;
           return(
           <View>
@@ -403,10 +408,10 @@ export default class EditEvents extends React.Component {
                       </View>
                       {androidTimePicker}
                       <View style={Styles.formRow}>
-                          <Text>{this.state.chosenDate.toString()}</Text>
+                          <Text>Date of Event: {this.state.chosenDate.toString()}</Text>
                       </View>
                       <View style={Styles.formRow}>
-                          <Text>{this.state.startTime.toString()}</Text>
+                          <Text>Start Time: {this.state.startTime.toString()}</Text>
                       </View>
                       <View style={Styles.formRow}>
                           <Text style={Styles.formLabel}>Location <Text style={Styles.requiredField}>*required</Text></Text>
@@ -497,23 +502,23 @@ export default class EditEvents extends React.Component {
       }
   }
 
-  setStatesForEventData(){
+   async setStatesForEventData(){
     this.setState({
-      chosenDate: new Date(this.event.attributes.date),
-      startTime: new Date(this.event.attributes.time_start),
-      endTime: new Date(this.event.attributes.time_end),
-      selectedTagArray: this.getTags(),
-      location: this.event.attributes.location,
-      categorySelectedName: this.event.attributes.category.name,
-      categorySelectedValue: this.event.relationships.category.data.id,
-      event: this.event.attributes.title,
-      source: this.event.attributes.source,
-      ageRestriction: this.event.attributes.age_restriction,
-      cost: this.event.attributes.cost,
-      description: this.event.attributes.description,
-      address: this.event.attributes.address,
-      locationDetails: this.event.attributes.location_details,
-      id: this.event.id,
+        chosenDate: new Date(this.event.attributes.date),
+        startTime: new Date(this.event.attributes.time_start),
+        endTime: new Date(this.event.attributes.time_end),
+        selectedTagArray: this.getTags(),
+        location: this.event.attributes.location,
+        categorySelectedName: this.event.attributes.category.name,
+        categorySelectedValue: this.event.relationships.category.data.id,
+        event: this.event.attributes.title,
+        source: this.event.attributes.source,
+        ageRestriction: this.event.attributes.age_restriction,
+        cost: this.event.attributes.cost,
+        description: this.event.attributes.description,
+        address: this.event.attributes.address,
+        locationDetails: this.event.attributes.location_details,
+        id: this.event.id,
     })
   }
 
@@ -537,58 +542,10 @@ export default class EditEvents extends React.Component {
        }
     }
 
-  attemptEventSubmission(){
-      if(this.requiredFieldsAreFilled()){
-          this.submitEvent()
-      }
-      else{
-          this.setState({statusMessage: "ERROR: One or more required fields not completed"})
-      }
-  }
-
-  requiredFieldsAreFilled(){
-      console.log("date: " + this.state.chosenDate + '\n' + 
-                  "start: " + this.state.startTime  + '\n' + 
-                  "end: " + this.state.endTime + '\n' + 
-                  "tag_names: " + this.state.selectedTagArray + '\n' + 
-                  "location: " + this.state.location + '\n' + 
-                  "category_id: " + this.state.categorySelectedValue + '\n' + 
-                  "title: " + this.state.event + '\n' + 
-                  "source: " + this.state.source + '\n' + 
-                  "age_restriction: " + this.state.ageRestriction + '\n' + 
-                  "cost: " + this.state.cost + '\n' + 
-                  "description: " + this.state.description + '\n' + 
-                  "address: " + this.state.address + '\n' + 
-                  "location_details: " + this.state.locationDetails)
-      if(this.state.category_id && this.state.event && this.state.chosenDate && this.state.startTime 
-          && this.state.description && this.state.location){
-              return true;
-      }
-      return false;
-  }
-
   submitEvent(){
-      console.log("date: " + this.state.chosenDate + '\n' + 
-                  "time_start: " + this.state.startTime  + '\n' + 
-                  "time_end: " + this.state.endTime + '\n' + 
-                  "tag_names: " + this.state.selectedTagArray + '\n' + 
-                  "location: " + this.state.location + '\n' + 
-                  "category_id: " + this.state.categorySelectedValue + '\n' + 
-                  "title: " + this.state.event + '\n' + 
-                  "source: " + this.state.source + '\n' + 
-                  "age_restriction: " + this.state.ageRestriction + '\n' + 
-                  "cost: " + this.state.cost + '\n' + 
-                  "description: " + this.state.description + '\n' + 
-                  "address: " + this.state.address + '\n' + 
-                  "location_details: " + this.state.locationDetails)
-      if(this.state.userToken){
-          url = "https://api.muncieevents.com/v1/events?userToken=" + this.state.userToken + "&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1"
-      }
-      else{
-          url = "https://api.muncieevents.com/v1/events?apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1"
-      }
+      url = "https://api.muncieevents.com/v1/events/" +this.state.id + "?userToken=" + this.state.userToken + "&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1"
       fetch(url,
-      {method: "POST",
+      {method: "PATCH",
       headers: {
           Accept: 'application/vnd.api+json',
           'Content-Type': 'application/json',
@@ -624,6 +581,5 @@ export default class EditEvents extends React.Component {
       catch(error){
           this.setState({statusMessage: "Event successfully submitted!"})
       }
-
   }
 }

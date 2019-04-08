@@ -14,7 +14,7 @@ export default class AddEventsForm extends Component{
             IOSModalVisible: false,
             tagModalVisable: false,
             chosenDate: new Date(),
-            startTime: "12:00 PM",
+            startTime: null,
             endTime: null,
             selectedTagArray: [],
             filter: null,
@@ -22,7 +22,7 @@ export default class AddEventsForm extends Component{
             userToken: null,
             location: null,
             categorySelectedName: null,
-            categorySelectedValue: 24,
+            categorySelectedValue: null,
             tagSelectedValue: null,
             event: null,
             source: null,
@@ -395,12 +395,7 @@ export default class AddEventsForm extends Component{
                             />
                         </View>
                         {androidTimePicker}
-                        <View style={Styles.formRow}>
-                            <Text>{this.state.chosenDate.toString()}</Text>
-                        </View>
-                        <View style={Styles.formRow}>
-                            <Text>{this.state.startTime.toString()}</Text>
-                        </View>
+
                         <View style={Styles.formRow}>
                             <Text style={Styles.formLabel}>Location <Text style={Styles.requiredField}>*required</Text></Text>
                             <TextInput               

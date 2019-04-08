@@ -8,9 +8,9 @@ import InternetError from '../components/InternetError';
 export default class Contact extends React.Component {
     constructor(props){
       super(props)
-      this.state = ({message: 'This is a test of the MuncieEvents app',
-                     email: 'tphartke@bsu.edu',
-                     name: 'Timothy Hartke',
+      this.state = ({message: '',
+                     email: '',
+                     name: '',
                      messageSent: false,
                      statusMessage: "",
                      failedToLoad:false
