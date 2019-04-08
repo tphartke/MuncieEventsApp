@@ -46,11 +46,9 @@ export default class ProfileView extends React.Component {
                           </View>)
         }
         else{
-          eventsView=(<View>
+          eventsView=(<View style={Styles.profileViewEvents}>
             <Text style={Styles.title}>EVENTS</Text>
-            <View>
             <EventList useSearchResults = {true} />
-            </View>
           </View>)
           if(!this.state.email && this.state.userid){
               this.fetchUserData(this.state.userid)

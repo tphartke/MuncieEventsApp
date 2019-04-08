@@ -53,7 +53,13 @@ export default StyleSheet.create({
 
     searchResults: {
         flex: 1,
-        flexBasis: '10%',
+        flexBasis: '84%',
+    },
+
+    profileViewEvents: {
+        flex: 1,
+        flexBasis: '30%'
+
     },
 
     eventRow: {
