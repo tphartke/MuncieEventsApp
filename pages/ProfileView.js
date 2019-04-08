@@ -6,6 +6,7 @@ import EventList from '../EventList';
 import APICacher from '../APICacher';
 import LoadingScreen from '../components/LoadingScreen';
 import ChangePassword from './ChangePassword'
+import InternetError from '../components/InternetError';
 
 export default class ProfileView extends React.Component {
     constructor(props){
@@ -15,20 +16,23 @@ export default class ProfileView extends React.Component {
                       statusMessage: "", 
                       userid: "",
                       token: "",
-                      isLoading: true, 
                       usereventsurl: "", 
                       usereventsresponsejson: "",
                       changePassword: false,
-                      isReady: false});
-                      this._startupCachingAsync = this._startupCachingAsync.bind(this);
+                      isLoading: true,
+                      failedToLoad:false});
+                      //this._startupCachingAsync = this._startupCachingAsync.bind(this);
                       this.APICacher = new APICacher();
       }
 
       render(){
         contentView = null
         eventsView = null
-        if(!this.state.isReady){
+        if(this.state.isLoading){
             eventsView= this.getLoadingView()
+        }
+        else if(this.state.failedToLoad){
+          contenView = this.getErrorMessage()
         }
         else if(this.state.changePassword){
             contentView = (<View>
@@ -64,6 +68,14 @@ export default class ProfileView extends React.Component {
         );
       }
 
+      getErrorMessage(){
+        return(
+          <InternetError onRefresh={()=> {
+            this.setState({failedToLoad: false, changePassword:false, isLoading:true})
+          }}/>
+        );
+      }
+
       getLoadingView(){
         return(
           <LoadingScreen/>
@@ -88,7 +100,7 @@ export default class ProfileView extends React.Component {
           });
         })
         .catch((error) =>{
-          console.error(error);
+          this.setState({failedToLoad:true})
         });
       } 
 
@@ -113,9 +125,14 @@ export default class ProfileView extends React.Component {
       }
 
       async _startupCachingAsync(url){
-        key = "SearchResults"
-        await this.APICacher._cacheJSONFromAPIAsync(key, url)
-        this.setState({isReady:true});
+        try{
+          key = "SearchResults"
+          await this.APICacher._cacheJSONFromAPIAsync(key, url)
+          this.setState({isLoading:false});
+        }
+        catch(error){
+          this.setState({failedToLoad:true})
+        }
     }
 
       fetchUserEventsData(){
@@ -127,7 +144,7 @@ export default class ProfileView extends React.Component {
           });
         })
         .catch((error) =>{
-          console.error(error);
+          this.setState({failedToLoad:true})
         });
       } 
 

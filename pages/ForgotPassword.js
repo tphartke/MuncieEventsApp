@@ -2,33 +2,43 @@ import React from 'react';
 import {Text, View, TextInput} from 'react-native';
 import CustomButton from './CustomButton';
 import Styles from './Styles';
+import InternetError from '../components/InternetError';
 
 export default class ForgotPassword extends React.Component {
     constructor(props){
         super(props);
         this.state = ({ email: "",
-                        statusMessage: ""})
+                        statusMessage: "",
+                        failedToLoad: false})
         dataSource = null
       }
 
       render(){
-          return (
-            <View>
-                <Text>Please enter the email associated with your account</Text>
-                <TextInput
-                    onChangeText={(email) => this.setState({email})}
-                    style={Styles.textBox}
-                    placeholder="Name"
-                />
-                <CustomButton 
-                    text="Send Recovery Email" 
-                    onPress={()=> this.sendForgotPasswordRequest()} 
-                    buttonStyle={Styles.longButtonStyle}
-                    textStyle={Styles.longButtonTextStyle}
-                />
-                <Text>{this.state.statusMessage}</Text>
-            </View>
-          );
+          if(this.state.failedToLoad){
+            <InternetError onRefresh={()=>{
+                this.setState({failedToLoad:false})
+            }}/>
+          }
+          else{
+            return (
+                <View>
+                    <Text>Please enter the email associated with your account</Text>
+                    <TextInput
+                        onChangeText={(email) => this.setState({email})}
+                        style={Styles.textBox}
+                        placeholder="Name"
+                    />
+                    <CustomButton 
+                        text="Send Recovery Email" 
+                        onPress={()=> this.sendForgotPasswordRequest()} 
+                        buttonStyle={Styles.longButtonStyle}
+                        textStyle={Styles.longButtonTextStyle}
+                    />
+                    <Text>{this.state.statusMessage}</Text>
+                </View>
+              );
+          }
+          
       }
     
       sendForgotPasswordRequest(){
@@ -42,7 +52,7 @@ export default class ForgotPassword extends React.Component {
         })
         .then((responseJson) => this.getStatus(responseJson))
         .catch((error) =>{
-            console.log(error)
+            this.setState({failedToLoad:true})
         })
       }
 

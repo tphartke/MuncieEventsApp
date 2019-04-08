@@ -2,6 +2,7 @@ import React from 'react';
 import {Text, View, TextInput, Switch} from 'react-native';
 import CustomButton from './CustomButton';
 import Styles from './Styles';
+import InternetError from '../components/InternetError';
 
 export default class Register extends React.Component {
     constructor(props){
@@ -12,11 +13,20 @@ export default class Register extends React.Component {
                         name: "",
                         userregistered: false,
                         statusMessage: "",
-                        mailingList: false})
+                        mailingList: false,
+                        failedToLoad: false
+                    })
         dataSource = null
       }
 
     render (){
+        if(this.state.failedToLoad){
+            return(
+                <InternetError onRefresh = {()=>{
+                    this.setState({failedToLoad:false})
+                }}/>
+            )
+        }
         return(
             <View>
                 <Text>Name</Text>
@@ -77,12 +87,7 @@ export default class Register extends React.Component {
     }
 
     isValidNewUser(){
-        if(this.state.name == "" || this.state.password != this.state.confirmpassword || !this.isValidEmail(this.state.email)){
-            return false;
-        }
-        else{
-            return true;
-        }
+        return !(this.state.name == "" || this.state.password != this.state.confirmpassword || !this.isValidEmail(this.state.email))
     }
 
     isValidEmail(email){
@@ -108,7 +113,7 @@ export default class Register extends React.Component {
           .then((response) => response.json())
           .then((responseJson) => this.getStatus(responseJson))
         .catch((error) =>{
-            console.log(error)
+            this.setState({failedToLoad:true})
         });
       }  
 

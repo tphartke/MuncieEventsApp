@@ -44,7 +44,6 @@ export default class Contact extends React.Component {
     );
   }
   
-
   getContactView(){
     return(
     <View style={Styles.content}>
@@ -85,7 +84,7 @@ export default class Contact extends React.Component {
 
   sendMessage(){
     if(this.meetsMessageCriteria() && !this.state.messageSent){
-      this.setState({messageSent: true, statusMessage: "Message Sent. Thanks for your feedback!"});
+      this.setState({messageSent: true, statusMessage: "Message Sent. Thanks for your feedback!"})
       this.fetchAPIData()
     }
     else if(this.state.messageSent){
@@ -97,12 +96,7 @@ export default class Contact extends React.Component {
   }
 
   meetsMessageCriteria(){
-    if(this.state.name == "" || this.state.message == "" || !this.isValidEmail(this.state.email)){
-        return false;
-    }
-    else{
-      return true;
-    }
+    return !(this.state.name == "" || this.state.message == "" || !this.isValidEmail(this.state.email))
   }
 
   isValidEmail(email){
@@ -112,7 +106,7 @@ export default class Contact extends React.Component {
   }
 
   fetchAPIData(){
-    fetch("https://api.muncieevents.com/v1/contact?apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1", 
+      fetch("https://api.muncieevents.com/v1/contact?apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1", 
       {method: "POST",
       headers: {
         Accept: 'application/vnd.api+json',
@@ -126,9 +120,7 @@ export default class Contact extends React.Component {
   })
     .then((response) => console.log(response))
     .then((responseJSON) => console.log(responseJSON))
-    .catch((error) =>{
-        this.setState({failedToLoad:true})
-    });
+    .catch(error => this.setState({failedToLoad:true, statusMessage: "", messageSent:false}));
   }
 }
 

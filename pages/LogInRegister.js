@@ -7,6 +7,7 @@ import ProfileView from "./ProfileView"
 import Styles from './Styles';
 import LoadingScreen from '../components/LoadingScreen';
 import TopBar from './top_bar';
+import InternetError from '../components/InternetError';
 
 export default class LogInRegister extends React.Component {
     constructor(props){
@@ -18,7 +19,8 @@ export default class LogInRegister extends React.Component {
                     email: "",
                     password: "",
                     statusMessage: "You are not logged in.", 
-                    isLoading: true}
+                    isLoading: true,
+                    failedToLoad: false}
     }
 
     componentDidMount(){
@@ -26,7 +28,12 @@ export default class LogInRegister extends React.Component {
     }
     
     render() {
-      mainView = this.getDisplayedScreen()
+      if(this.state.failedToLoad){
+        mainView = this.getErrorMessage();
+      }
+      else{
+        mainView = this.getDisplayedScreen()
+      }
       return(
         <View style={Styles.wrapper}>
           <View style={Styles.topBarWrapper}>
@@ -37,6 +44,14 @@ export default class LogInRegister extends React.Component {
           </View>
         </View>
         );
+    }
+
+    getErrorMessage(){
+      return(
+        <InternetError onRefresh = {() => {
+          this.setState({failedToLoad:false})
+        }}/>
+      )
     }
 
     getDisplayedScreen(){
@@ -221,7 +236,7 @@ export default class LogInRegister extends React.Component {
     .then((response) => response.json())
     .then((responseJson) => this.logUserIn(responseJson))
       .catch((error) =>{
-         console.log(error)
+         this.setState({failedToLoad:true})
       })
     }
 }

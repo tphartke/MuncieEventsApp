@@ -4,6 +4,7 @@ import Styles from './Styles';
 import APICacher from '../APICacher';
 import LoadingScreen from '../components/LoadingScreen';
 import TopBar from './top_bar';
+import InternetError from '../components/InternetError';
 
 export default class About extends React.Component {
   constructor(props){
@@ -14,7 +15,11 @@ export default class About extends React.Component {
   }
 
   componentDidMount(){
-    this._getCachedDataAsync();
+    this._getCachedDataAsync().catch(error => this.catchError());
+  }
+
+  catchError(){
+    this.setState({isLoading:false, failedToLoad:true})
   }
 
   render() {
@@ -44,7 +49,7 @@ export default class About extends React.Component {
   getErrorView(){
     return(
       <InternetError onRefresh = {() => {
-        this.setState({isLoading:true, failedToLoad:false})
+        this.setState({failedToLoad:false, isLoading:true})
         this._getCachedDataAsync().catch(error => this.catchError())
       }}/>
     )

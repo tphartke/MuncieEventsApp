@@ -6,6 +6,7 @@ import Styles from './Styles';
 import APICacher from '../APICacher'
 import LoadingScreen from '../components/LoadingScreen';
 import TopBar from './top_bar';
+import InternetError from '../components/InternetError';
 
 export default class GoToDate extends React.Component {
   constructor(props){
@@ -15,7 +16,8 @@ export default class GoToDate extends React.Component {
                   chosenDate: new Date(), 
                   searchURL: "",
                   searchResultsFound: false,
-                  isSearching: false
+                  isSearching: false,
+                  failedToLoad:false
                 }  
     this.dateSelected = false; 
     this.setDate = this.setDate.bind(this);
@@ -33,6 +35,9 @@ export default class GoToDate extends React.Component {
         url = this.state.searchURL
         this._cacheSearchResults(url);
       }
+      else if(this.state.failedToLoad){
+        mainView = this.getErrorMessage();
+      }
       return (
         <View style={Styles.wrapper}>
           <View style={Styles.topBarWrapper}>
@@ -45,6 +50,14 @@ export default class GoToDate extends React.Component {
         </View>
       )
     }
+  
+  getErrorMessage(){
+    return(
+      <InternetError onRefresh = {() => {
+        this.setState({failedToLoad:false, isSearching:false, searchResultsFound: false})
+      }}/>
+    );
+  }
 
   getLoadingScreen(){
     return(
@@ -90,8 +103,13 @@ export default class GoToDate extends React.Component {
     }
 
     async _cacheSearchResults(searchURL){
-      await this.APICacher._cacheJSONFromAPIAsync("SearchResults", searchURL)
-      this.setState({ searchResultsFound: true, isSearching: false});
+      try{
+        await this.APICacher._cacheJSONFromAPIAsync("SearchResults", searchURL)
+        this.setState({ searchResultsFound: true, isSearching: false});
+      }
+      catch(error){
+        this.setState({failedToLoad:true, isSearching:false})
+      }
     }
 
     getResultsScreen(){

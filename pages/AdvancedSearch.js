@@ -32,13 +32,13 @@ export default class AdvancedSearch extends React.Component {
   }
 
   catchError(){
-    this.setState({isInitialLoading:false, failedToLoad:true})
+    this.setState({isInitialLoading:false, failedToLoad:true, isSearching:false})
   }
 
   getErrorMessage(){
     return(
       <InternetError onRefresh = {() => {
-        this.setState({isInitialLoading:true, failedToLoad:false})
+        this.setState({isInitialLoading:true, failedToLoad:false, isSearching:false})
         this._fetchTagAndCategoryData().catch(error => this.catchError())
       }}/>
     );
@@ -87,7 +87,7 @@ export default class AdvancedSearch extends React.Component {
     else if(this.state.isSearching){
       mainView = this.getLoadingScreen();
       url = this.state.url;
-      this._cacheSearchResultsAsync(url)
+      this._cacheSearchResultsAsync(url).catch(error =>  this.catchError())
     }
     else if(this.state.failedToLoad){
       mainView = this.getErrorMessage();

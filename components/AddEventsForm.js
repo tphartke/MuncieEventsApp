@@ -4,6 +4,7 @@ import Styles from '../pages/Styles';
 import APICacher from '../APICacher'
 import CustomButton from '../pages/CustomButton';
 import LoadingScreen from "./LoadingScreen";
+import InternetError from '../components/InternetError';
 
 export default class AddEventsForm extends Component{
     constructor(props){
@@ -15,28 +16,29 @@ export default class AddEventsForm extends Component{
             chosenDate: new Date(),
             startTime: "12:00 PM",
             endTime: null,
-            selectedTagArray: ["ball state university","food","writing"],
+            selectedTagArray: [],
             filter: null,
             statusMessage: "",
             userToken: null,
-            location: "LaFollette egg between KE and BC",
+            location: null,
             categorySelectedName: null,
             categorySelectedValue: 24,
             tagSelectedValue: null,
-            event: "Dear High School Me...",
+            event: null,
             source: null,
             ageRestriction: null,
             cost: null,
-            description: "What do you wish you knew about college as a high school senior? Come write letters of encouragement to Muncie central high school students about furthering their education.",
+            description: null,
             address: null,
-            locationDetails: "Ball State"
+            locationDetails: null,
+            failedToLoad: false
         }
         this.tags=[]
         this.APICacher = new APICacher();
     }
 
     componentDidMount(){
-        this._fetchTagAndCategoryData()
+        this._fetchTagAndCategoryData().catch(error => this.setState({failedToLoad:true}))
     }
 
     async _fetchTagAndCategoryData(){
@@ -356,6 +358,14 @@ export default class AddEventsForm extends Component{
             </View>
             );
         }
+        else if(this.state.failedToLoad){
+            return(
+                <InternetError onRefresh={()=>{
+                    this._fetchTagAndCategoryData().catch(error => this.setState({failedToLoad:true}))
+                    this.setState({failedToLoad:false, isLoading:true})
+                }}/>
+            );
+        }
         else{
             IOSDatePickerModal = this.getIOSDatePicker();
             androidTimePicker = this.getAndroidTimeFields();
@@ -557,7 +567,7 @@ export default class AddEventsForm extends Component{
     .then((responseJson) => console.log(responseJson))
     .then((responseJson) => this.handelAPIResponse(responseJson))
       .catch((error) =>{
-         console.log(error)
+         this.setState({failedToLoad:true})
       })
     }
 

@@ -1,10 +1,10 @@
-import React, {Component} from 'react';  
-import {View, Platform, Text, Picker, TextInput, Modal, DatePickerAndroid, TimePickerAndroid, DatePickerIOS, FlatList, Switch, KeyboardAvoidingView, ScrollView, AsyncStorage} from 'react-native';
+import React from 'react';  
+import {View, Platform, Text, Picker, TextInput, Modal, DatePickerAndroid, TimePickerAndroid, DatePickerIOS, FlatList, Switch, ScrollView, AsyncStorage} from 'react-native';
 import Styles from './Styles';
 import APICacher from '../APICacher'
 import CustomButton from './CustomButton';
 import LoadingScreen from "../components/LoadingScreen";
-
+import InternetError from '../components/InternetError';
 
 export default class EditEvents extends React.Component {
     constructor(props){
@@ -32,6 +32,7 @@ export default class EditEvents extends React.Component {
         address: null,
         locationDetails: null,
         id: null,
+        failedToLoad: false
     }
     this.event = null
     this.tags=[]
@@ -40,8 +41,8 @@ export default class EditEvents extends React.Component {
 
 
     componentDidMount(){
-      this._fetchTagAndCategoryData()
-  }
+      this._fetchTagAndCategoryData().catch(error => this.setState({failedToLoad: true}))
+    }
 
   async _fetchTagAndCategoryData(){
       console.log("Fetching tag and category data")
@@ -98,7 +99,6 @@ export default class EditEvents extends React.Component {
                   {categorylist}
               </Picker>
           </View>
-          
       );
   }
 
@@ -364,6 +364,14 @@ export default class EditEvents extends React.Component {
           </View>
           );
       }
+      else if(this.state.failedToLoad){
+        return(
+            <InternetError onRefresh = {() => {
+                this._fetchTagAndCategoryData().catch(error => this.setState({failedToLoad:true}))
+                this.setState({failedToLoad:false, isLoading: true})
+            }}/>
+        );
+      }
       else{
           IOSDatePickerModal = this.getIOSDatePicker();
           androidTimePicker = this.getAndroidTimeFields();
@@ -605,7 +613,7 @@ export default class EditEvents extends React.Component {
   .then((responseJson) => console.log(responseJson))
   .then((responseJson) => this.handelAPIResponse(responseJson))
     .catch((error) =>{
-       console.log(error)
+       this.setState({failedToLoad:true})
     })
   }
 
