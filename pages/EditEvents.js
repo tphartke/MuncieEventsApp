@@ -40,17 +40,14 @@ export default class EditEvents extends React.Component {
 
 
     componentDidMount(){
-      //this._fetchTagAndCategoryData()
+      this._awaitStartupMethods()
   }
 
   async _awaitStartupMethods(){
-    console.log("Start")
+    this.event = this.props.eventData
     await this._fetchTagAndCategoryData()
-    console.log("Fetched tags and categories")
     await this.setStatesForEventData()
-    console.log("Set states")
     utoken = await this.retrieveStoredToken();
-    console.log("Retrieved token")
     this.setState({isLoading: false, userToken: utoken});
   }
 
@@ -58,8 +55,6 @@ export default class EditEvents extends React.Component {
       console.log("Fetching tag and category data")
       await this._fetchCategoryData();
       await this._fetchTagData();
-
-      console.log(utoken)
   }
 
   async _fetchCategoryData(){
@@ -293,7 +288,7 @@ export default class EditEvents extends React.Component {
                   <Text style={Styles.title}>Start Time:</Text>
                   <View style = {[{borderColor:'black', borderRadius: 10, borderWidth: 1}]}>
                       <DatePickerIOS 
-                          date={new Date()}
+                          date={this.state.startTime}
                           mode= "time"
                           onDateChange={(time) => {
                               this.highlightedStartTime = time
@@ -304,7 +299,7 @@ export default class EditEvents extends React.Component {
                   <Text style={Styles.title}>End Time:</Text>
                   <View style = {[{borderColor:'black', borderRadius: 10, borderWidth: 1}]}>
                       <DatePickerIOS 
-                          date={new Date()}
+                          date={this.state.endTime}
                           mode= "time"
                           onDateChange={(time) => {
                               this.highlightedEndTime = time
@@ -362,10 +357,6 @@ export default class EditEvents extends React.Component {
   }
 
   render(){
-      if(!this.event){
-        this.event = this.props.eventData
-        this._awaitStartupMethods()
-      }
       if(this.state.isLoading){;
           return(
           <View>
@@ -516,37 +507,6 @@ export default class EditEvents extends React.Component {
         locationDetails: this.event.attributes.location_details,
         id: this.event.id,
     })
-    console.log("Expected: ")
-    console.log("date: " + new Date(this.event.attributes.date).toString()+ '\n' + 
-    "time_start: " + new Date(this.event.attributes.time_start).toString()  + '\n' + 
-    "time_end: " + new Date(this.event.attributes.time_end).toString() + '\n' + 
-    "tag_names: " + this.getTags().toString() + '\n' + 
-    "location: " + this.event.attributes.location + '\n' + 
-    "category_id: " + this.event.relationships.category.data.id + '\n' + 
-    "title: " + this.event.attributes.title + '\n' + 
-    "source: " + this.event.attributes.source + '\n' + 
-    "age_restriction: " + this.event.attributes.age_restriction + '\n' + 
-    "cost: " +this.event.attributes.cost + '\n' + 
-    "description: " + this.event.attributes.description + '\n' + 
-    "address: " + this.event.attributes.address + '\n' + 
-    "location_details: " + this.event.attributes.location_details + '\n',
-    "id: " + this.event.id + '\n')
-
-    console.log("Actual: ")
-    console.log("date: " + this.state.chosenDate + '\n' + 
-    "time_start: " + this.state.startTime  + '\n' + 
-    "time_end: " + this.state.endTime + '\n' + 
-    "tag_names: " + this.state.selectedTagArray + '\n' + 
-    "location: " + this.state.location + '\n' + 
-    "category_id: " + this.state.categorySelectedValue + '\n' + 
-    "title: " + this.state.event + '\n' + 
-    "source: " + this.state.source + '\n' + 
-    "age_restriction: " + this.state.ageRestriction + '\n' + 
-    "cost: " + this.state.cost + '\n' + 
-    "description: " + this.state.description + '\n' + 
-    "address: " + this.state.address + '\n' + 
-    "location_details: " + this.state.locationDetails + '\n',
-    "id: " + this.state.id)
   }
 
   getTags(){
@@ -569,50 +529,7 @@ export default class EditEvents extends React.Component {
        }
     }
 
-  attemptEventSubmission(){
-      if(this.requiredFieldsAreFilled()){
-          this.submitEvent()
-      }
-      else{
-          this.setState({statusMessage: "ERROR: One or more required fields not completed"})
-      }
-  }
-
-  requiredFieldsAreFilled(){
-      console.log("date: " + this.state.chosenDate + '\n' + 
-                  "start: " + this.state.startTime  + '\n' + 
-                  "end: " + this.state.endTime + '\n' + 
-                  "tag_names: " + this.state.selectedTagArray + '\n' + 
-                  "location: " + this.state.location + '\n' + 
-                  "category_id: " + this.state.categorySelectedValue + '\n' + 
-                  "title: " + this.state.event + '\n' + 
-                  "source: " + this.state.source + '\n' + 
-                  "age_restriction: " + this.state.ageRestriction + '\n' + 
-                  "cost: " + this.state.cost + '\n' + 
-                  "description: " + this.state.description + '\n' + 
-                  "address: " + this.state.address + '\n' + 
-                  "location_details: " + this.state.locationDetails)
-      if(this.state.category_id && this.state.event && this.state.chosenDate && this.state.startTime 
-          && this.state.description && this.state.location){
-              return true;
-      }
-      return false;
-  }
-
   submitEvent(){
-      console.log("date: " + this.state.chosenDate + '\n' + 
-                  "time_start: " + this.state.startTime  + '\n' + 
-                  "time_end: " + this.state.endTime + '\n' + 
-                  "tag_names: " + this.state.selectedTagArray + '\n' + 
-                  "location: " + this.state.location + '\n' + 
-                  "category_id: " + this.state.categorySelectedValue + '\n' + 
-                  "title: " + this.state.event + '\n' + 
-                  "source: " + this.state.source + '\n' + 
-                  "age_restriction: " + this.state.ageRestriction + '\n' + 
-                  "cost: " + this.state.cost + '\n' + 
-                  "description: " + this.state.description + '\n' + 
-                  "address: " + this.state.address + '\n' + 
-                  "location_details: " + this.state.locationDetails)
       url = "https://api.muncieevents.com/v1/events/" +this.state.id + "?userToken=" + this.state.userToken + "&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1"
       fetch(url,
       {method: "PATCH",

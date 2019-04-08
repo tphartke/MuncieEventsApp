@@ -345,7 +345,7 @@ class ExpandedView extends React.Component {
   retrieveStoredToken = async() => {
     try {
       const tkn = await AsyncStorage.getItem('Token')
-      this.setState({userid: '245', isLoading: false})
+      this.setState({userid: '434', isLoading: false})
      } catch (error) {
        console.log("Error retrieving token")
         return "NULL"
