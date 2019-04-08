@@ -25,7 +25,7 @@ export default StyleSheet.create({
     },
 
     mainViewContent:{
-        flex:.75
+        flex:1
     },
 
     widgetContent: {
