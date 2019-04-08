@@ -385,12 +385,7 @@ export default class AddEventsForm extends Component{
                             />
                         </View>
                         {androidTimePicker}
-                        <View style={Styles.formRow}>
-                            <Text>{this.state.chosenDate.toString()}</Text>
-                        </View>
-                        <View style={Styles.formRow}>
-                            <Text>{this.state.startTime.toString()}</Text>
-                        </View>
+
                         <View style={Styles.formRow}>
                             <Text style={Styles.formLabel}>Location <Text style={Styles.requiredField}>*required</Text></Text>
                             <TextInput               

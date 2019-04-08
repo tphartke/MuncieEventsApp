@@ -20,7 +20,6 @@ export default class AddEditEvent extends React.Component {
                         <AddEventsForm/>
                     </ScrollView>
                 </View>
-                
             </View>
       );
     }
