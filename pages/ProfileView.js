@@ -7,6 +7,7 @@ import APICacher from '../APICacher';
 import LoadingScreen from '../components/LoadingScreen';
 import ChangePassword from './ChangePassword'
 import InternetError from '../components/InternetError';
+import MailingList from './MailingList'
 
 export default class ProfileView extends React.Component {
     constructor(props){
@@ -20,6 +21,7 @@ export default class ProfileView extends React.Component {
                       usereventsresponsejson: "",
                       changePassword: false,
                       isLoading: true,
+                      mailingList: false,
                       failedToLoad:false});
                       //this._startupCachingAsync = this._startupCachingAsync.bind(this);
                       this.APICacher = new APICacher();
@@ -44,6 +46,9 @@ export default class ProfileView extends React.Component {
                                   onPress = {()=>this.setState({changePassword: false})}
                               />
                           </View>)
+        }
+        else if(this.state.mailingList){
+          contentView = this.getMailingListView()
         }
         else{
           eventsView=(<View style={Styles.profileViewEvents}>
@@ -78,6 +83,21 @@ export default class ProfileView extends React.Component {
         return(
           <LoadingScreen/>
         );
+      }
+
+      getMailingListView(){
+        return(
+              <View>
+                  <MailingList userToken={this.state.token}/>
+                  <CustomButton 
+                      text="Go Back" 
+                      buttonStyle = {Styles.longButtonStyle}
+                      textStyle = {Styles.longButtonTextStyle}
+                      onPress = {()=>this.setState({mailingList: false})}
+                    />
+              </View>
+
+        )
       }
 
       componentDidMount(){
@@ -175,7 +195,7 @@ export default class ProfileView extends React.Component {
                     text="Edit Mailing List Settings" 
                     buttonStyle = {Styles.longButtonStyle}
                     textStyle = {Styles.longButtonTextStyle}
-                    onPress = {()=>{}}
+                    onPress = {()=>{this.setState({mailingList: true})}}
                 />
               </View>
           )
