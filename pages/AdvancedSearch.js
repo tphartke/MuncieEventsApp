@@ -56,7 +56,7 @@ export default class AdvancedSearch extends React.Component {
 
     this.categories = await this.APICacher._getJSONFromStorage(key)
     this.categories = this.categories.map((category) => {return [category.attributes.name, category.id]})
-    this.setState({categorySelectedValue: this.categories[0]})
+    this.setState({categorySelectedValue: this.categories[0][1], categorySelectedName: this.categories[0][0]})
   }   
 
   async _fetchTagData(){
@@ -66,7 +66,7 @@ export default class AdvancedSearch extends React.Component {
 
     this.tags = await this.APICacher._getJSONFromStorage(key)
     this.tags = this.tags.map((tag) => {return [tag.attributes.name, tag.id]})
-    this.setState({tagSelectedValue: this.tags[0], isInitialLoading:false})
+    this.setState({tagSelectedValue: this.tags[0][0], isInitialLoading:false})
   }
 
   async _refreshData(key, url){

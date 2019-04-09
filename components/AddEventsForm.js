@@ -58,7 +58,7 @@ export default class AddEventsForm extends Component{
     
         this.categories = await this.APICacher._getJSONFromStorage(key)
         this.categories = this.categories.map((category) => {return [category.attributes.name, category.id]})
-        this.setState({categorySelectedValue: this.categories[0]})
+        this.setState({categorySelectedValue: this.categories[1][0], categorySelectedName:this.categories[0][0]})
     }   
     
     async _fetchTagData(){
@@ -365,6 +365,8 @@ export default class AddEventsForm extends Component{
     }
 
     render(){
+        console.log(this.state.categorySelectedValue)
+
         if(this.state.isLoading){;
             return(
             <View>
