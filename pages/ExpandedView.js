@@ -157,6 +157,7 @@ class ExpandedView extends React.Component {
             {this.getTags()}
             {this.getSource()}
             {this.getAuthorView()}
+            {this.padBottom()}
           </View>
         </View>
       );
@@ -303,6 +304,14 @@ class ExpandedView extends React.Component {
         </Text> 
       </View>
     );
+   }
+
+   padBottom(){
+     return(
+      <View>
+        <Text>{"\n\n\n"}</Text>
+      </View>
+     )
    }
 
   //Opens link when called by WebView
