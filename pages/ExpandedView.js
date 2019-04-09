@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, WebView, ScrollView, Image, AsyncStorage, Alert} from 'react-native';
+import {Text, View, WebView, ScrollView, Image, AsyncStorage, Alert, Linking} from 'react-native';
 import DateAndTimeParser from "../DateAndTimeParser";
 import{ withNavigation } from "react-navigation";
 import Styles from './Styles';
@@ -9,7 +9,8 @@ import EventList from '../EventList';
 import LoadingScreen from '../components/LoadingScreen';
 import EditEvents from './EditEvents'
 
-
+//All 3 scripts below are used as workarounds for a bug with WebViews not displaying in certain nested Views.
+//Once React Native fixes these bugs, the scriptings can be removed
 const script = `
   <script>
     window.location.hash = 1;
@@ -35,6 +36,17 @@ const style = `
       right: 0;
   }
   </style>
+`;
+
+//This script is used to inject working links into the WebView, as the normal method can't be used due to a react native bug.
+const injectScript = `
+  (function () {
+    window.onclick = function(e) {
+      e.preventDefault();
+      window.postMessage(e.target.href);
+      e.stopPropagation()
+    }
+  }());
 `;
 
 class ExpandedView extends React.Component {
@@ -293,7 +305,16 @@ class ExpandedView extends React.Component {
     );
    }
 
+  //Opens link when called by WebView
+  onMessage({ nativeEvent }) {
+    const data = nativeEvent.data;
+    if (data !== undefined && data !== null) {
+      Linking.openURL(data);
+    }
+  } 
+
    getDescriptionView(){
+     htmlDescription = this.eventData.attributes.description
      return(
       <View>
         <Text style={Styles.header}>
@@ -301,11 +322,15 @@ class ExpandedView extends React.Component {
         </Text>
         <WebView
           originWhitelist={['*']}
-          source={{ html: this.eventData.attributes.description + style + script }}
+          source={{ html: htmlDescription + style + script }}
           style={{height:this.state.height}}
           scrollEnabled={false}
           javaScriptEnabled = {true}
-          onNavigationStateChange={this.onNavigationChange.bind(this)}
+          injectedJavaScript={injectScript}
+          onMessage = {this.onMessage}
+          onNavigationStateChange={
+            this.onNavigationChange.bind(this)
+          }
         />
       </View>
      );

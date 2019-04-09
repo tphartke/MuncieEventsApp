@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, WebView} from 'react-native';
+import {Text, View, WebView, Linking} from 'react-native';
 import Styles from './Styles';
 import APICacher from '../APICacher';
 import LoadingScreen from '../components/LoadingScreen';
@@ -75,10 +75,17 @@ export default class Widgets extends React.Component {
   getWebView(html){
     return(
       <WebView
+        ref={(ref) => { this.webview = ref; }}
         originWhitelist={['*']}
         source={{ html: html }}
         scrollEnabled={true}
         startInLoadingState={false}
+        onNavigationStateChange={(event) => {
+          if (event.url !== html) {
+            Linking.openURL(event.url);
+            this.webview.goBack();
+          }
+        }}
       />
     )
   }

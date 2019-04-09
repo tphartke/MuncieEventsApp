@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, WebView} from 'react-native';
+import {View, WebView, Linking} from 'react-native';
 import Styles from './Styles';
 import APICacher from '../APICacher';
 import LoadingScreen from '../components/LoadingScreen';
@@ -80,10 +80,17 @@ export default class About extends React.Component {
   getWebView(html){
     return(
       <WebView
+        ref={(ref) => { this.webview = ref; }}
         originWhitelist={['*']}
         source={{ html: html }}
         scrollEnabled={true}
         startInLoadingState={false}
+        onNavigationStateChange={(event) => {
+          if (event.url !== html) {
+            Linking.openURL(event.url);
+            this.webview.goBack();
+          }
+        }}
       />
     )
   }
