@@ -2,7 +2,7 @@ import { StyleSheet, Dimensions} from "react-native"
 
 export default StyleSheet.create({
     title: {
-        textAlign:"center",
+        alignContent:"center",
         fontSize:30,
         fontWeight:"bold",
         color:'#cb532b',
@@ -64,7 +64,6 @@ export default StyleSheet.create({
 
     eventRow: {
         backgroundColor:'#eee', 
-        fontSize: 14, 
         borderColor:'black', 
         borderWidth:1, 
         paddingHorizontal: 10,
@@ -152,7 +151,7 @@ export default StyleSheet.create({
     defaultButtonTextStyle: {
         fontSize:13,
         color: '#efe0d5',
-        textAlign: 'center'
+        alignContent: 'center'
     },
 
     textInput: {
@@ -223,7 +222,7 @@ export default StyleSheet.create({
     longButtonStyle: {
         width: '100%',
         alignItems: 'center',
-        textAlign: 'center',
+        alignContent: 'center',
         height:50
     },
 

@@ -164,6 +164,7 @@ export default class EditEvents extends React.Component {
                       renderItem={({item}) => 
                           this.getSelectableTag(item)
                       }
+                      keyExtractor={(item,index) => item + index}
                       ListEmptyComponent={() => this.getNoTagsFoundMessage()}
                       nestedScrollEnabled= {true}
                   />

@@ -43,6 +43,7 @@ class EventList extends React.Component {
               renderItem={({item}) => 
                 this.generateEventEntryView(item)
               }
+              keyExtractor={(item,index) => item + index}
               ListEmptyComponent={() => this.noEventsFound()}
             />
           </View>
