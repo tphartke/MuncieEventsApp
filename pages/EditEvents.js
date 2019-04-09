@@ -32,7 +32,8 @@ export default class EditEvents extends React.Component {
         address: null,
         locationDetails: null,
         id: null,
-        failedToLoad: false
+        failedToLoad: false,
+        eventUpdated: false
     }
     this.event = null
     this.tags=[]
@@ -371,6 +372,11 @@ export default class EditEvents extends React.Component {
             }}/>
         );
       }
+      else if(this.state.eventUpdated){
+        return(<View>
+                    <Text>{this.state.statusMessage}</Text>
+                </View>)
+      }
       else{
           IOSDatePickerModal = this.getIOSDatePicker();
           androidTimePicker = this.getAndroidTimeFields();
@@ -585,7 +591,7 @@ export default class EditEvents extends React.Component {
           this.setState({statusMessage: responseJson.errors[0].detail})
       }
       catch(error){
-          this.setState({statusMessage: "Event successfully submitted!"})
+          this.setState({statusMessage: "Event successfully submitted!", eventUpdated: true})
       }
   }
 }

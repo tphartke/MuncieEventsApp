@@ -31,7 +31,8 @@ export default class AddEventsForm extends Component{
             description: null,
             address: "",
             locationDetails: null,
-            failedToLoad: false
+            failedToLoad: false,
+            eventSubmitted: false,
         }
         this.tags=[]
         this.APICacher = new APICacher();
@@ -379,6 +380,11 @@ export default class AddEventsForm extends Component{
                 }}/>
             );
         }
+        else if(this.state.eventSubmitted){
+            return(<View>
+                        <Text>{this.state.statusMessage}</Text>
+                </View>)
+        }
         else{
             IOSDatePickerModal = this.getIOSDatePicker();
             androidTimePicker = this.getAndroidTimeFields();
@@ -619,7 +625,7 @@ export default class AddEventsForm extends Component{
             this.setState({statusMessage: responseJson.errors[0].detail})
         }
         catch(error){
-            this.setState({statusMessage: "Event successfully submitted!"})
+            this.setState({statusMessage: "Event successfully submitted!",eventSubmitted:true})
         }
 
     }
