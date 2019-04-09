@@ -4,6 +4,7 @@ import CustomButton from './CustomButton';
 import Styles from './Styles';
 import InternetError from '../components/InternetError';
 
+
 export default class Register extends React.Component {
     constructor(props){
         super(props);
@@ -20,6 +21,7 @@ export default class Register extends React.Component {
       }
 
     render (){
+        displayedPage = null
         if(this.state.failedToLoad){
             return(
                 <InternetError onRefresh = {()=>{
@@ -27,6 +29,30 @@ export default class Register extends React.Component {
                 }}/>
             )
         }
+        if(this.state.userregistered){
+            displayedPage = this.getCompletedRegisterView();
+
+        }
+        else{
+            displayedPage = this.getRegisterView();
+        }
+        return(
+            <View>
+                {displayedPage}
+            </View>
+        )
+    }
+
+
+    getCompletedRegisterView(){
+        return(
+            <View>
+                <Text>Successfully Registered. Welcome to Muncie Events!</Text>
+            </View>
+        )
+    }
+
+    getRegisterView(){
         return(
             <View>
                 <Text>Name</Text>
@@ -111,7 +137,8 @@ export default class Register extends React.Component {
               })
           })
           .then((response) => response.json())
-          .then((responseJson) => this.getStatus(responseJson))
+          .then((responseJson) => {this.getStatus(responseJson)
+                                    console.log(responseJson)})
         .catch((error) =>{
             this.setState({failedToLoad:true})
         });
@@ -121,8 +148,6 @@ export default class Register extends React.Component {
         try{
             this.setState({statusMessage: responseJson.errors[0].detail})
         }
-        catch(error){
-            this.setState({statusMessage: this.state.name + " successfully registered!"})
-        }
+        catch(error){this.setState({statusMessage: '', userregistered: true})}
     }
 }

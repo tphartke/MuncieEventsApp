@@ -9,36 +9,54 @@ export default class ForgotPassword extends React.Component {
         super(props);
         this.state = ({ email: "",
                         statusMessage: "",
-                        failedToLoad: false})
+                        failedToLoad: false,
+                        messageSent: false})
         dataSource = null
       }
 
       render(){
+          displayedPage = null
           if(this.state.failedToLoad){
             <InternetError onRefresh={()=>{
                 this.setState({failedToLoad:false})
             }}/>
           }
+          if(this.state.messageSent){
+                displayedPage = this.getMessageSentView();
+          }
           else{
-            return (
+            displayedPage = this.getForgotPasswordView();
+          }
+          return(<View>{displayedPage}</View>)
+          
+      }
+
+      getForgotPasswordView(){
+        return (
+            <View>
+                <Text>Please enter the email associated with your account</Text>
+                <TextInput
+                    onChangeText={(email) => this.setState({email})}
+                    style={Styles.textBox}
+                    placeholder="Name"
+                />
+                <CustomButton 
+                    text="Send Recovery Email" 
+                    onPress={()=> this.sendForgotPasswordRequest()} 
+                    buttonStyle={Styles.longButtonStyle}
+                    textStyle={Styles.longButtonTextStyle}
+                />
+                <Text>{this.state.statusMessage}</Text>
+            </View>
+          );
+      }
+
+      getMessageSentView(){
+          return(
                 <View>
-                    <Text>Please enter the email associated with your account</Text>
-                    <TextInput
-                        onChangeText={(email) => this.setState({email})}
-                        style={Styles.textBox}
-                        placeholder="Name"
-                    />
-                    <CustomButton 
-                        text="Send Recovery Email" 
-                        onPress={()=> this.sendForgotPasswordRequest()} 
-                        buttonStyle={Styles.longButtonStyle}
-                        textStyle={Styles.longButtonTextStyle}
-                    />
                     <Text>{this.state.statusMessage}</Text>
                 </View>
-              );
-          }
-          
+          )
       }
     
       sendForgotPasswordRequest(){
@@ -61,7 +79,7 @@ export default class ForgotPassword extends React.Component {
             this.setState({statusMessage: responseJson.errors[0].detail})
         }
         catch(error){
-            this.setState({statusMessage: "Email sent with instructions on changing password to " + this.state.email})
+            this.setState({statusMessage: "Email sent with instructions on changing password to " + this.state.email, messageSent: true})
         }
       }
 

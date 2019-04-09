@@ -13,7 +13,8 @@ export default class ChangePassword extends React.Component {
                     confirmNewPassword: "", 
                     statusMessage: "",
                     passwordChanged: false,
-                    failedToLoad:false
+                    failedToLoad:false,
+                    passwordChanged:false
         })
     }
 

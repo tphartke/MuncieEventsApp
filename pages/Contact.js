@@ -21,6 +21,9 @@ export default class Contact extends React.Component {
     if(this.state.failedToLoad){
       contactView = this.getErrorMessage();
     }
+    else if(this.state.messageSent){
+      contactView = this.getMessageSentView();
+    }
     else{
       contactView = this.getContactView();
     }
@@ -43,7 +46,14 @@ export default class Contact extends React.Component {
       }}/>
     );
   }
-  
+
+  getMessageSentView(){
+    return(
+      <View>
+        <Text>{this.state.statusMessage}</Text>
+      </View>)
+  }
+
   getContactView(){
     return(
     <View style={Styles.content}>
