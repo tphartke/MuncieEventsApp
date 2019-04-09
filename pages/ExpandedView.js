@@ -352,6 +352,9 @@ class ExpandedView extends React.Component {
      catch(error){
         authorName = "Anonymous"
      }
+     if(authorName == null){
+       authorName = "Anonymous"
+     }
      return(<View>
                <Text style={Styles.header}>
                   Author 
