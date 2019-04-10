@@ -87,8 +87,8 @@ export default class About extends React.Component {
         startInLoadingState={false}
         onNavigationStateChange={(event) => {
           if (event.url !== html) {
-            Linking.openURL(event.url);
             this.webview.goBack();
+            Linking.openURL(event.url);
           }
         }}
       />

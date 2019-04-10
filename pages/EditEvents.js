@@ -543,6 +543,24 @@ export default class EditEvents extends React.Component {
        }
     }
 
+    checkIfStringAttributeIsNull(attribute){
+        if(attribute){
+            return attribute
+        }
+        else{
+            return ""
+        }
+    }
+
+    checkForEmptyTagArray(tagArray){
+        if(tagArray.length == 0){
+            return null
+        }
+        else{
+            return tagArray
+        }
+    }
+
   submitEvent(){
       url = "https://api.muncieevents.com/v1/event/" +this.state.id + "?userToken=" + this.state.userToken + "&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1"
       console.log(url)
@@ -556,6 +574,13 @@ export default class EditEvents extends React.Component {
       endTime = end[0]+':'+end[1]+endampm.toLowerCase()
   
       chosenDate = [this.state.chosenDate.getFullYear() + '-' + ('0' + (this.state.chosenDate.getMonth()+1)).slice(-2) + '-' + ('0' + this.state.chosenDate.getDate()).slice(-2)]
+      console.log(this.state.selectedTagArray)
+      console.log(this.state.location)
+      console.log(this.state.locationDetails)
+
+      console.log(chosenDate)
+      console.log(startTime)
+      console.log(endTime)
 
       fetch(url,
       {method: "PATCH",
@@ -567,16 +592,16 @@ export default class EditEvents extends React.Component {
           date: chosenDate,
           start: startTime,
           time_end: endTime,
-          tag_names: this.state.selectedTagArray,
+          tag_names: this.checkForEmptyTagArray(this.state.selectedTagArray),
           location: this.state.location,
           category_id: this.state.categorySelectedValue,
           title: this.state.event,
-          source: this.state.source,
-          age_restriction: this.state.ageRestriction,
-          cost: this.state.cost,
+          source: this.checkIfStringAttributeIsNull(this.state.source),
+          age_restriction: this.checkIfStringAttributeIsNull(this.state.ageRestriction),
+          cost: this.checkIfStringAttributeIsNull(this.state.cost),
           description: this.state.description,
-          address: this.state.address,
-          location_details: this.state.locationDetails
+          address: this.checkIfStringAttributeIsNull(this.state.address),
+          location_details: this.checkIfStringAttributeIsNull(this.state.locationDetails)
       })
   })
   .then((response) => response.json())
@@ -592,7 +617,7 @@ export default class EditEvents extends React.Component {
           this.setState({statusMessage: responseJson.errors[0].detail})
       }
       catch(error){
-          this.setState({statusMessage: "Event successfully submitted!", eventUpdated: true})
+          this.setState({statusMessage: "Event successfully updated!", eventUpdated: true})
       }
   }
 }

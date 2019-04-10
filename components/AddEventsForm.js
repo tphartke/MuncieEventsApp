@@ -13,7 +13,7 @@ export default class AddEventsForm extends Component{
             isLoading: true,
             IOSModalVisible: false,
             tagModalVisable: false,
-            chosenDate: null,
+            chosenDate: new Date(),
             startTime: null,
             endTime: null,
             selectedTagArray: [],
@@ -629,7 +629,6 @@ export default class AddEventsForm extends Component{
         catch(error){
             this.setState({statusMessage: "Event successfully submitted!",eventSubmitted:true})
         }
-
     }
 
     addZeroPadding(num){

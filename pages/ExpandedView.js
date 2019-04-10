@@ -58,7 +58,9 @@ class ExpandedView extends React.Component {
                       isLoading: true,
                       userid: "", 
                       editingEvent: false, 
-                      deletingEvent: false}
+                      deletingEvent: false,
+                      userToken: "",
+                      statusMessage: ""}
         this.eventData = null
         this.state={selectedPreviousScreen:false}
 
@@ -135,6 +137,10 @@ class ExpandedView extends React.Component {
     }
 
     getMainContent(){
+      expandedView = null
+      if(!this.state.deleteEvent){
+        expandedView = this.getExpandedViewInformation(imageURL)
+      }
       return(
         <View>
           <Text style={Styles.title}>
@@ -147,6 +153,16 @@ class ExpandedView extends React.Component {
               textStyle = {Styles.longButtonTextStyle}
               onPress={() => this.goBackOnce()}
             />
+            {expandedView}
+            {this.state.statusMessage}
+          </View>
+        </View>
+      );
+    }
+
+    getExpandedViewInformation(imageURL){
+        return(
+          <View>
             {this.getEditEventButtons()}
             {this.getURLImage(imageURL)}
             {this.getCostView()}
@@ -159,8 +175,7 @@ class ExpandedView extends React.Component {
             {this.getAuthorView()}
             {this.padBottom()}
           </View>
-        </View>
-      );
+        )
     }
 
     getEditEventButtons(){
@@ -382,7 +397,8 @@ class ExpandedView extends React.Component {
   retrieveStoredToken = async() => {
     try {
       const tkn = await AsyncStorage.getItem('Token')
-      this.setState({userid: tkn, isLoading: false})
+      const utkn = await AsyncStorage.getItem('UniqueToken');
+      this.setState({userid: tkn, userToken: utkn, isLoading: false})
      } catch (error) {
        console.log("Error retrieving token")
         return "NULL"
@@ -395,8 +411,37 @@ class ExpandedView extends React.Component {
       '',
       [
         {text: 'No', onPress: () => {}, style: 'cancel'},
-        {text: 'Yes', onPress: () => this.setState({deletingEvent: true})},
+        {text: 'Yes', onPress: () => this.deleteEvent()},
       ]
     );
   }
+
+  deleteEvent(){
+      console.log("Deleting Event...")
+      console.log(this.state.userToken)
+      fetch("https://api.muncieevents.com/v1/event/"+this.eventData.id+"?userToken=" + this.state.userToken +"&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1", 
+        {method: "DELETE",
+        headers: {
+            Accept: 'application/vnd.api+json',
+            'Content-Type': 'application/json',
+            },
+    })
+    .then((response) => response.json())
+    .then((responseJson) => {this.getStatus(responseJson)
+                              console.log(responseJson)})
+  .catch((error)=>{
+    console.log(error)
+  });
+  }
+
+  getStatus(responseJson){
+    try{
+      this.setState({statusMessage: responseJson.errors[0].detail})
+    }
+    catch(error){
+      this.setState({statusMessage: "Event Deleted. It may take up to half an hour for the changes to be reflected in the app.", eventDeleted: true})
+    }
+
+  }
+
 } export default withNavigation(ExpandedView)
