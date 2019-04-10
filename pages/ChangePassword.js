@@ -105,7 +105,7 @@ export default class ChangePassword extends React.Component {
         try{
             this.setState({statusMessage: responseJson.errors[0].detail})
         }
-        catch{}
+        catch(error){}
     }
 
     passwordsMatch(){

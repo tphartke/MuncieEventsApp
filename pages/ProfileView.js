@@ -51,13 +51,13 @@ export default class ProfileView extends React.Component {
           contentView = this.getMailingListView()
         }
         else{
-          eventsView=(<View style={Styles.profileViewEvents}>
+          /*eventsView=(<View style={Styles.profileViewEvents}>
             <Text style={Styles.title}>EVENTS</Text>
             <EventList useSearchResults = {true} />
-          </View>)
+          </View>)*/
           if(!this.state.email && this.state.userid){
               this.fetchUserData(this.state.userid)
-              this.fetchUserEventsData()
+              //this.fetchUserEventsData()
           }
           else if(this.state.userid){
               contentView = this.getProfileInformation();
