@@ -67,6 +67,7 @@ export default class ProfileView extends React.Component {
             <View>
                 {contentView}
                 {eventsView}
+                <Text>{this.state.statusMessage}</Text>
             </View>
         );
       }
@@ -122,6 +123,18 @@ export default class ProfileView extends React.Component {
         });
       } 
 
+      checkIfUserDataIsValid(){
+        if(this.state.name == ""){
+          this.setState({statusMessage: "Please enter your name"})
+        }
+        else if(!this.isValidEmail(this.state.email)){
+          this.setState({statusMessage: "Please enter a valid email"})
+        }
+        else{
+          this.updateUserData();
+        }
+      }
+
       updateUserData(){
         fetch("https://api.muncieevents.com/v1/user/profile?userToken=" + this.state.token + "&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1", 
           {method: "PATCH",
@@ -134,13 +147,24 @@ export default class ProfileView extends React.Component {
               name: this.state.name,
           })
       })
-      .then((response)=>responseJson = response.json())
-      .then((responseJson)=>console.log(responseJson))
+      .then((response) => {this.getStatusMessage(response.json())})
         .catch((error) =>{
            console.log(error)
-           this.setState({statusMessage: "Error reaching server: " + error})
         })
       }
+
+      getStatusMessage(responseJson){
+        try{
+          this.setState({statusMessage: responseJson.errors[0].detail})
+        }
+        catch(error){this.setState({statusMessage: 'User information successfully updated!'})}
+        }
+
+        isValidEmail(email){
+          //this is a regex expression compliant with the rfc that matches 99.99% of active email addresses
+          rfc2822 = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+          return rfc2822.test(email);
+        }
 
       async _startupCachingAsync(url){
         try{
@@ -183,7 +207,7 @@ export default class ProfileView extends React.Component {
                     text="Update" 
                     buttonStyle = {Styles.longButtonStyle}
                     textStyle = {Styles.longButtonTextStyle}
-                    onPress = {()=>this.updateUserData()}
+                    onPress = {()=>this.checkIfUserDataIsValid()}
                 />
                 <CustomButton 
                     text="Change Password" 
