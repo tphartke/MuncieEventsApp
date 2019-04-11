@@ -563,7 +563,6 @@ export default class EditEvents extends React.Component {
 
   submitEvent(){
       url = "https://api.muncieevents.com/v1/event/" +this.state.id + "?userToken=" + this.state.userToken + "&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1"
-      console.log(url)
 
       start = this.state.startTime.toLocaleTimeString().split(':')
       startampm = start[2].split(' ')[1]
@@ -573,14 +572,7 @@ export default class EditEvents extends React.Component {
       endampm = end[2].split(' ')[1]
       endTime = end[0]+':'+end[1]+endampm.toLowerCase()
   
-      chosenDate = [this.state.chosenDate.getFullYear() + '-' + ('0' + (this.state.chosenDate.getMonth()+1)).slice(-2) + '-' + ('0' + this.state.chosenDate.getDate()).slice(-2)]
-      console.log(this.state.selectedTagArray)
-      console.log(this.state.location)
-      console.log(this.state.locationDetails)
-
-      console.log(chosenDate)
-      console.log(startTime)
-      console.log(endTime)
+      chosenDate = this.state.chosenDate.getFullYear() + '-' + ('0' + (this.state.chosenDate.getMonth()+1)).slice(-2) + '-' + ('0' + this.state.chosenDate.getDate()).slice(-2)
 
       fetch(url,
       {method: "PATCH",

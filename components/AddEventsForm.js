@@ -47,7 +47,6 @@ export default class AddEventsForm extends Component{
         await this._fetchCategoryData();
         await this._fetchTagData();
         utoken = await this.retrieveStoredToken();
-        console.log(utoken)
         this.setState({isLoading: false, userToken: utoken});
     }
 
@@ -341,7 +340,6 @@ export default class AddEventsForm extends Component{
             });
             if (action == DatePickerAndroid.dateSetAction) {
               newDate = new Date(year, month, day);
-              console.log(newDate)
               this.setState({chosenDate: newDate})
             }
           } catch ({code, message}) {
@@ -365,7 +363,6 @@ export default class AddEventsForm extends Component{
     }
 
     render(){
-        console.log(this.state.categorySelectedValue)
 
         if(this.state.isLoading){;
             return(
@@ -530,19 +527,6 @@ export default class AddEventsForm extends Component{
         description = this.state.description;
         address = this.state.address;
         locationDetails = this.state.locationDetails;
-        console.log("date: " + chosenDate + '\n' + 
-                    "start: " + startTime  + '\n' + 
-                    "end: " + endTime + '\n' + 
-                    "tag_names: " + tagNames + '\n' + 
-                    "location: " + location + '\n' + 
-                    "category_id: " + categoryID + '\n' + 
-                    "title: " + title + '\n' + 
-                    "source: " + source + '\n' + 
-                    "age_restriction: " + ageRestriction + '\n' + 
-                    "cost: " + cost + '\n' + 
-                    "description: " + description + '\n' + 
-                    "address: " + address + '\n' + 
-                    "location_details: " + locationDetails);
         return (categoryID && title && chosenDate && startTime 
             && description && location);
     }
@@ -585,14 +569,8 @@ export default class AddEventsForm extends Component{
         }
 
         if(chosenDate){
-            chosenDate = [chosenDate.getFullYear() + '-' + ('0' + (chosenDate.getMonth()+1)).slice(-2) + '-' + ('0' + chosenDate.getDate()).slice(-2)]
+            chosenDate = chosenDate.getFullYear() + '-' + ('0' + (chosenDate.getMonth()+1)).slice(-2) + '-' + ('0' + chosenDate.getDate()).slice(-2)
         }
-        
-        console.log(startTime)
-        console.log(endTime)
-        console.log(chosenDate)
-
-        console.log(url)
 
         fetch(url,
             {method: "POST",
@@ -632,7 +610,6 @@ export default class AddEventsForm extends Component{
     }
 
     addZeroPadding(num){
-        console.log(num.toString().length)
         if(num.length < 2){
             return "0" + num.toString().slice(-2)
         }
