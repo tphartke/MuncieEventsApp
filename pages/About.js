@@ -6,6 +6,17 @@ import LoadingScreen from '../components/LoadingScreen';
 import TopBar from './top_bar';
 import InternetError from '../components/InternetError';
 
+//This script is used to inject working links into the WebView, as the normal method can't be used due to a react native bug.
+const injectScript = `
+  (function () {
+    window.onclick = function(e) {
+      e.preventDefault();
+      window.postMessage(e.target.href);
+      e.stopPropagation()
+    }
+  }());
+`;
+
 export default class About extends React.Component {
   constructor(props){
     super(props);
@@ -77,6 +88,14 @@ export default class About extends React.Component {
       .then((response) => this.setState({dataSource: response, isLoading: false}))
   }
 
+  //Opens link when called by WebView
+  onMessage({ nativeEvent }) {
+    const data = nativeEvent.data;
+    if (data !== undefined && data !== null) {
+      Linking.openURL(data);
+    }
+  } 
+
   getWebView(html){
     return(
       <WebView
@@ -85,12 +104,9 @@ export default class About extends React.Component {
         source={{ html: html }}
         scrollEnabled={true}
         startInLoadingState={false}
-        onNavigationStateChange={(event) => {
-          if (event.url !== html) {
-            this.webview.goBack();
-            Linking.openURL(event.url);
-          }
-        }}
+        javaScriptEnabled = {true}
+        injectedJavaScript={injectScript}
+        onMessage = {this.onMessage}
       />
     )
   }

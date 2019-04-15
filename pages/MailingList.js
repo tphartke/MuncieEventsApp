@@ -85,6 +85,13 @@ export default class MailingList extends React.Component {
     getMailingList(){
         customFrequencyOptions = null
         customEventOptions = null
+        weekly = this.state.weekly
+        daily = this.state.daily
+        customFrequency = this.state.customFrequency
+        allCategories = this.state.all_categories
+        customEvents = this.state.customEvents
+
+
         if(this.state.customFrequency){
             customFrequencyOptions = this.getCustomFrequencyOptions()
         }
@@ -104,21 +111,21 @@ export default class MailingList extends React.Component {
             <Text style={Styles.title}>Frequency</Text>
             <View style={{flexDirection: 'row'}}>
                 <Switch
-                    value={this.state.weekly}
+                    value={weekly}
                     onValueChange={() => this.updateToWeekly()}
                 />
                 <Text>Weekly (Thursday, next week's events)</Text>
             </View>
             <View style={{flexDirection: 'row'}}>
                 <Switch
-                    value={this.state.daily}
+                    value={daily}
                     onValueChange={() => this.updateToDaily()}
                 />
                 <Text>Daily (Every morning, today's events)</Text>
             </View>
             <View style={{flexDirection: 'row'}}>
                 <Switch
-                    value={this.state.customFrequency}
+                    value={customFrequency}
                     onValueChange={() => this.updateToCustomFrequency()}
                 />
                 <Text>Custom</Text>
@@ -128,14 +135,14 @@ export default class MailingList extends React.Component {
             <Text style={Styles.title}>Event Type</Text>
             <View style={{flexDirection: 'row'}}>
                 <Switch
-                    value={this.state.all_categories}
+                    value={allCategories}
                     onValueChange={() => this.updateToAllEvents()}
                 />
                 <Text>All Events</Text>
             </View>
             <View style={{flexDirection: 'row'}}>
                 <Switch
-                    value={this.state.customEvents}
+                    value={customEvents}
                     onValueChange={() => this.updateToCustomEvents()}
                 />
                 <Text>Custom</Text>

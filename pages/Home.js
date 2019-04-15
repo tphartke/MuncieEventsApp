@@ -1,6 +1,6 @@
 import React from 'react';
 import EventList from "../EventList"
-import {View, ImageBackground} from 'react-native';
+import {View} from 'react-native';
 import Styles from './Styles';
 import APICacher from '../APICacher';
 import TopBar from './top_bar';
