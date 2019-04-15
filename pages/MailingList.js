@@ -180,53 +180,60 @@ export default class MailingList extends React.Component {
     }
 
     getCustomFrequencyOptions(){
+        daily_sun = this.state.daily_sun
+        daily_mon = this.state.daily_mon
+        daily_tue = this.state.daily_tue
+        daily_wed = this.state.daily_wed
+        daily_thu = this.state.daily_thu
+        daily_fri = this.state.daily_fri
+        daily_sat = this.state.daily_sat
         return(
         <View>
             <View style={Styles.embeddedSwitch}>
                 <Switch
-                    value={this.state.daily_sun}
+                    value={daily_sun}
                     onValueChange={() => this.setState({daily_sun: this.updateSwitch(this.state.daily_sun)})}
                 />
                 <Text>Sunday</Text>
             </View>
             <View style={Styles.embeddedSwitch}>
                 <Switch
-                    value={this.state.daily_mon}
+                    value={daily_mon}
                     onValueChange={() => this.setState({daily_mon: this.updateSwitch(this.state.daily_mon)})}
                 />
                 <Text>Monday</Text>
             </View>
             <View style={Styles.embeddedSwitch}>
                 <Switch
-                    value={this.state.daily_tue}
+                    value={daily_tue}
                     onValueChange={() => this.setState({daily_tue: this.updateSwitch(this.state.daily_tue)})}
                 />
                 <Text>Tuesday</Text>
             </View>
             <View style={Styles.embeddedSwitch}>
                 <Switch
-                    value={this.state.daily_wed}
+                    value={daily_wed}
                     onValueChange={() => this.setState({daily_wed: this.updateSwitch(this.state.daily_wed)})}
                 />
                 <Text>Wednesday</Text>
             </View>
             <View style={Styles.embeddedSwitch}>
                 <Switch
-                    value={this.state.daily_thu}
+                    value={daily_thu}
                     onValueChange={() => this.setState({daily_thu: this.updateSwitch(this.state.daily_thu)})}
                 />
                 <Text>Thursday</Text>
             </View>
             <View style={Styles.embeddedSwitch}>
                 <Switch
-                    value={this.state.daily_fri}
+                    value={daily_fri}
                     onValueChange={() => this.setState({daily_fri: this.updateSwitch(this.state.daily_fri)})}
                 />
                 <Text>Friday</Text>
             </View>
             <View style={Styles.embeddedSwitch}>
                 <Switch
-                    value={this.state.daily_sat}
+                    value={daily_sat}
                     onValueChange={() => this.setState({daily_sat: this.updateSwitch(this.state.daily_sat)})}
                 />
                 <Text>Saturday</Text>
