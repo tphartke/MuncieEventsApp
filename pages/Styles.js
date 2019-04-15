@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions} from "react-native"
+import { StyleSheet} from "react-native"
 
 export default StyleSheet.create({
     title: {
@@ -59,7 +59,11 @@ export default StyleSheet.create({
     profileViewEvents: {
         flex: 1,
         flexBasis: '30%'
+    },
 
+    mailingListScrollView: {
+        flex: 1,
+        flexBasis: '80%',
     },
 
     eventRow: {
@@ -208,6 +212,11 @@ export default StyleSheet.create({
         color: 'red'
     },
 
+    embeddedSwitch: {
+        paddingLeft: '20%',
+        flexDirection: 'row'
+
+    },
     defaultButtonStyle: {
         height:30,
         width:40,

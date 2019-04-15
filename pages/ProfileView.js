@@ -37,7 +37,7 @@ export default class ProfileView extends React.Component {
           contenView = this.getErrorMessage()
         }
         else if(this.state.changePassword){
-            contentView = (<View>
+            contentView = (<View style={{flex:1}}>
                               <ChangePassword userToken={this.state.token}/>
                               <CustomButton 
                                   text="Go Back" 
@@ -64,7 +64,7 @@ export default class ProfileView extends React.Component {
           }
         }
           return(
-            <View>
+            <View style={{flex:1}}>
                 {contentView}
                 {eventsView}
                 <Text>{this.state.statusMessage}</Text>
@@ -88,14 +88,14 @@ export default class ProfileView extends React.Component {
 
       getMailingListView(){
         return(
-              <View>
-                  <MailingList userToken={this.state.token}/>
+              <View style={{flex:1}}>
                   <CustomButton 
                       text="Go Back" 
                       buttonStyle = {Styles.longButtonStyle}
                       textStyle = {Styles.longButtonTextStyle}
                       onPress = {()=>this.setState({mailingList: false})}
                     />
+                  <MailingList userToken={this.state.token}/>
               </View>
 
         )
@@ -192,7 +192,7 @@ export default class ProfileView extends React.Component {
 
       getProfileInformation(){
           return(
-              <View>
+              <View style={{flex:0.35}}>
                 <TextInput
                     onChangeText={(name) => this.setState({name})}
                     style={Styles.textBox}

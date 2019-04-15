@@ -74,7 +74,7 @@ export default class LogInRegister extends React.Component {
 
     getLoadingScreen(){
       return(
-        <View>
+        <View style={{flex:1}}>
           <LoadingScreen/>
         </View>
       );
@@ -86,7 +86,7 @@ export default class LogInRegister extends React.Component {
           profileInfo = this.showProfileInfo();
       }
       return (
-        <View>      
+        <View style={{flex:0.3}}>      
           <TextInput
               onChangeText={(email) => this.setState({email})}
               style={Styles.textBox}
@@ -126,7 +126,7 @@ export default class LogInRegister extends React.Component {
 
     getProfileViewSequence(){
       return(
-        <View>
+        <View style={{flex:1}}>
           <CustomButton
             text = "Log Out" 
             onPress={()=> this.logUserOut()} 
@@ -140,7 +140,7 @@ export default class LogInRegister extends React.Component {
 
     getSignupSequence(){
       return(
-        <View>
+        <View style={{flex:1}}>
           <Register />
           <CustomButton
             text = "Go Back"
@@ -154,7 +154,7 @@ export default class LogInRegister extends React.Component {
 
     getForgotPasswordSequence(){
       return(
-        <View>
+        <View style={{flex:1}}>
             <ForgotPassword />
             <CustomButton
             text = "Go Back"
