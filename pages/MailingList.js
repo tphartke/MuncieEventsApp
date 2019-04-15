@@ -13,7 +13,6 @@ export default class MailingList extends React.Component {
                         userToken: "",
                         email: "",
                         all_categories: false,
-                        category_ids: [],
                         weekly: false,
                         daily: false,
                         daily_sun: false,
@@ -30,10 +29,12 @@ export default class MailingList extends React.Component {
                         subscribed: false,
                         statusMessage: "",
                         changesMade: false,
-                        failedToLoad: false
+                        failedToLoad: false,
+                        category_ids: []
                      })
         this.APICacher = new APICacher();
         categories = []
+        this.category_ids = []
     }
 
     componentDidMount(){
@@ -91,7 +92,7 @@ export default class MailingList extends React.Component {
         allCategories = this.state.all_categories
         customEvents = this.state.customEvents
 
-
+        console.log("CustomEvents: " + this.state.customEvents)
         if(this.state.customFrequency){
             customFrequencyOptions = this.getCustomFrequencyOptions()
         }
@@ -180,7 +181,8 @@ export default class MailingList extends React.Component {
         this.setState({customFrequency: this.updateSwitch(this.state.customFrequency), weekly: false, daily: false})
     }
     updateToAllEvents(){
-        this.setState({all_categories: this.updateSwitch(this.state.all_categories), customEvents: false, category_ids: []})
+        this.category_ids = []
+        this.setState({all_categories: this.updateSwitch(this.state.all_categories), customEvents: false})
     }
     updateToCustomEvents(){
         this.setState({all_categories: false, customEvents: this.updateSwitch(this.state.customEvents)})
@@ -252,6 +254,7 @@ export default class MailingList extends React.Component {
         return(
             <View>
                 <FlatList
+                    extraData={this.state}
                     style={Styles.embeddedSwitch}
                     data={this.categories}
                     renderItem={({item}) => 
@@ -265,6 +268,7 @@ export default class MailingList extends React.Component {
 
     getCategorySwitch(category){
         isCategoryAlreadySelected = this.isInSelectedCategoryList(category[1])
+        console.log(isCategoryAlreadySelected)
         return(
             <View style={{flexDirection: 'row'}}>
                 <Switch
@@ -277,12 +281,12 @@ export default class MailingList extends React.Component {
     }
 
     isInSelectedCategoryList(id){
-        selectedCategoryList = this.state.category_ids
+        selectedCategoryList = this.category_ids
         return selectedCategoryList.includes(id)
     }
 
     updateSelectedCategoryList(category){
-        selectedCategoryList = this.state.category_ids
+        selectedCategoryList = this.category_ids
         categoryNeedsRemoved = this.isInSelectedCategoryList(category[1])
         if(categoryNeedsRemoved){
             index = selectedCategoryList.indexOf(category[1])
@@ -291,7 +295,9 @@ export default class MailingList extends React.Component {
         else{
             selectedCategoryList.push(category[1])
         }
-        this.setState({category_ids: selectedCategoryList})
+        console.log(this.category_ids)
+        this.category_ids = selectedCategoryList;
+        this.setState({category_ids: this.category_ids})
     }
 
     async _fetchCategoryAndSubscriptionData(){
@@ -347,10 +353,11 @@ export default class MailingList extends React.Component {
             else if(data.daily_mon || data.daily_tue || data.daily_wed || data.daily_thu || data.daily_fri || data.daily_sat || data.daily_sun){
                 customFrequencyIsSelected = true
             }
+            this.category_ids = currentCategoryIDs
             this.setState({subscriptionStatus: "You are subscribed to the mailing list. Your current settings are shown below.", subscribed: true, 
                             isLoading:false, userToken: this.props.userToken, all_categories: data.all_categories, daily_fri: data.daily_fri, 
                             daily_mon: data.daily_mon, daily_sat: data.daily_sat, daily_sun: data.daily_sun, daily_thu: data.daily_thu, 
-                            daily_tue: data.daily_tue, daily_wed: data.daily_wed, category_ids: currentCategoryIDs, 
+                            daily_tue: data.daily_tue, daily_wed: data.daily_wed, 
                             weekly: data.weekly, customEvents: customEventsIsSelected, customFrequency: customFrequencyIsSelected,
                             daily: dailyIsSelected, email: data.email})
         }
@@ -376,7 +383,7 @@ export default class MailingList extends React.Component {
                 && !this.state.daily_thu && !this.state.daily_fri && !this.state.daily_sat){
                     this.setState({statusMessage: "At least one frequency must be selected"})
         }
-        else if(!this.state.all_categories && this.state.category_ids.length == 0){
+        else if(!this.state.all_categories && this.category_ids.length == 0){
             this.setState({statusMessage: "At least one event category must be selected"})
         }
         else{
@@ -399,7 +406,7 @@ export default class MailingList extends React.Component {
           body: JSON.stringify({
               email: this.state.email, 
               all_categories: this.state.all_categories,
-              category_ids: this.state.category_ids,
+              category_ids: this.category_ids,
               weekly: this.state.weekly,
               daily: this.state.daily,
               daily_sun: this.state.daily_sun,
@@ -428,7 +435,7 @@ export default class MailingList extends React.Component {
           body: JSON.stringify({
               email: this.state.email, 
               all_categories: this.state.all_categories,
-              category_ids: this.state.category_ids,
+              category_ids: this.category_ids,
               weekly: this.state.weekly,
               daily: this.state.daily,
               daily_sun: this.state.daily_sun,
