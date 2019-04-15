@@ -209,7 +209,8 @@ export default StyleSheet.create({
     },
 
     requiredField:{
-        color: 'red'
+        fontSize: 15
+        //color: 'red'
     },
 
     embeddedSwitch: {

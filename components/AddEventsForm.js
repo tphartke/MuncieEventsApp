@@ -1,10 +1,11 @@
 import React, {Component} from 'react';  
-import {View, Platform, Text, Picker, TextInput, Modal, DatePickerAndroid, TimePickerAndroid, DatePickerIOS, FlatList, Switch, ScrollView, AsyncStorage} from 'react-native';
+import {View, Platform, Text, Picker, TextInput, Modal, DatePickerAndroid, TimePickerAndroid, DatePickerIOS, FlatList, Switch, ScrollView, AsyncStorage, Linking} from 'react-native';
 import Styles from '../pages/Styles';
 import APICacher from '../APICacher'
 import CustomButton from '../pages/CustomButton';
 import LoadingScreen from "./LoadingScreen";
-import InternetError from '../components/InternetError';
+import InternetError from './InternetError';
+import DateAndTimeParser from '../DateAndTimeParser'
 
 export default class AddEventsForm extends Component{
     constructor(props){
@@ -218,16 +219,40 @@ export default class AddEventsForm extends Component{
 
     getAndroidTimeFields(){
         if(Platform.OS == "android"){
+            isRequired = this.getIsRequiredNotification();
             return(
-                <View style={Styles.formRow}>
-                    <Text style ={Styles.formLabel}>Time </Text>
-                    <CustomButton 
-                        buttonStyle={Styles.mediumButtonStyle}
-                        textStyle={Styles.mediumButtonTextStyle}
-                        text="Select Time"
-                        onPress = {() => this.getAndroidTimePicker()}
-                    />
+                <View>
+                    <View style={Styles.formRow}>
+                        <Text style ={Styles.formLabel}>Start Time {isRequired}</Text>
+                        <CustomButton 
+                            buttonStyle={Styles.mediumButtonStyle}
+                            textStyle={Styles.mediumButtonTextStyle}
+                            text="Select Time"
+                            onPress = {() => this.getAndroidTimePicker(true)}
+                        />
+                    </View>
+                    <View style={Styles.formRow}>
+                        <Text style ={Styles.formLabel}>End Time </Text>
+                        <View style={{flexDirection:"row"}}>
+                            <CustomButton 
+                                buttonStyle={Styles.mediumButtonStyle}
+                                textStyle={Styles.mediumButtonTextStyle}
+                                text="Select Time"
+                                onPress = {() => this.getAndroidTimePicker(false)}
+                            />
+                            {/*slight padding for buttons*/}
+                            <Text>   </Text>
+                            <CustomButton
+                                text="Clear Time"
+                                buttonStyle={Styles.mediumButtonStyle}
+                                textStyle={Styles.mediumButtonTextStyle}
+                                onPress = {() => this.setState({endTime: null})}           
+                            />
+                        </View>
+                        
+                    </View>
                 </View>
+                
             );
         }
         else{
@@ -238,7 +263,7 @@ export default class AddEventsForm extends Component{
         }
     }
 
-    async getAndroidTimePicker(){
+    async getAndroidTimePicker(isStartTime){
         try {
             const {action, hour, minute} = await TimePickerAndroid.open({
               hour: 12,
@@ -257,8 +282,19 @@ export default class AddEventsForm extends Component{
                     hour -= 12
                     modifier = "PM"
                 }
+                else if(hour == 0){
+                    hour = 12
+                }
+                else if(hour == 12){
+                    modifier = "PM"
+                }
                 time = hour + ":" + minute + ":" + "00 " + modifier
-                this.setState({startTime: time})
+                if(isStartTime){
+                    this.setState({startTime: time})
+                }
+                else{
+                    this.setState({endTime: time})
+                }
             }
           } catch ({code, message}) {
             console.warn('Cannot open time picker', message);
@@ -270,6 +306,7 @@ export default class AddEventsForm extends Component{
         highlightedDate = new Date()
         highlightedStartTime = new Date()
         highlightedEndTime = new Date()
+        isRequired = this.getIsRequiredNotification();
         return(
             <Modal
                 animationType ="slide"
@@ -279,7 +316,7 @@ export default class AddEventsForm extends Component{
                     console.log("Modal has been closed")
             }}>
                 <ScrollView style={{paddingTop: 10}}>
-                    <Text style={Styles.title}>Date:</Text>
+                    <Text style={Styles.title}>Date </Text>
                     <View style = {[{borderColor:'black', borderRadius: 10, borderWidth: 1}]}>
                         <DatePickerIOS 
                             date={this.state.chosenDate}
@@ -290,7 +327,7 @@ export default class AddEventsForm extends Component{
                             itemStyle={{height:50}}
                         />
                     </View>
-                    <Text style={Styles.title}>Start Time:</Text>
+                    <Text style={Styles.title}>Start Time {isRequired}</Text>
                     <View style = {[{borderColor:'black', borderRadius: 10, borderWidth: 1}]}>
                         <DatePickerIOS 
                             date={new Date()}
@@ -301,7 +338,7 @@ export default class AddEventsForm extends Component{
                             itemStyle={{height:50}}
                         />
                     </View>
-                    <Text style={Styles.title}>End Time:</Text>
+                    <Text style={Styles.title}>End Time </Text>
                     <View style = {[{borderColor:'black', borderRadius: 10, borderWidth: 1}]}>
                         <DatePickerIOS 
                             date={new Date()}
@@ -362,6 +399,59 @@ export default class AddEventsForm extends Component{
         console.log("Event: " + this.state.event)
     }
 
+    getIsRequiredNotification(){
+        return(
+            <Text style={Styles.requiredField}>*Required</Text>
+        );
+    }
+
+    getDateAndTimes(){
+        formattedDate = ""
+        chosenDate = this.state.chosenDate
+        if(chosenDate){
+            formattedDate = this.getFormattedDate(chosenDate)
+        }
+        startTime = this.state.startTime
+        if(startTime){
+            const startTimeFormatted = this.formatTimeForAPI(startTime).toUpperCase().replace("A", " A").replace("P", " P");
+            startTime = startTimeFormatted + " "
+        }
+        else{
+            startTime = ""
+        }
+        endTime = this.state.endTime
+        if(endTime){
+            const endTimeFormatted = this.formatTimeForAPI(endTime).toUpperCase();
+            endTime = "to " + endTimeFormatted
+        }
+        else{
+            endTime = ""
+        }
+        return formattedDate + startTime + endTime
+    }
+
+    getFormattedDate(chosenDate){
+        this.DateAndTimeParser = new DateAndTimeParser();
+        monthNumber = chosenDate.getMonth() + 1
+        monthNumberString = ""
+        if(monthNumber < 10){
+            monthNumberString = "0" + monthNumber
+        }
+        else{
+            monthNumberString = "" + monthNumber
+        }
+        chosenMonth = this.DateAndTimeParser.getShorthandMonthByNumber(monthNumberString);
+        
+        dayNumber = chosenDate.getDate()
+        daySuffix = this.DateAndTimeParser.deriveDayNumberSuffix(dayNumber);
+        return chosenMonth + " " + dayNumber + daySuffix + " "
+    }
+
+    goToWebsite(){
+        url = "https://muncieevents.com/events/add"
+        Linking.openURL(url)
+    }
+
     render(){
 
         if(this.state.isLoading){;
@@ -388,23 +478,25 @@ export default class AddEventsForm extends Component{
             IOSDatePickerModal = this.getIOSDatePicker();
             androidTimePicker = this.getAndroidTimeFields();
             tagListModal = this.getTagListModal();
+            required = this.getIsRequiredNotification();
+            dateAndTimes = this.getDateAndTimes();
             return(
                     <View style={{flex:1}}>
                         {IOSDatePickerModal}
                         {tagListModal}
                         <View style={Styles.formRow}>
-                            <Text style={Styles.formLabel}>Title <Text style={Styles.requiredField}>*required</Text></Text>
+                            <Text style={Styles.formLabel}>Title {required}</Text>
                             <TextInput               
                                 onChangeText={(event) => this.setState({event})}
                                 style={[Styles.textBox, Styles.formEntry]}
                             />
                         </View>
                         <View style={Styles.formRow}>
-                            <Text style={Styles.formLabel}>Category <Text style={Styles.requiredField}>*required</Text></Text>
+                            <Text style={Styles.formLabel}>Category {required}</Text>
                             {this.getCategoryPicker()}
                         </View>
                         <View style={Styles.formRow}>
-                            <Text style={Styles.formLabel}>Date <Text style={Styles.requiredField}>*required</Text></Text>
+                            <Text style={Styles.formLabel}>Date {required}</Text>
                             <CustomButton
                                 text="Select Date"
                                 buttonStyle={[Styles.mediumButtonStyle]}
@@ -413,9 +505,12 @@ export default class AddEventsForm extends Component{
                             />
                         </View>
                         {androidTimePicker}
+                        <View style={Styles.formRow}>
+                            <Text style={Styles.formEntry}>{dateAndTimes}</Text>
+                        </View>
 
                         <View style={Styles.formRow}>
-                            <Text style={Styles.formLabel}>Location <Text style={Styles.requiredField}>*required</Text></Text>
+                            <Text style={Styles.formLabel}>Location {required}</Text>
                             <TextInput               
                                 onChangeText={(location) => this.setState({location})}
                                 style={[Styles.textBox, Styles.formEntry]}
@@ -437,7 +532,7 @@ export default class AddEventsForm extends Component{
                             />
                         </View>
                         <View style={Styles.formRow}>
-                            <Text style={Styles.formLabel}>Description <Text style={Styles.requiredField}>*required</Text></Text>
+                            <Text style={Styles.formLabel}>Description {required}</Text>
                             <TextInput               
                                 onChangeText={(description) => this.setState({description})}
                                 style={[Styles.textArea, Styles.formEntry]}
@@ -455,7 +550,7 @@ export default class AddEventsForm extends Component{
                         </View>
                         <View style={Styles.formRow}>
                             <Text style={Styles.formLabel}>Chosen Tags </Text>
-                            <Text style={Styles.formEntry}>{this.state.selectedTagArray.toString()}</Text>
+                            <Text style={Styles.formEntry}>{this.state.selectedTagArray.toString().replace(/,/gi , ", ")}</Text>
                         </View>
                         <View style = {Styles.formRow}>
                             <Text style={Styles.formLabel}>Cost </Text>
@@ -479,6 +574,16 @@ export default class AddEventsForm extends Component{
                                 onChangeText={(source) => this.setState({source})}
                                 style={[Styles.textBox, Styles.formEntry]}
                                 placeholder = "Did you get this information from a website, newspaper, flyer, etc?"
+                            />
+                        </View>
+                        <View style={Styles.formRow}>
+                            <Text style={Styles.formLabel}>Images </Text>
+                            <Text style={Styles.formEntry}>Unfortunately, our app does not support uploading images. If you would like to add an image to your event, please use the MuncieEvents website instead.</Text>
+                            <CustomButton
+                                text="Visit MuncieEvents.com"
+                                buttonStyle = {Styles.longButtonStyle}
+                                textStyle = {Styles.longButtonTextStyle}
+                                onPress={() => this.goToWebsite()}
                             />
                         </View>
                         <View style={Styles.formRow}>
