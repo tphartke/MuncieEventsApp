@@ -29,7 +29,8 @@ export default class MailingList extends React.Component {
                         subscriptionStatus: "",
                         subscribed: false,
                         statusMessage: "",
-                        changesMade: false
+                        changesMade: false,
+                        failedToLoad: false
                      })
         this.APICacher = new APICacher();
         categories = []
@@ -40,9 +41,10 @@ export default class MailingList extends React.Component {
     }
 
     render(){
-        console.log("Render")
-        console.log(this.state.category_ids)
         mainView = null
+        if(this.state.failedToLoad){
+            mainView = this.getErrorView()
+        }
         if(this.state.isLoading){
             mainView = this.getLoadingScreen()
         }
@@ -70,6 +72,14 @@ export default class MailingList extends React.Component {
             <LoadingScreen/>
           </View>
         );
+      }
+
+      getErrorView(){
+        return(
+                <InternetError onRefresh={()=> {
+                    this.setState({failedToLoad: false,subscribed: false, isLoading:true})
+                }}/>
+        )
       }
 
     getMailingList(){
@@ -241,7 +251,6 @@ export default class MailingList extends React.Component {
 
     getCategorySwitch(category){
         isCategoryAlreadySelected = this.isInSelectedCategoryList(category[1])
-        console.log(isCategoryAlreadySelected)
         return(
             <View style={{flexDirection: 'row'}}>
                 <Switch
@@ -304,7 +313,7 @@ export default class MailingList extends React.Component {
           this.determineUserSubscription(responseJson)
         })
         .catch((error) =>{
-            console.log(error)
+            this.setState({failedToLoad:true})
         })
     }
 
@@ -346,12 +355,24 @@ export default class MailingList extends React.Component {
     }
     
     signUpOrUpdate(){
-        if(this.state.subscribed){
+        if(!this.isValidEmail(this.state.email)){
+            this.setState({statusMessage: "Please enter a valid email"})
+        }
+        else if(!this.state.weekly && !this.state.daily && !this.state.daily_mon && !this.state.daily_tue && !this.state.daily_wed
+                && !this.state.daily_thu && !this.state.daily_fri && !this.state.daily_sat){
+                    this.setState({statusMessage: "At least one frequency must be selected"})
+        }
+        else if(!this.state.all_categories && this.state.category_ids.length == 0){
+            this.setState({statusMessage: "At least one event category must be selected"})
+        }
+        else{
+            if(this.state.subscribed){
             this.updateMailingList()
         }
         else{
             this.signUpToMailingList()
         }
+    }
     }
 
     signUpToMailingList(){
@@ -376,11 +397,10 @@ export default class MailingList extends React.Component {
               daily_sat: this.state.daily_sat,
           })
       })
-      .then(() => {
-        this.setState({changesMade: true, statusMessage: "You are now subscribed to the mailing list."})
-      })
+      .then((response) => console.log(response))
+      .then((responseJson) => this.handelResponse("subscribe", responseJson))
         .catch((error) =>{
-           console.log(error)
+            this.setState({failedToLoad:true})
         })
     }
 
@@ -406,11 +426,10 @@ export default class MailingList extends React.Component {
               daily_sat: this.state.daily_sat,
           })
       })
-      .then(() => {
-        this.setState({changesMade: true, statusMessage: "Mailing list preferences updated"})
-      })
+      .then((response) => console.log(response))
+      .then((responseJson) => this.handelResponse("update", responseJson))
         .catch((error) =>{
-           console.log(error)
+            this.setState({failedToLoad:true})
         })
     }
 
@@ -422,12 +441,30 @@ export default class MailingList extends React.Component {
             'Content-Type': 'application/json',
             },
       })
-      .then(() => {
-        this.setState({changesMade: true, statusMessage: "You have been unsubscribed from the mailing list"})
-      })
+      .then((response) => console.log(response))
+      .then((responseJson) => this.handelResponse("delete", responseJson))
         .catch((error) =>{
-           console.log(error)
+            this.setState({failedToLoad:true})
         })
+    }
+
+    handelResponse(responseType, responseJson){
+        console.log("A")
+        console.log(responseJson)
+        try{
+            this.setState({statusMessage: responseJson.errors[0].detail})
+        }
+        catch(error){
+            if(responseType == "subscribe"){
+                this.setState({changesMade: true, statusMessage: "You are now subscribed to the mailing list."})
+            }
+            else if(responseType == "delete"){
+                this.setState({changesMade: true, statusMessage: "You have been unsubscribed from the mailing list"})
+            }
+            else{
+                this.setState({changesMade: true, statusMessage: "Mailing list preferences updated"})
+            }
+        }
     }
 
     isValidEmail(email){
