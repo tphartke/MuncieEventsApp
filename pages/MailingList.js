@@ -4,6 +4,7 @@ import Styles from './Styles'
 import CustomButton from './CustomButton';
 import LoadingScreen from '../components/LoadingScreen';
 import APICacher from '../APICacher'
+import InternetError from '../components/InternetError';
 
 export default class MailingList extends React.Component {
     constructor(props){
@@ -26,20 +27,27 @@ export default class MailingList extends React.Component {
                         customCategories: false,
                         isLoading: true,
                         subscriptionStatus: "",
-                        subscribed: false
+                        subscribed: false,
+                        statusMessage: "",
+                        changesMade: false
                      })
         this.APICacher = new APICacher();
         categories = []
     }
 
     componentDidMount(){
-        this._fetchCategoryData()
+        this._fetchCategoryAndSubscriptionData()
     }
 
     render(){
+        console.log("Render")
+        console.log(this.state.category_ids)
         mainView = null
         if(this.state.isLoading){
             mainView = this.getLoadingScreen()
+        }
+        else if(this.state.changesMade){
+            mainView = this.getFinishedView()
         }
         else{
             mainView = this.getMailingList()
@@ -52,6 +60,10 @@ export default class MailingList extends React.Component {
 
     }
 
+    getFinishedView(){
+        return(<Text>{this.state.statusMessage}</Text>)
+    }
+
     getLoadingScreen(){
         return(
           <View>
@@ -61,7 +73,6 @@ export default class MailingList extends React.Component {
       }
 
     getMailingList(){
-        this.getMailingListInformation()
         customFrequencyOptions = null
         customEventOptions = null
         if(this.state.customFrequency){
@@ -72,8 +83,10 @@ export default class MailingList extends React.Component {
         }
         return(
         <ScrollView style={Styles.mailingListScrollView}>
+            <Text>{this.state.subscriptionStatus}</Text>
             <Text style={Styles.title}>Email</Text>
             <TextInput
+                value={this.state.email}
                 onChangeText={(email) => this.setState({email})}
                 style={Styles.textBox}
                 placeholder="Email"
@@ -118,9 +131,16 @@ export default class MailingList extends React.Component {
                 <Text>Custom</Text>
             </View>
             {customEventOptions}
+            <Text>{this.state.statusMessage}</Text>
             <CustomButton 
                     text="Update Settings" 
-                    onPress={()=>{}} 
+                    onPress={()=>{this.signUpOrUpdate()}} 
+                    buttonStyle={Styles.longButtonStyle}
+                    textStyle={Styles.longButtonTextStyle}
+                />
+            <CustomButton 
+                    text="Unsubscribe From Mailing List" 
+                    onPress={()=>{this.unsubscribeFromMailingList()}} 
                     buttonStyle={Styles.longButtonStyle}
                     textStyle={Styles.longButtonTextStyle}
                 />
@@ -220,7 +240,8 @@ export default class MailingList extends React.Component {
     }
 
     getCategorySwitch(category){
-        isCategoryAlreadySelected = this.isInSelectedCategoryList(category)
+        isCategoryAlreadySelected = this.isInSelectedCategoryList(category[1])
+        console.log(isCategoryAlreadySelected)
         return(
             <View style={{flexDirection: 'row'}}>
                 <Switch
@@ -232,14 +253,14 @@ export default class MailingList extends React.Component {
         );
     }
 
-    isInSelectedCategoryList(category){
+    isInSelectedCategoryList(id){
         selectedCategoryList = this.state.category_ids
-        return selectedCategoryList.includes(category[1])
+        return selectedCategoryList.includes(id)
     }
 
     updateSelectedCategoryList(category){
         selectedCategoryList = this.state.category_ids
-        categoryNeedsRemoved = this.isInSelectedCategoryList(category)
+        categoryNeedsRemoved = this.isInSelectedCategoryList(category[1])
         if(categoryNeedsRemoved){
             index = selectedCategoryList.indexOf(category[1])
             selectedCategoryList.splice(index, 1)
@@ -247,17 +268,16 @@ export default class MailingList extends React.Component {
         else{
             selectedCategoryList.push(category[1])
         }
-        console.log(selectedCategoryList)
         this.setState({category_ids: selectedCategoryList})
     }
 
-    async _fetchCategoryData(){
+    async _fetchCategoryAndSubscriptionData(){
         key = "Categories"
         url = "https://api.muncieevents.com/v1/categories?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ"
         await this._refreshData(key, url)
         this.categories = await this.APICacher._getJSONFromStorage(key)
         this.categories = this.categories.map((category) => {return [category.attributes.name, category.id]})
-        this.setState({isLoading:false, userToken: this.props.userToken})
+        this.getMailingListInformation()
       }  
 
       async _refreshData(key, url){
@@ -278,10 +298,10 @@ export default class MailingList extends React.Component {
     }
 
     getMailingListInformation(){
-        fetch("https://api.muncieevents.com/v1/mailing-list/subscription?userToken=" + this.state.userToken + "&apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ")
+        fetch("https://api.muncieevents.com/v1/mailing-list/subscription?userToken=" + this.props.userToken + "&apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ")
         .then((response) => response.json())
         .then((responseJson) => {
-          console.log(responseJson)
+          this.determineUserSubscription(responseJson)
         })
         .catch((error) =>{
             console.log(error)
@@ -290,23 +310,124 @@ export default class MailingList extends React.Component {
 
     determineUserSubscription(responseJson){
         if(responseJson.data){
-            this.setState({subscriptionStatus: "You are subscribed to the mailing list. Your current settings are shown below.", subscribed: true})
+            data = responseJson.data.attributes
+            currentCategoryIDs = this.getSelectedCategories(responseJson)
+            customEventsIsSelected = false
+            if(currentCategoryIDs.length < 10){
+                customEventsIsSelected = true
+            }
+            customFrequencyIsSelected = false
+            dailyIsSelected = false
+            if(data.daily_mon && data.daily_tue && data.daily_wed && data.daily_thu && data.daily_fri && data.daily_sat && data.daily_sun){
+                dailyIsSelected = true
+            }
+            else if(data.daily_mon || data.daily_tue || data.daily_wed || data.daily_thu || data.daily_fri || data.daily_sat || data.daily_sun){
+                customFrequencyIsSelected = true
+            }
+            this.setState({subscriptionStatus: "You are subscribed to the mailing list. Your current settings are shown below.", subscribed: true, 
+                            isLoading:false, userToken: this.props.userToken, all_categories: data.all_categories, daily_fri: data.daily_fri, 
+                            daily_mon: data.daily_mon, daily_sat: data.daily_sat, daily_sun: data.daily_sun, daily_thu: data.daily_thu, 
+                            daily_tue: data.daily_tue, daily_wed: data.daily_wed, category_ids: currentCategoryIDs, 
+                            weekly: data.weekly, customEvents: customEventsIsSelected, customFrequency: customFrequencyIsSelected,
+                            daily: dailyIsSelected, email: data.email})
         }
         else{
-            this.setState({subscriptionStatus: "You are not subscribed to the mailing list."})
+            this.setState({subscriptionStatus: "You are not subscribed to the mailing list.", isLoading:false, userToken: this.props.userToken})
+        }
+    }
+
+    getSelectedCategories(responseJson){
+        selectedCategories = []
+        givencategories = responseJson.data.relationships.categories.data
+        givencategories.forEach(function(category){
+            selectedCategories.push(category.id)
+        })
+        return selectedCategories
+    }
+    
+    signUpOrUpdate(){
+        if(this.state.subscribed){
+            this.updateMailingList()
+        }
+        else{
+            this.signUpToMailingList()
         }
     }
 
     signUpToMailingList(){
-
+        fetch("https://api.muncieevents.com/v1/mailing-list/subscribe?userToken=" + this.state.userToken + "&apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ", 
+          {method: "POST",
+          headers: {
+            Accept: 'application/vnd.api+json',
+            'Content-Type': 'application/json',
+            },
+          body: JSON.stringify({
+              email: this.state.email, 
+              all_categories: this.state.all_categories,
+              category_ids: this.state.category_ids,
+              weekly: this.state.weekly,
+              daily: this.state.daily,
+              daily_sun: this.state.daily_sun,
+              daily_mon: this.state.daily_mon,
+              daily_tue: this.state.daily_tue,
+              daily_wed: this.state.daily_wed,
+              daily_thu: this.state.daily_thu,
+              daily_fri: this.state.daily_fri,
+              daily_sat: this.state.daily_sat,
+          })
+      })
+      .then(() => {
+        this.setState({changesMade: true, statusMessage: "You are now subscribed to the mailing list."})
+      })
+        .catch((error) =>{
+           console.log(error)
+        })
     }
 
     updateMailingList(){
-
+        fetch("https://api.muncieevents.com/v1/mailing-list/subscription?userToken=" + this.state.userToken + "&apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ", 
+          {method: "PUT",
+          headers: {
+            Accept: 'application/vnd.api+json',
+            'Content-Type': 'application/json',
+            },
+          body: JSON.stringify({
+              email: this.state.email, 
+              all_categories: this.state.all_categories,
+              category_ids: this.state.category_ids,
+              weekly: this.state.weekly,
+              daily: this.state.daily,
+              daily_sun: this.state.daily_sun,
+              daily_mon: this.state.daily_mon,
+              daily_tue: this.state.daily_tue,
+              daily_wed: this.state.daily_wed,
+              daily_thu: this.state.daily_thu,
+              daily_fri: this.state.daily_fri,
+              daily_sat: this.state.daily_sat,
+          })
+      })
+      .then(() => {
+        this.setState({changesMade: true, statusMessage: "Mailing list preferences updated"})
+      })
+        .catch((error) =>{
+           console.log(error)
+        })
     }
 
     unsubscribeFromMailingList(){
-
+        fetch("https://api.muncieevents.com/v1/mailing-list/subscription?userToken=" + this.state.userToken + "&apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ", 
+          {method: "DELETE",
+          headers: {
+            Accept: 'application/vnd.api+json',
+            'Content-Type': 'application/json',
+            },
+      })
+      .then(() => {
+        this.setState({changesMade: true, statusMessage: "You have been unsubscribed from the mailing list"})
+      })
+        .catch((error) =>{
+           console.log(error)
+        })
     }
 
     isValidEmail(email){
