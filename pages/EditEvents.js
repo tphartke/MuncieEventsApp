@@ -5,6 +5,7 @@ import APICacher from '../APICacher'
 import CustomButton from './CustomButton';
 import LoadingScreen from "../components/LoadingScreen";
 import InternetError from '../components/InternetError';
+import DateAndTimeParser from '../DateAndTimeParser'
 
 export default class EditEvents extends React.Component {
     constructor(props){
@@ -263,9 +264,10 @@ export default class EditEvents extends React.Component {
 
 
   getIOSDatePicker(){
-      highlightedDate = new Date()
-      highlightedStartTime = new Date()
-      highlightedEndTime = new Date()
+      highlightedDate = this.state.chosenDate
+      highlightedStartTime = this.state.startTime
+      highlightedEndTime = this.state.endTime
+      isRequired = this.getIsRequiredNotification();
       return(
           <Modal
               animationType ="slide"
@@ -275,7 +277,7 @@ export default class EditEvents extends React.Component {
                   console.log("Modal has been closed")
           }}>
               <ScrollView style={{paddingTop: 10}}>
-                  <Text style={Styles.title}>Date:</Text>
+                  <Text style={Styles.title}>Date: {isRequired}</Text>
                   <View style = {[{borderColor:'black', borderRadius: 10, borderWidth: 1}]}>
                       <DatePickerIOS 
                           date={this.state.chosenDate}
@@ -286,7 +288,7 @@ export default class EditEvents extends React.Component {
                           itemStyle={{height:50}}
                       />
                   </View>
-                  <Text style={Styles.title}>Start Time:</Text>
+                  <Text style={Styles.title}>Start Time: {isRequired}</Text>
                   <View style = {[{borderColor:'black', borderRadius: 10, borderWidth: 1}]}>
                       <DatePickerIOS 
                           date={this.state.startTime}
@@ -314,6 +316,15 @@ export default class EditEvents extends React.Component {
                       buttonStyle={Styles.longButtonStyle}
                       textStyle={Styles.longButtonTextStyle}
                       onPress = {() => {
+                          if(!this.highlightedDate){
+                                this.highlightedDate = this.state.chosenDate
+                          }
+                          if(!this.highlightedStartTime){
+                            this.highlightedStartTime = this.state.startTime
+                          }
+                          if(!this.highlightedEndTime){
+                            this.highlightedEndTime = this.state.endTime
+                          }
                           this.setState({chosenDate: this.highlightedDate, startTime: this.highlightedStartTime, endTime: this.highlightedEndTime, IOSModalVisible: false})
                   }}/>
                   {/*cancel button*/}
@@ -328,6 +339,7 @@ export default class EditEvents extends React.Component {
           </Modal>
       );
   }
+  
 
   async getAndroidDatePicker(){
       try {
@@ -358,6 +370,9 @@ export default class EditEvents extends React.Component {
   }
 
   render(){
+      console.log("Date:" + this.state.chosenDate)
+      console.log("Start Time: " + this.state.endTime)
+      console.log("End Time: " + this.state.endTime)
       if(this.state.isLoading){;
           return(
           <View>
@@ -382,12 +397,14 @@ export default class EditEvents extends React.Component {
           IOSDatePickerModal = this.getIOSDatePicker();
           androidTimePicker = this.getAndroidTimeFields();
           tagListModal = this.getTagListModal();
+          required = this.getIsRequiredNotification();
+          dateAndTimes = this.getDateAndTimes();
           return(
                   <View style={{flex:1}}>
                       {IOSDatePickerModal}
                       {tagListModal}
                       <View style={Styles.formRow}>
-                          <Text style={Styles.formLabel}>Title <Text style={Styles.requiredField}>*required</Text></Text>
+                          <Text style={Styles.formLabel}>Title {required}</Text>
                           <TextInput    
                               value={this.state.event}           
                               onChangeText={(event) => this.setState({event})}
@@ -395,11 +412,11 @@ export default class EditEvents extends React.Component {
                           />
                       </View>
                       <View style={Styles.formRow}>
-                          <Text style={Styles.formLabel}>Category <Text style={Styles.requiredField}>*required</Text></Text>
+                          <Text style={Styles.formLabel}>Category {required}</Text>
                           {this.getCategoryPicker()}
                       </View>
                       <View style={Styles.formRow}>
-                          <Text style={Styles.formLabel}>Date <Text style={Styles.requiredField}>*required</Text></Text>
+                          <Text style={Styles.formLabel}>Date {required}</Text>
                           <CustomButton
                               text="Select Date"
                               buttonStyle={[Styles.mediumButtonStyle]}
@@ -409,13 +426,10 @@ export default class EditEvents extends React.Component {
                       </View>
                       {androidTimePicker}
                       <View style={Styles.formRow}>
-                          <Text>Date of Event: {this.state.chosenDate.toString()}</Text>
+                            <Text style={Styles.formEntry}>{dateAndTimes}</Text>
                       </View>
                       <View style={Styles.formRow}>
-                          <Text>Start Time: {this.state.startTime.toString()}</Text>
-                      </View>
-                      <View style={Styles.formRow}>
-                          <Text style={Styles.formLabel}>Location <Text style={Styles.requiredField}>*required</Text></Text>
+                          <Text style={Styles.formLabel}>Location {required}</Text>
                           <TextInput
                               value={this.state.location}                
                               onChangeText={(location) => this.setState({location})}
@@ -441,7 +455,7 @@ export default class EditEvents extends React.Component {
                           />
                       </View>
                       <View style={Styles.formRow}>
-                          <Text style={Styles.formLabel}>Description <Text style={Styles.requiredField}>*required</Text></Text>
+                          <Text style={Styles.formLabel}>Description {required}</Text>
                           <TextInput     
                               value={this.state.description}          
                               onChangeText={(description) => this.setState({description})}
@@ -490,6 +504,16 @@ export default class EditEvents extends React.Component {
                           />
                       </View>
                       <View style={Styles.formRow}>
+                            <Text style={Styles.formLabel}>Images </Text>
+                            <Text style={Styles.formEntry}>Unfortunately, our app does not support uploading images. If you would like to add an image to your event, please use the MuncieEvents website instead.</Text>
+                            <CustomButton
+                                text="Visit MuncieEvents.com"
+                                buttonStyle = {Styles.longButtonStyle}
+                                textStyle = {Styles.longButtonTextStyle}
+                                onPress={() => this.goToWebsite()}
+                            />
+                        </View>
+                      <View style={Styles.formRow}>
                           <CustomButton
                               text="Submit"
                               buttonStyle={Styles.longButtonStyle}
@@ -504,8 +528,10 @@ export default class EditEvents extends React.Component {
   }
 
    async setStatesForEventData(){
+    getChosenDate = new Date(this.event.attributes.date)
+    getChosenDate.setDate(getChosenDate.getDate() + 1);
     this.setState({
-        chosenDate: new Date(this.event.attributes.date),
+        chosenDate: getChosenDate,
         startTime: new Date(this.event.attributes.time_start),
         endTime: new Date(this.event.attributes.time_end),
         selectedTagArray: this.getTags(),
@@ -612,4 +638,86 @@ export default class EditEvents extends React.Component {
           this.setState({statusMessage: "Event successfully updated!", eventUpdated: true})
       }
   }
+
+  goToWebsite(){
+    url = "https://muncieevents.com/events/add"
+    Linking.openURL(url)
+}
+
+getDateAndTimes(){
+    formattedDate = ""
+    chosenDate = this.state.chosenDate
+    if(chosenDate){
+        formattedDate = this.getFormattedDate(chosenDate)
+    }
+    ampm = this.state.startTime.getHours() >= 12 ? 'pm' : 'am';
+    hours = this.state.startTime.getHours() % 12
+    if(hours == 0){
+        hours = 12
+    }
+    if(this.state.startTime.getMinutes() < 10){
+        minutes = '0' + this.state.startTime.getMinutes().toString()
+    }
+    else{
+        minutes = this.state.startTime.getMinutes().toString() 
+    }
+    startTime = hours + ':' + minutes + ':' + this.state.startTime.getSeconds() + ' ' + ampm
+    if(startTime){
+        const startTimeFormatted = this.formatTimeForAPI(startTime).toUpperCase().replace("A", " A").replace("P", " P");
+        startTime = startTimeFormatted + " "
+    }
+    else{
+        startTime = ""
+    }
+    if(this.state.endTime){
+        ampm = this.state.endTime.getHours() >= 12 ? 'pm' : 'am';
+        hours = this.state.endTime.getHours() % 12
+        if(hours == 0){
+            hours = 12
+        }
+        if(this.state.endTime.getMinutes() < 10){
+            minutes = '0' + this.state.endTime.getMinutes().toString()
+        }
+        else{
+            minutes = this.state.endTime.getMinutes().toString() 
+        }
+        endTime = hours + ':' + minutes + ':' + this.state.endTime.getSeconds() + ' ' + ampm
+        const endTimeFormatted = this.formatTimeForAPI(endTime).toUpperCase().replace("A", " A").replace("P", " P");
+        endTime = "to " + endTimeFormatted
+    }
+    else{
+        endTime = ""
+    }
+    return formattedDate + startTime + endTime
+}
+
+getFormattedDate(chosenDate){
+    this.DateAndTimeParser = new DateAndTimeParser();
+    monthNumber = chosenDate.getMonth() + 1
+    monthNumberString = ""
+    if(monthNumber < 10){
+        monthNumberString = "0" + monthNumber
+    }
+    else{
+        monthNumberString = "" + monthNumber
+    }
+    chosenMonth = this.DateAndTimeParser.getShorthandMonthByNumber(monthNumberString);
+    
+    dayNumber = chosenDate.getDate()
+    daySuffix = this.DateAndTimeParser.deriveDayNumberSuffix(dayNumber);
+    return chosenMonth + " " + dayNumber + daySuffix + " "
+}
+
+formatTimeForAPI(time){
+    console.log(time)
+    splitTime = time.split(':')
+    timeampm = splitTime[2].split(' ')[1]
+    return splitTime[0]+':'+splitTime[1]+timeampm.toLowerCase()
+}
+
+getIsRequiredNotification(){
+    return(
+        <Text style={Styles.requiredField}>*Required</Text>
+    );
+}
 }

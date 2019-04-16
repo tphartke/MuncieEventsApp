@@ -96,8 +96,7 @@ export default class AddEventsForm extends Component{
                 >
                     {categorylist}
                 </Picker>
-            </View>
-            
+            </View> 
         );
     }
 
@@ -114,7 +113,6 @@ export default class AddEventsForm extends Component{
                 {tagFlatList}
             </Modal>
         );
-
     }
 
     getSelectableTagsList(){
@@ -175,10 +173,9 @@ export default class AddEventsForm extends Component{
                         }
                     />
                 </View>
-                
             </View>
         );
-    }s
+    }
 
     getSelectableTag(tag){
         isTagAlreadySelected = this.isInSelectedTagList(tag)
@@ -248,8 +245,7 @@ export default class AddEventsForm extends Component{
                                 textStyle={Styles.mediumButtonTextStyle}
                                 onPress = {() => this.setState({endTime: null})}           
                             />
-                        </View>
-                        
+                        </View>  
                     </View>
                 </View>
                 
@@ -316,7 +312,7 @@ export default class AddEventsForm extends Component{
                     console.log("Modal has been closed")
             }}>
                 <ScrollView style={{paddingTop: 10}}>
-                    <Text style={Styles.title}>Date </Text>
+                    <Text style={Styles.title}>Date {isRequired}</Text>
                     <View style = {[{borderColor:'black', borderRadius: 10, borderWidth: 1}]}>
                         <DatePickerIOS 
                             date={this.state.chosenDate}
@@ -355,6 +351,15 @@ export default class AddEventsForm extends Component{
                         buttonStyle={Styles.longButtonStyle}
                         textStyle={Styles.longButtonTextStyle}
                         onPress = {() => {
+                            if(!this.highlightedDate){
+                                this.highlightedDate = this.state.chosenDate
+                          }
+                          if(!this.highlightedStartTime){
+                            this.highlightedStartTime = this.state.startTime
+                          }
+                          if(!this.highlightedEndTime){
+                            this.highlightedEndTime = this.state.endTime
+                          }
                             this.setState({chosenDate: this.highlightedDate, startTime: this.highlightedStartTime.toLocaleTimeString(), endTime: this.highlightedEndTime.toLocaleTimeString(), IOSModalVisible: false})
                     }}/>
                     {/*cancel button*/}
@@ -453,7 +458,6 @@ export default class AddEventsForm extends Component{
     }
 
     render(){
-
         if(this.state.isLoading){;
             return(
             <View>
