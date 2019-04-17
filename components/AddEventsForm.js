@@ -351,16 +351,24 @@ export default class AddEventsForm extends Component{
                         buttonStyle={Styles.longButtonStyle}
                         textStyle={Styles.longButtonTextStyle}
                         onPress = {() => {
+                            start = this.highlightedStartTime
+                            end = this.highlightedEndTime
                             if(!this.highlightedDate){
                                 this.highlightedDate = this.state.chosenDate
-                          }
-                          if(!this.highlightedStartTime){
-                            this.highlightedStartTime = this.state.startTime
-                          }
-                          if(!this.highlightedEndTime){
-                            this.highlightedEndTime = this.state.endTime
-                          }
-                            this.setState({chosenDate: this.highlightedDate, startTime: this.highlightedStartTime.toLocaleTimeString(), endTime: this.highlightedEndTime.toLocaleTimeString(), IOSModalVisible: false})
+                            }
+                            if(!this.highlightedStartTime){
+                                start = this.state.startTime
+                            }
+                            if(!this.highlightedEndTime){
+                                end = this.state.endTime
+                            }
+                            if(this.highlightedStartTime){
+                                start = this.highlightedStartTime.toLocaleTimeString()
+                            }
+                            if(this.highlightedEndTime){
+                                end = this.highlightedEndTime.toLocaleTimeString()
+                            }
+                            this.setState({chosenDate: this.highlightedDate, startTime: start, endTime: end, IOSModalVisible: false})
                     }}/>
                     {/*cancel button*/}
                     <CustomButton
@@ -449,7 +457,7 @@ export default class AddEventsForm extends Component{
         
         dayNumber = chosenDate.getDate()
         daySuffix = this.DateAndTimeParser.deriveDayNumberSuffix(dayNumber);
-        return chosenMonth + " " + dayNumber + daySuffix + " "
+        return chosenMonth + " " + dayNumber + daySuffix + ", " + chosenDate.getFullYear() + " "
     }
 
     goToWebsite(){
@@ -510,6 +518,7 @@ export default class AddEventsForm extends Component{
                         </View>
                         {androidTimePicker}
                         <View style={Styles.formRow}>
+                            <Text style={Styles.formLabel}>Chosen Date and Time</Text>
                             <Text style={Styles.formEntry}>{dateAndTimes}</Text>
                         </View>
 
@@ -582,7 +591,7 @@ export default class AddEventsForm extends Component{
                         </View>
                         <View style={Styles.formRow}>
                             <Text style={Styles.formLabel}>Images </Text>
-                            <Text style={Styles.formEntry}>Unfortunately, our app does not support uploading images. If you would like to add an image to your event, please use the MuncieEvents website instead.</Text>
+                            <Text style={Styles.formEntry}>If you would like to upload images for your event, please use the Muncie Events website.</Text>
                             <CustomButton
                                 text="Visit MuncieEvents.com"
                                 buttonStyle = {Styles.longButtonStyle}

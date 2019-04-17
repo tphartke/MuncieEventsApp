@@ -64,7 +64,7 @@ export default class Contact extends React.Component {
       <TextInput
         onChangeText={(name) => this.setState({name})}
         style={Styles.textBox}
-        placeholder="Name" 
+        placeholder="Name"
       />
 
       <Text>Email</Text>

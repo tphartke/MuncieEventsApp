@@ -24,6 +24,10 @@ export default class GoToDate extends React.Component {
     this.APICacher = new APICacher();
   }
 
+  componentDidMount(){
+    this.setState({formattedDate: this.updateEventView(new Date())})
+  }
+
     render() {
       titleView = this.getTitle();
       mainView = this.getDatePicker()

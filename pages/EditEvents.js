@@ -370,9 +370,6 @@ export default class EditEvents extends React.Component {
   }
 
   render(){
-      console.log("Date:" + this.state.chosenDate)
-      console.log("Start Time: " + this.state.endTime)
-      console.log("End Time: " + this.state.endTime)
       if(this.state.isLoading){;
           return(
           <View>
@@ -426,6 +423,7 @@ export default class EditEvents extends React.Component {
                       </View>
                       {androidTimePicker}
                       <View style={Styles.formRow}>
+                            <Text style={Styles.formLabel}>Chosen Date and Time</Text>
                             <Text style={Styles.formEntry}>{dateAndTimes}</Text>
                       </View>
                       <View style={Styles.formRow}>
@@ -505,7 +503,7 @@ export default class EditEvents extends React.Component {
                       </View>
                       <View style={Styles.formRow}>
                             <Text style={Styles.formLabel}>Images </Text>
-                            <Text style={Styles.formEntry}>Unfortunately, our app does not support uploading images. If you would like to add an image to your event, please use the MuncieEvents website instead.</Text>
+                            <Text style={Styles.formEntry}>If you would like to upload images for your event, please use the Muncie Events website.</Text>
                             <CustomButton
                                 text="Visit MuncieEvents.com"
                                 buttonStyle = {Styles.longButtonStyle}
@@ -705,7 +703,7 @@ getFormattedDate(chosenDate){
     
     dayNumber = chosenDate.getDate()
     daySuffix = this.DateAndTimeParser.deriveDayNumberSuffix(dayNumber);
-    return chosenMonth + " " + dayNumber + daySuffix + " "
+    return chosenMonth + " " + dayNumber + daySuffix + ", " + chosenDate.getFullYear() + " "
 }
 
 formatTimeForAPI(time){

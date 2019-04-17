@@ -59,7 +59,7 @@ export default class SearchResults extends React.Component{
 
     getLoadingView(){
         return(
-            <View>
+            <View style={{alignItems:'center', justifyContent: 'center'}}>
                 <LoadingScreen/>
             </View>
         );

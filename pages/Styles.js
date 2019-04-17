@@ -107,7 +107,7 @@ export default StyleSheet.create({
         flex: 1,
         backgroundColor: 'white',
         paddingLeft: 5,
-        paddingRight: 5
+        paddingRight: 5,
     },
     
     topBarWrapper: {
@@ -227,14 +227,16 @@ export default StyleSheet.create({
         justifyContent: 'center', 
         borderWidth: 1,
         borderRadius: 5,
-        borderColor: 'black'
+        borderColor: 'black',
+
     },
 
     longButtonStyle: {
         width: '100%',
         alignItems: 'center',
         textAlign: 'center',
-        height:50
+        height:50,
+        
     },
 
     longButtonTextStyle: {
@@ -247,5 +249,8 @@ export default StyleSheet.create({
 
     mediumButtonTextStyle:{
         fontSize: 15
+    },
+    buttonBuffer: {
     }
+
 });

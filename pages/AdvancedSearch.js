@@ -94,7 +94,6 @@ export default class AdvancedSearch extends React.Component {
     }
     else if(this.state.searchResultsHaveBeenFound){
       mainView = this.getResultsView();
-      //title = "Search by " + this.state.title
     }
     else{
       mainView = this.getMainView()
@@ -205,14 +204,11 @@ export default class AdvancedSearch extends React.Component {
   returnSearchResults(criteria){
     if(criteria == "tag"){
       searchURL = 'https://api.muncieevents.com/v1/events/future?withTags[]=' + this.state.tagSelectedValue + "&apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ"
-      //newTitle = "Tag: " + this.state.tagSelectedValue
     }
     else if(criteria == "category"){
       searchURL = 'https://api.muncieevents.com/v1/events/category/' + this.state.categorySelectedValue + "?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ"
-      //newTitle = "Category: " + this.state.categorySelectedValue
     }
     console.log(searchURL)
-    //this.state.title = newTitle;
     this.state.url = searchURL;
     this.setState({
       isSearching: true

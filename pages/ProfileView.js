@@ -23,7 +23,6 @@ export default class ProfileView extends React.Component {
                       isLoading: true,
                       mailingList: false,
                       failedToLoad:false});
-                      //this._startupCachingAsync = this._startupCachingAsync.bind(this);
                       this.APICacher = new APICacher();
       }
 
@@ -38,26 +37,22 @@ export default class ProfileView extends React.Component {
         }
         else if(this.state.changePassword){
             contentView = (<View style={{flex:1}}>
-                              <ChangePassword userToken={this.state.token}/>
+                              <View style={Styles.buttonBuffer}/>
                               <CustomButton 
                                   text="Go Back" 
                                   buttonStyle = {Styles.longButtonStyle}
                                   textStyle = {Styles.longButtonTextStyle}
                                   onPress = {()=>this.setState({changePassword: false})}
                               />
+                              <ChangePassword userToken={this.state.token}/>
                           </View>)
         }
         else if(this.state.mailingList){
           contentView = this.getMailingListView()
         }
         else{
-          /*eventsView=(<View style={Styles.profileViewEvents}>
-            <Text style={Styles.title}>EVENTS</Text>
-            <EventList useSearchResults = {true} />
-          </View>)*/
           if(!this.state.email && this.state.userid){
               this.fetchUserData(this.state.userid)
-              //this.fetchUserEventsData()
           }
           else if(this.state.userid){
               contentView = this.getProfileInformation();
@@ -67,7 +62,6 @@ export default class ProfileView extends React.Component {
             <View style={{flex:1}}>
                 {contentView}
                 {eventsView}
-                <Text>{this.state.statusMessage}</Text>
             </View>
         );
       }
@@ -89,6 +83,7 @@ export default class ProfileView extends React.Component {
       getMailingListView(){
         return(
               <View style={{flex:1}}>
+              <View style={Styles.buttonBuffer}/>
                   <CustomButton 
                       text="Go Back" 
                       buttonStyle = {Styles.longButtonStyle}
@@ -193,6 +188,21 @@ export default class ProfileView extends React.Component {
       getProfileInformation(){
           return(
               <View style={{flex:0.35}}>
+              <View style={Styles.buttonBuffer}/>
+                <CustomButton 
+                    text="Change Password" 
+                    buttonStyle = {Styles.longButtonStyle}
+                    textStyle = {Styles.longButtonTextStyle}
+                    onPress = {()=>this.setState({changePassword: true})}
+                />
+                <View style={Styles.buttonBuffer}/>
+                <CustomButton 
+                    text="Edit Mailing List Settings" 
+                    buttonStyle = {Styles.longButtonStyle}
+                    textStyle = {Styles.longButtonTextStyle}
+                    onPress = {()=>{this.setState({mailingList: true})}}
+                />
+                <View style={Styles.buttonBuffer}/>
                 <TextInput
                     onChangeText={(name) => this.setState({name})}
                     style={Styles.textBox}
@@ -209,18 +219,7 @@ export default class ProfileView extends React.Component {
                     textStyle = {Styles.longButtonTextStyle}
                     onPress = {()=>this.checkIfUserDataIsValid()}
                 />
-                <CustomButton 
-                    text="Change Password" 
-                    buttonStyle = {Styles.longButtonStyle}
-                    textStyle = {Styles.longButtonTextStyle}
-                    onPress = {()=>this.setState({changePassword: true})}
-                />
-                <CustomButton 
-                    text="Edit Mailing List Settings" 
-                    buttonStyle = {Styles.longButtonStyle}
-                    textStyle = {Styles.longButtonTextStyle}
-                    onPress = {()=>{this.setState({mailingList: true})}}
-                />
+                <Text>{this.state.statusMessage}</Text>
               </View>
           )
       }

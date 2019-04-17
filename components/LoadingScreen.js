@@ -5,9 +5,9 @@ export default class LoadingScreen extends Component{
 
     render(){
         return(
-            <View style={{flexDirection:'row', alignItems:'center'}}>
+            <View style={{flexDirection:'row', alignItems:'center', justifyContent: 'center'}}>
                 <ActivityIndicator size="large" color="#cd5128"/>
-                <Text style={{flex:1}}>Loading from MuncieEvents server...</Text>
+                <Text style={{flex:1}}>Loading...</Text>
             </View>
         );
     }

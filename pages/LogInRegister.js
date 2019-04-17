@@ -141,13 +141,15 @@ export default class LogInRegister extends React.Component {
     getSignupSequence(){
       return(
         <View style={{flex:1}}>
-          <Register />
+          <View style={Styles.buttonBuffer}/>
           <CustomButton
             text = "Go Back"
             buttonStyle={Styles.longButtonStyle}
             textStyle={Styles.longButtonTextStyle}
             onPress={() => this.setState({selectedPage: "Login"})}
           />
+          <Register />
+
         </View>
       );
     }
@@ -155,13 +157,14 @@ export default class LogInRegister extends React.Component {
     getForgotPasswordSequence(){
       return(
         <View style={{flex:1}}>
-            <ForgotPassword />
+            <View style={Styles.buttonBuffer}/>
             <CustomButton
             text = "Go Back"
             buttonStyle={Styles.longButtonStyle}
             textStyle={Styles.longButtonTextStyle}
             onPress={() => this.setState({selectedPage: "Login"})}
           />
+          <ForgotPassword />
         </View>
       );
     }
