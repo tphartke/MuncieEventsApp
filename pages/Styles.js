@@ -251,6 +251,8 @@ export default StyleSheet.create({
         fontSize: 15
     },
     buttonBuffer: {
+        flex: 0.1,
+        paddingTop: '1%'
     }
 
 });

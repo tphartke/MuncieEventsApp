@@ -1,5 +1,5 @@
 import React, {Component} from 'react';  
-import {View, Platform, Text, Picker, TextInput, Modal, DatePickerAndroid, TimePickerAndroid, DatePickerIOS, FlatList, Switch, ScrollView, AsyncStorage, Linking} from 'react-native';
+import {View, Platform, Text, Picker, TextInput, Modal, DatePickerAndroid, TimePickerAndroid, DatePickerIOS, FlatList, Switch, ScrollView, AsyncStorage, Linking, TouchableOpacity} from 'react-native';
 import Styles from '../pages/Styles';
 import APICacher from '../APICacher'
 import CustomButton from '../pages/CustomButton';
@@ -19,7 +19,7 @@ export default class AddEventsForm extends Component{
             endTime: null,
             selectedTagArray: [],
             filter: null,
-            statusMessage: "",
+            statusMessage: null,
             userToken: null,
             location: null,
             categorySelectedName: null,
@@ -607,7 +607,7 @@ export default class AddEventsForm extends Component{
                                 onPress={() => this.attemptEventSubmission()}
                             />
                         </View>
-                        <Text>{this.state.statusMessage}</Text>
+                        <View>{this.state.statusMessage}</View>
                     </View>
             );
         }
@@ -715,7 +715,9 @@ export default class AddEventsForm extends Component{
         .then((response) => response.json())
         .then((responseJson) => console.log(responseJson))
         .then((responseJson) => this.handleAPIResponse(responseJson))
-        .catch(error =>{this.setState({failedToLoad:true})});
+        .catch(error =>{
+                        console.log(error)
+                        this.setState({failedToLoad:true})});
     }
 
     handleAPIResponse(responseJson){
@@ -723,8 +725,38 @@ export default class AddEventsForm extends Component{
             this.setState({statusMessage: responseJson.errors[0].detail})
         }
         catch(error){
-            this.setState({statusMessage: "Event successfully submitted!",eventSubmitted:true})
+            statusMessage = (<View>
+                                <Text>Event successfully submitted!</Text>
+                                <TouchableOpacity onPress={()=>{this.resetForm()}}>
+                                    <Text style={{color: 'blue'}}>Add another event</Text>
+                                </TouchableOpacity> 
+                                </View>)
+            this.setState({statusMessage: statusMessage,eventSubmitted:true})
         }
+    }
+
+    resetForm(){
+        this.setState({
+            chosenDate: new Date(),
+            startTime: null,
+            endTime: null,
+            selectedTagArray: [],
+            filter: null,
+            statusMessage: null,
+            userToken: null,
+            location: null,
+            categorySelectedName: null,
+            categorySelectedValue: null,
+            tagSelectedValue: null,
+            event: null,
+            source: "",
+            ageRestriction: "",
+            cost: "",
+            description: null,
+            address: "",
+            locationDetails: null,
+            eventSubmitted: false,
+        })
     }
 
     addZeroPadding(num){
