@@ -316,7 +316,9 @@ class ExpandedView extends React.Component {
         </Text>
         <Text>
           {this.eventData.attributes.location } {"\n"}
-          {this.getNullableAttribute(this.eventData.attributes.address)} {"\n"}
+          <TouchableOpacity onPress={()=>this.openAddress(this.eventData.attributes.address)}>
+          <Text style={{color: 'blue'}}>{this.getNullableAttribute(this.eventData.attributes.address)}</Text> {"\n"}
+          </TouchableOpacity>
           {this.getNullableAttribute(this.eventData.attributes.location_details)}
         </Text> 
       </View>
@@ -449,6 +451,20 @@ class ExpandedView extends React.Component {
   goToSource(source){
     url = source
     Linking.openURL(url)
+}
+
+openAddress(addressString){
+  if(addressString){
+    if(addressString.includes("Muncie, IN") || addressString.includes("Muncie, Indiana"))
+    {
+    url = "https://www.google.com/maps/search/?api=1&query=" + addressString
+    Linking.openURL(url)
+    }
+    else{
+      url = "https://www.google.com/maps/search/?api=1&query=" + addressString + " Muncie, IN"
+      Linking.openURL(url) 
+    }
+  }
 }
 
 } export default withNavigation(ExpandedView)
