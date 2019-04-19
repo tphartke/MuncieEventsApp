@@ -482,7 +482,7 @@ export default class AddEventsForm extends Component{
             );
         }
         else if(this.state.eventSubmitted){
-            return(<View>
+            return(<View style={Styles.centeredSingleItemText}>
                         <Text>{this.state.statusMessage}</Text>
                 </View>)
         }
@@ -721,7 +721,7 @@ export default class AddEventsForm extends Component{
             this.setState({statusMessage: statusMessage})
         }
         catch(error){
-            statusMessage = (<View>
+            statusMessage = (<View style={Styles.centeredSingleItemText}>
                                 <Text>Event successfully submitted!</Text>
                                 <TouchableOpacity onPress={()=>{this.resetForm()}}>
                                     <Text style={{color: 'blue'}}>Add another event</Text>

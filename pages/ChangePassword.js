@@ -31,7 +31,7 @@ export default class ChangePassword extends React.Component {
             renderedScreen = this.getChangePasswordScreen();
         }
         else{
-            renderedScreen = (<Text>{this.state.statusMessage}</Text>)
+            renderedScreen = (<Text style={Styles.centeredSingleItemText}>{this.state.statusMessage}</Text>)
         }
         return(renderedScreen)
     }

@@ -387,7 +387,7 @@ export default class EditEvents extends React.Component {
       }
       else if(this.state.eventUpdated){
         return(<View>
-                    <Text>{this.state.statusMessage}</Text>
+                    <Text style={Styles.centeredSingleItemText}>{this.state.statusMessage}</Text>
                 </View>)
       }
       else{

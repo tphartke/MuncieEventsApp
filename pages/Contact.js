@@ -50,7 +50,7 @@ export default class Contact extends React.Component {
   getMessageSentView(){
     return(
       <View>
-        <Text>{this.state.statusMessage}</Text>
+        <Text style={Styles.centeredSingleItemText}>{this.state.statusMessage}</Text>
       </View>)
   }
 

@@ -17,6 +17,15 @@ export default StyleSheet.create({
 
     },
 
+    centeredSingleItemText: {
+        flexDirection:'row', 
+        alignItems:'center', 
+        justifyContent: 'center',
+        paddingTop: '50%',
+        textAlign: 'center',
+    },
+    
+
     content: {
         paddingTop: 5,
         marginHorizontal: 5

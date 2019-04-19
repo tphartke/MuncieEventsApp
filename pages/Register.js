@@ -47,7 +47,7 @@ export default class Register extends React.Component {
     getCompletedRegisterView(){
         return(
             <View>
-                <Text>Successfully Registered. Welcome to Muncie Events!</Text>
+                <Text style={Styles.centeredSingleItemText}>Successfully Registered. Welcome to Muncie Events!</Text>
             </View>
         )
     }

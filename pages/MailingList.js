@@ -64,7 +64,7 @@ export default class MailingList extends React.Component {
     }
 
     getFinishedView(){
-        return(<Text>{this.state.statusMessage}</Text>)
+        return(<Text style={Styles.centeredSingleItemText}>{this.state.statusMessage}</Text>)
     }
 
     getLoadingScreen(){

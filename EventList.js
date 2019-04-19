@@ -52,7 +52,7 @@ class EventList extends React.Component {
 
       noEventsFound(){
         return(
-          <Text>No events found</Text>
+          <Text style={Styles.centeredSingleItemText}>No events found</Text>
         );
       }
 
