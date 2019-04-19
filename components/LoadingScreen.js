@@ -5,9 +5,9 @@ export default class LoadingScreen extends Component{
 
     render(){
         return(
-            <View style={{flexDirection:'row', alignItems:'center', justifyContent: 'center'}}>
+            <View style={{flexDirection:'row', alignItems:'center', justifyContent: 'center',paddingTop: '50%'}}>
                 <ActivityIndicator size="large" color="#cd5128"/>
-                <Text style={{flex:1}}>Loading...</Text>
+                <Text>Loading...</Text>
             </View>
         );
     }

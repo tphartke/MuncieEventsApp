@@ -102,6 +102,14 @@ export default StyleSheet.create({
         opacity: 0.5
     },
 
+    categoryIcon: {
+        flex: 1, 
+        resizeMode: 'contain', 
+        width: 60, 
+        height: 60,
+        paddingHorizontal: '10%'
+    },
+
     wrapper: {
         paddingTop:20,
         flex: 1,
@@ -210,7 +218,6 @@ export default StyleSheet.create({
 
     requiredField:{
         fontSize: 15
-        //color: 'red'
     },
 
     embeddedSwitch: {

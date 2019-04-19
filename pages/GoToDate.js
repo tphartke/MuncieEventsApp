@@ -65,7 +65,7 @@ export default class GoToDate extends React.Component {
 
   getLoadingScreen(){
     return(
-      <View>
+      <View style>
         <LoadingScreen/>
       </View>
     );

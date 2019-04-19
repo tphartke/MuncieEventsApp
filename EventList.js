@@ -128,7 +128,7 @@ class EventList extends React.Component {
           return(
             <View>
               <Image
-              style={{flex: 1, resizeMode: 'contain', width: 60, height: 60}}
+              style={Styles.categoryIcon}
               source={require('./assets/MuncieEventsAppIcons/music.png')}
               />
             </View>
@@ -137,7 +137,7 @@ class EventList extends React.Component {
             return(
               <View>
                 <Image
-                  style={{flex: 1, resizeMode: 'contain', width: 60, height: 60}}
+                  style={Styles.categoryIcon}
                   source ={require('./assets/MuncieEventsAppIcons/art.png')}
                 />
               </View>
@@ -146,7 +146,7 @@ class EventList extends React.Component {
           return(
             <View>
               <Image
-              style={{flex: 1, resizeMode: 'contain', width: 60, height: 60}}
+              style={Styles.categoryIcon}
               source ={require('./assets/MuncieEventsAppIcons/activism.png')}
               />
             </View>
@@ -155,7 +155,7 @@ class EventList extends React.Component {
           return(
             <View>
               <Image
-              style={{flex: 1, resizeMode: 'contain', width: 60, height: 60}}
+              style={Styles.categoryIcon}
               source ={require('./assets/MuncieEventsAppIcons/theater.png')}
               />
             </View>
@@ -164,7 +164,7 @@ class EventList extends React.Component {
           return(
             <View>
               <Image
-              style={{flex: 1, resizeMode: 'contain', width: 60, height: 60}}
+              style={Styles.categoryIcon}
               source ={require('./assets/MuncieEventsAppIcons/film.png')}
               />
             </View>
@@ -173,7 +173,7 @@ class EventList extends React.Component {
           return(
             <View>
               <Image
-              style={{flex: 1, resizeMode: 'contain', width: 60, height: 60}}
+              style={Styles.categoryIcon}
               source ={require('./assets/MuncieEventsAppIcons/sports.png')}
               />
             </View>
@@ -182,7 +182,7 @@ class EventList extends React.Component {
           return(
             <View>
               <Image
-              style={{flex: 1, resizeMode: 'contain', width: 60, height: 60}}
+              style={Styles.categoryIcon}
               source ={require('./assets/MuncieEventsAppIcons/education.png')}
               />
             </View>
@@ -191,7 +191,7 @@ class EventList extends React.Component {
           return(
             <View>
               <Image
-              style={{flex: 1, resizeMode: 'contain', width: 60, height: 60}}
+              style={Styles.categoryIcon}
               source ={require('./assets/MuncieEventsAppIcons/government.png')}
               />
             </View>
@@ -200,7 +200,7 @@ class EventList extends React.Component {
           return(
             <View>
               <Image
-              style={{flex: 1, resizeMode: 'contain', width: 60, height: 60}}
+              style={Styles.categoryIcon}
               source ={require('./assets/MuncieEventsAppIcons/religion.png')}
               />
             </View>
@@ -209,7 +209,7 @@ class EventList extends React.Component {
           return(
             <View>
               <Image
-              style={{flex: 1, resizeMode: 'contain', width: 60, height: 60}}
+              style={Styles.categoryIcon}
               source ={require('./assets/MuncieEventsAppIcons/general.png')}
               />
             </View>

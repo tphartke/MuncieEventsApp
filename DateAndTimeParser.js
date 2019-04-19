@@ -7,10 +7,10 @@ export default class DateParser {
         var timeUnformatted = times[0].split(":");
         var hours = timeUnformatted[0];
         var minutes = timeUnformatted[1];
-        var modifier = "AM";
+        var modifier = "am";
         if(hours > 12){
           hours -= 12;
-          modifier = "PM";
+          modifier = "pm";
         }
         hours = this.filterOutZeroPadding(hours);
         var finalTime = hours + ":" + minutes + modifier;
