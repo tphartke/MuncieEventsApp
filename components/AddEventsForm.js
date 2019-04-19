@@ -63,7 +63,7 @@ export default class AddEventsForm extends Component{
     
     async _fetchTagData(){
         key = "Tags"
-        url = "https://api.muncieevents.com/v1/tags/future?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ"
+        url = "https://api.muncieevents.com/v1/tags?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ"
         await this._refreshData(key, url)
     
         this.tags = await this.APICacher._getJSONFromStorage(key)
@@ -591,13 +591,7 @@ export default class AddEventsForm extends Component{
                         </View>
                         <View style={Styles.formRow}>
                             <Text style={Styles.formLabel}>Images </Text>
-                            <Text style={Styles.formEntry}>If you would like to upload images for your event, please use the Muncie Events website.</Text>
-                            <CustomButton
-                                text="Visit MuncieEvents.com"
-                                buttonStyle = {Styles.longButtonStyle}
-                                textStyle = {Styles.longButtonTextStyle}
-                                onPress={() => this.goToWebsite()}
-                            />
+                            <Text style={Styles.formEntry}>If you would like to upload images for your event, please use the <TouchableOpacity onPress={()=>{this.goToWebsite()}}><Text style={{color: 'blue'}}>Muncie Events website.</Text></TouchableOpacity></Text>
                         </View>
                         <View style={Styles.formRow}>
                             <CustomButton
@@ -627,7 +621,8 @@ export default class AddEventsForm extends Component{
             this.submitEvent()
         }
         else{
-            this.setState({statusMessage: "ERROR: One or more required fields not completed"})
+            statusMessage = (<Text>ERROR: One or more required fields not completed</Text>)
+            this.setState({statusMessage: statusMessage})
         }
     }
 
@@ -689,7 +684,7 @@ export default class AddEventsForm extends Component{
         if(chosenDate){
             chosenDate = chosenDate.getFullYear() + '-' + ('0' + (chosenDate.getMonth()+1)).slice(-2) + '-' + ('0' + chosenDate.getDate()).slice(-2)
         }
-
+        this.setState({isLoading: true})
         fetch(url,
             {method: "POST",
             headers: {
@@ -722,7 +717,8 @@ export default class AddEventsForm extends Component{
 
     handleAPIResponse(responseJson){
         try{
-            this.setState({statusMessage: responseJson.errors[0].detail})
+            statusMessage = (<Text>{responseJson.errors[0].detail}</Text>)
+            this.setState({statusMessage: statusMessage})
         }
         catch(error){
             statusMessage = (<View>
@@ -731,7 +727,7 @@ export default class AddEventsForm extends Component{
                                     <Text style={{color: 'blue'}}>Add another event</Text>
                                 </TouchableOpacity> 
                                 </View>)
-            this.setState({statusMessage: statusMessage,eventSubmitted:true})
+            this.setState({statusMessage: statusMessage,eventSubmitted:true, isLoading: false})
         }
     }
 
