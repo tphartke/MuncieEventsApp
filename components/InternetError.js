@@ -10,7 +10,7 @@ export default class InternetError extends React.Component{
         return(
             <View style={{flexDirection:"column", alignItems:'center'}}>
                 <Text style={{textAlign:"center", paddingBottom: 5}}>
-                    Failed to connect to Muncie Events Server. Please make sure your phone is connected to the internet and try again.
+                    Failed to connect to Muncie Events. Please make sure your phone is connected to the internet and try again.
                 </Text>
                     <CustomButton
                         text="Reload"

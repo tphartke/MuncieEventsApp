@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, WebView, ScrollView, Image, AsyncStorage, Alert, Linking} from 'react-native';
+import {Text, View, WebView, ScrollView, Image, AsyncStorage, Alert, Linking, TouchableOpacity} from 'react-native';
 import DateAndTimeParser from "../DateAndTimeParser";
 import{ withNavigation } from "react-navigation";
 import Styles from './Styles';
@@ -283,7 +283,9 @@ class ExpandedView extends React.Component {
     if(this.eventData.attributes.source){
       return(<View>
                 <Text style={Styles.header}>Source</Text>
-                <Text>{this.eventData.attributes.source}</Text>
+                <TouchableOpacity onPress={()=>this.goToSource(this.eventData.attributes.source)}>
+                    <Text style={{color: 'blue'}}>{this.eventData.attributes.source}</Text>
+                </TouchableOpacity>
             </View>)
     }
     else{
@@ -443,5 +445,10 @@ class ExpandedView extends React.Component {
     }
 
   }
+
+  goToSource(source){
+    url = source
+    Linking.openURL(url)
+}
 
 } export default withNavigation(ExpandedView)
