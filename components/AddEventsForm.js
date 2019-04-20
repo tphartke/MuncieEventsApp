@@ -591,7 +591,8 @@ export default class AddEventsForm extends Component{
                         </View>
                         <View style={Styles.formRow}>
                             <Text style={Styles.formLabel}>Images </Text>
-                            <Text style={Styles.formEntry}>If you would like to upload images for your event, please use the <TouchableOpacity onPress={()=>{this.goToWebsite()}}><Text style={{color: 'blue'}}>Muncie Events website.</Text></TouchableOpacity></Text>
+                            <Text style={Styles.formEntry}>If you would like to upload images for your event, please use the </Text>
+                            <TouchableOpacity onPress={()=>{this.goToWebsite()}}><Text style={{color: 'blue'}}>Muncie Events website.</Text></TouchableOpacity>
                         </View>
                         <View style={Styles.formRow}>
                             <CustomButton

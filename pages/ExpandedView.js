@@ -260,23 +260,42 @@ class ExpandedView extends React.Component {
     }
    }
 
+
    getTags(){
-     tagView = ""
-     if(this.eventData.attributes.tags){
-       tags = this.eventData.attributes.tags;
-      for(i = 0; i < tags.length; i++){
-        tagView += tags[i].name + ", "
+    if(this.eventData.attributes.tags){
+      tags = []
+      for(i = 0; i < this.eventData.attributes.tags.length; i++){
+        tags.push(this.eventData.attributes.tags[i].name)
       }
-      tagView = tagView.slice(0, -2);
-      return(<View>
-        <Text style={Styles.header}>Tags</Text>
-        <Text>{tagView}</Text>
-      </View>)
-     }
-     else{
-       return null
-     }
-   }
+     return(
+             <View>
+             <Text style={Styles.header}>Tags</Text>
+             <FlatList
+               data={tags}
+               renderItem={({item}) => 
+               this.getTagLink(item)
+               }
+               scrollEnabled='false'/>
+               </View>)
+    }
+    else{
+      return null
+    }
+  }
+
+  getTagLink(tag){
+    return(
+      <View>
+        <TouchableOpacity onPress={()=>this.setState({searchForTag: true, searchedTag: tag})}>
+           <Text style={{color: 'blue'}}>{tag}</Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
+  tagSearch(){
+
+  }
 
    getSource(){
     if(this.eventData.attributes.source){
