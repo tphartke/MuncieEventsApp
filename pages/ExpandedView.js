@@ -7,7 +7,8 @@ import CustomButton from './CustomButton';
 import * as Animatable from 'react-native-animatable';
 import EventList from '../EventList';
 import LoadingScreen from '../components/LoadingScreen';
-import EditEvents from './EditEvents'
+import EditEvents from './EditEvents';
+import APICacher from '../APICacher';
 
 //All 3 scripts below are used as workarounds for a bug with WebViews not displaying in certain nested Views.
 //Once React Native fixes these bugs, the scriptings can be removed
@@ -60,9 +61,13 @@ class ExpandedView extends React.Component {
                       editingEvent: false, 
                       deletingEvent: false,
                       userToken: "",
-                      statusMessage: ""}
+                      statusMessage: "", 
+                      tagSearchurl: "",
+                      searchResultsHaveBeenFound: true, 
+                      isSearching: false}
         this.eventData = null
         this.state={selectedPreviousScreen:false}
+        this.APICacher = new APICacher();
       }
 
     componentDidMount(){
@@ -78,6 +83,15 @@ class ExpandedView extends React.Component {
         renderedInfo = null
         if(this.state.isLoading){
           renderedInfo = this.getLoadingScreen();
+        }
+        else if(this.state.isSearching){
+          renderedInfo = this.getLoadingScreen();
+          url = 'https://api.muncieevents.com/v1/events/future?withTags[]='+  this.state.searchedTag + '&apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ'
+          console.log(url)
+          this._cacheSearchResultsAsync(url).catch(error =>  this.catchError())
+        }
+        else if(this.state.searchResultsHaveBeenFound){
+          renderedInfo = this.getResultsView();
         }
         else if(this.state.selectedPreviousScreen){
           useSearchResults = this.props.isFromSearch;
@@ -284,7 +298,7 @@ class ExpandedView extends React.Component {
       }
       let tagView = tags.map((tag, key) => {
       return <View key={key}>
-          <TouchableOpacity onPress={()=>this.setState({searchForTag: true, searchedTag: tag})}>
+          <TouchableOpacity onPress={()=>this.setState({searchForTag: true, searchedTag: tag, isSearching: true})}>
               <Text style={{color: 'blue'}}>{tag}</Text>
           </TouchableOpacity>
         </View>}) 
@@ -323,9 +337,19 @@ class ExpandedView extends React.Component {
     )
   }
 
-  tagSearch(){
-
-  }
+  getResultsView(){
+    return(
+      <View>        
+        <CustomButton 
+          text="Go Back"
+          buttonStyle = {Styles.longButtonStyle}
+          textStyle = {Styles.longButtonTextStyle}
+          onPress={() => this.setState({searchResultsHaveBeenFound: false})}/>
+        <View style={Styles.advancedSearchResults}>
+          <EventList useSearchResults = {true}/>
+        </View>
+    </View>
+  );}
 
    getSource(){
     if(this.eventData.attributes.source){
@@ -515,6 +539,11 @@ openAddress(addressString){
       Linking.openURL(url) 
     }
   }
+}
+
+async _cacheSearchResultsAsync(searchURL){
+  await this.APICacher._cacheJSONFromAPIAsync("SearchResults", searchURL)
+  this.setState({searchResultsHaveBeenFound: true, isSearching: false});
 }
 
 } export default withNavigation(ExpandedView)
