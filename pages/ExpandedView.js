@@ -174,16 +174,27 @@ class ExpandedView extends React.Component {
     }
 
     getExpandedViewInformation(imageURL){
+      categoryView = this.getCategoryView()
       initialView = this.getInitialView(imageURL)
       tags = this.getTags()
       finalView = this.getFinalView()
         return(
           <View>
+            {categoryView}
             {initialView}
             {tags}
             {finalView}
           </View>
         )
+    }
+
+    getCategoryView(){
+      return(
+        <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+            <Text style={Styles.title}>{this.eventData.attributes.category.name}</Text>
+            {this.getCategoryImage(this.eventData)}
+        </View>
+      )
     }
 
     getInitialView(imageURL){
@@ -372,7 +383,7 @@ class ExpandedView extends React.Component {
           When
         </Text>
         <Text> 
-          {this.dateAndTimeParser.formatDate(this.eventData.attributes.date)} {"\n"}
+          {this.dateAndTimeParser.formatDate(this.eventData.attributes.date)}{"\n"}
           {this.dateAndTimeParser.extractTimeFromDate(this.eventData.attributes.time_start)}
           {this.getFormattedEndDate()}
         </Text>
@@ -387,10 +398,10 @@ class ExpandedView extends React.Component {
           Where 
         </Text>
         <Text>
-          {this.eventData.attributes.location } {"\n"}
+          {this.eventData.attributes.location }
         </Text>
           <TouchableOpacity onPress={()=>this.openAddress(this.eventData.attributes.address)}>
-            <Text style={{color: 'blue'}}>{this.getNullableAttribute(this.eventData.attributes.address)} {"\n"}</Text>
+            <Text style={{color: 'blue'}}>{this.getNullableAttribute(this.eventData.attributes.address)}</Text>
           </TouchableOpacity>
         <Text>
           {this.getNullableAttribute(this.eventData.attributes.location_details)}
@@ -544,6 +555,102 @@ openAddress(addressString){
 async _cacheSearchResultsAsync(searchURL){
   await this.APICacher._cacheJSONFromAPIAsync("SearchResults", searchURL)
   this.setState({searchResultsHaveBeenFound: true, isSearching: false});
+}
+
+getCategoryImage(eventEntry){
+  category = ""
+  switch(eventEntry.attributes.category.name){
+    case "Music":
+    return(
+      <View>
+        <Image
+        style={Styles.categoryIcon}
+        source={require('../assets/MuncieEventsAppIcons/music.png')}
+        />
+      </View>
+      )
+    case "Art":
+      return(
+        <View>
+          <Image
+            style={Styles.categoryIcon}
+            source ={require('../assets/MuncieEventsAppIcons/art.png')}
+          />
+        </View>
+      )
+    case "Activism":
+    return(
+      <View>
+        <Image
+        style={Styles.categoryIcon}
+        source ={require('../assets/MuncieEventsAppIcons/activism.png')}
+        />
+      </View>
+      )
+    case "Theater":
+    return(
+      <View>
+        <Image
+        style={Styles.categoryIcon}
+        source ={require('../assets/MuncieEventsAppIcons/theater.png')}
+        />
+      </View>
+      )
+    case "Film":
+    return(
+      <View>
+        <Image
+        style={Styles.categoryIcon}
+        source ={require('../assets/MuncieEventsAppIcons/film.png')}
+        />
+      </View>
+      )
+    case "Sports":
+    return(
+      <View>
+        <Image
+        style={Styles.categoryIcon}
+        source ={require('../assets/MuncieEventsAppIcons/sports.png')}
+        />
+      </View>
+      )
+    case "Education":
+    return(
+      <View>
+        <Image
+        style={Styles.categoryIcon}
+        source ={require('../assets/MuncieEventsAppIcons/education.png')}
+        />
+      </View>
+      )
+    case "Government":
+    return(
+      <View>
+        <Image
+        style={Styles.categoryIcon}
+        source ={require('../assets/MuncieEventsAppIcons/government.png')}
+        />
+      </View>
+      )
+    case "Religion":
+    return(
+      <View>
+        <Image
+        style={Styles.categoryIcon}
+        source ={require('../assets/MuncieEventsAppIcons/religion.png')}
+        />
+      </View>
+      )
+    default:
+    return(
+      <View>
+        <Image
+        style={Styles.categoryIcon}
+        source ={require('../assets/MuncieEventsAppIcons/general.png')}
+        />
+      </View>
+      )
+  }
 }
 
 } export default withNavigation(ExpandedView)
