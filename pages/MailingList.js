@@ -151,37 +151,57 @@ export default class MailingList extends React.Component {
             <View>
                 {customEventOptions}
             </View>
+            {this.getSubscribeAndDeleteButtons()}
             <Text>{this.state.statusMessage}</Text>
-            <CustomButton 
-                    text="Update Settings" 
-                    onPress={()=>{this.signUpOrUpdate()}} 
-                    buttonStyle={Styles.longButtonStyle}
-                    textStyle={Styles.longButtonTextStyle}
-                />
-            <CustomButton 
-                    text="Unsubscribe From Mailing List" 
-                    onPress={()=>{this.unsubscribeFromMailingList()}} 
-                    buttonStyle={Styles.longButtonStyle}
-                    textStyle={Styles.longButtonTextStyle}
-                />
+
         </ScrollView>)
     }
 
+    getSubscribeAndDeleteButtons(){
+        if(this.state.subscribed){
+            return(
+                <View>
+                    <CustomButton 
+                        text="Update Settings" 
+                        onPress={()=>{this.signUpOrUpdate()}} 
+                        buttonStyle={Styles.longButtonStyle}
+                        textStyle={Styles.longButtonTextStyle}
+                    />
+                    <CustomButton 
+                        text="Unsubscribe From Mailing List" 
+                        onPress={()=>{this.unsubscribeFromMailingList()}} 
+                        buttonStyle={Styles.longButtonStyle}
+                        textStyle={Styles.longButtonTextStyle}
+                    />
+                </View>
+            )
+        }
+        else{
+            return(
+            <View>
+                    <CustomButton 
+                        text="Subscribe to Mailing List" 
+                        onPress={()=>{this.signUpOrUpdate()}} 
+                        buttonStyle={Styles.longButtonStyle}
+                        textStyle={Styles.longButtonTextStyle}
+                    />
+            </View>)
+        }
+    }
+
     updateToWeekly(){
-        this.setState({daily: false, daily_fri: false, daily_mon:false, daily_sat: false, daily_sun: false,
-                        daily_thu: false, daily_tue:false, daily_wed: false, customFrequency: false, 
-                        weekly: this.updateSwitch(this.state.weekly)})
+        this.setState({weekly: this.updateSwitch(this.state.weekly)})
     }
 
     updateToDaily(){
-        this.setState({weekly: false, daily_fri: false, daily_mon:false, daily_sat: false, daily_sun: false,
+        this.setState({daily_fri: false, daily_mon:false, daily_sat: false, daily_sun: false,
                         daily_thu: false, daily_tue:false, daily_wed: false, 
                         daily: this.updateSwitch(this.state.daily), customFrequency: false})
     }
 
     updateToCustomFrequency(){
         useCustomFrequency = this.updateSwitch(this.state.customFrequency);
-        this.setState({customFrequency: useCustomFrequency, weekly: false, daily: false})
+        this.setState({customFrequency: useCustomFrequency, daily: false})
     }
 
     updateToAllEvents(){
@@ -364,7 +384,7 @@ export default class MailingList extends React.Component {
                             daily: dailyIsSelected, email: data.email})
         }
         else{
-            this.setState({subscriptionStatus: "You are not subscribed to the mailing list.", isLoading:false, userToken: this.props.userToken})
+            this.setState({subscriptionStatus: "You are not subscribed to the mailing list.", isLoading:false, userToken: this.props.userToken, weekly: true, all_categories: true})
         }
     }
 
@@ -399,6 +419,7 @@ export default class MailingList extends React.Component {
     }
 
     signUpToMailingList(){
+        this.setState({isLoading: true})
         fetch("https://api.muncieevents.com/v1/mailing-list/subscribe?userToken=" + this.state.userToken + "&apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ", 
           {method: "POST",
           headers: {
@@ -428,6 +449,7 @@ export default class MailingList extends React.Component {
     }
 
     updateMailingList(){
+        this.setState({isLoading: true})
         fetch("https://api.muncieevents.com/v1/mailing-list/subscription?userToken=" + this.state.userToken + "&apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ", 
           {method: "PUT",
           headers: {
@@ -457,6 +479,7 @@ export default class MailingList extends React.Component {
     }
 
     unsubscribeFromMailingList(){
+        this.setState({isLoading: true})
         fetch("https://api.muncieevents.com/v1/mailing-list/subscription?userToken=" + this.state.userToken + "&apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ", 
           {method: "DELETE",
           headers: {
@@ -472,20 +495,18 @@ export default class MailingList extends React.Component {
     }
 
     handelResponse(responseType, responseJson){
-        console.log("A")
-        console.log(responseJson)
         try{
             this.setState({statusMessage: responseJson.errors[0].detail})
         }
         catch(error){
             if(responseType == "subscribe"){
-                this.setState({changesMade: true, statusMessage: "You are now subscribed to the mailing list."})
+                this.setState({changesMade: true, statusMessage: "You are now subscribed to the mailing list.", isLoading: false})
             }
             else if(responseType == "delete"){
-                this.setState({changesMade: true, statusMessage: "You have been unsubscribed from the mailing list"})
+                this.setState({changesMade: true, statusMessage: "You have been unsubscribed from the mailing list", isLoading: false})
             }
             else{
-                this.setState({changesMade: true, statusMessage: "Mailing list preferences updated"})
+                this.setState({changesMade: true, statusMessage: "Mailing list preferences updated", isLoading: false})
             }
         }
     }
