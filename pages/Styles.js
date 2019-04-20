@@ -18,11 +18,10 @@ export default StyleSheet.create({
     },
 
     centeredSingleItemText: {
-        flexDirection:'row', 
-        alignItems:'center', 
-        justifyContent: 'center',
-        paddingTop: '50%',
-        textAlign: 'center',
+        flexDirection:"row", 
+        alignItems:"center", 
+        justifyContent: "center",
+        textAlign: "center",
     },
     
 
