@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, WebView, ScrollView, Image, AsyncStorage, Alert, Linking, TouchableOpacity} from 'react-native';
+import {Text, View, WebView, ScrollView, Image, AsyncStorage, Alert, Linking, TouchableOpacity, FlatList} from 'react-native';
 import DateAndTimeParser from "../DateAndTimeParser";
 import{ withNavigation } from "react-navigation";
 import Styles from './Styles';
@@ -76,7 +76,7 @@ class ExpandedView extends React.Component {
 
     getDisplayedScreen(){
         renderedInfo = null
-        if(this.state.isLoading != false){
+        if(this.state.isLoading){
           renderedInfo = this.getLoadingScreen();
         }
         else if(this.state.selectedPreviousScreen){
@@ -110,21 +110,21 @@ class ExpandedView extends React.Component {
       if(!this.eventData){
         this.eventData = this.props.event;
     }
-    if(this.eventData.attributes.images[0] == null){
-      imageURL = "None"
-    }else{
-      imageURL = this.eventData.attributes.images[0].full_url
-    }
-    mainContent = this.getMainContent()
-    return (
-        <ScrollView
-          style={Styles.expandedView}
-        >
-          <Animatable.View animation = 'slideInRight' duration = {600}>
-            {mainContent}
-          </Animatable.View>
-        </ScrollView>
-      )
+      if(this.eventData.attributes.images[0] == null){
+        imageURL = "None"
+      }else{
+        imageURL = this.eventData.attributes.images[0].full_url
+      }
+      mainContent = this.getMainContent()
+      return (
+          <ScrollView
+            style={Styles.expandedView}
+          >
+            <Animatable.View animation = 'slideInRight' duration = {600}>
+              {mainContent}
+            </Animatable.View>
+          </ScrollView>
+        );
     }
 
     getLoadingScreen(){
@@ -270,12 +270,13 @@ class ExpandedView extends React.Component {
      return(
              <View>
              <Text style={Styles.header}>Tags</Text>
-             <FlatList
+             {/*<FlatList
                data={tags}
                renderItem={({item}) => 
                this.getTagLink(item)
                }
                scrollEnabled='false'/>
+              */}
                </View>)
     }
     else{
@@ -334,9 +335,11 @@ class ExpandedView extends React.Component {
         </Text>
         <Text>
           {this.eventData.attributes.location } {"\n"}
+        </Text>
           <TouchableOpacity onPress={()=>this.openAddress(this.eventData.attributes.address)}>
-          <Text style={{color: 'blue'}}>{this.getNullableAttribute(this.eventData.attributes.address)} {"\n"}</Text>
+            <Text style={{color: 'blue'}}>{this.getNullableAttribute(this.eventData.attributes.address)} {"\n"}</Text>
           </TouchableOpacity>
+        <Text>
           {this.getNullableAttribute(this.eventData.attributes.location_details)}
         </Text> 
       </View>
@@ -418,12 +421,12 @@ class ExpandedView extends React.Component {
 
   retrieveStoredToken = async() => {
     try {
-      const tkn = await AsyncStorage.getItem('Token')
+      const tkn = await AsyncStorage.getItem('Token');
       const utkn = await AsyncStorage.getItem('UniqueToken');
       this.setState({userid: tkn, userToken: utkn, isLoading: false})
      } catch (error) {
-       console.log("Error retrieving token")
-        return "NULL"
+        console.log("Error retrieving token")
+        this.setState({isLoading: false})
      }
   }
 

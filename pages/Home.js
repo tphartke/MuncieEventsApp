@@ -26,7 +26,7 @@ export default class HomeScreen extends React.Component{
       }
 
       render(){
-        console.log("Test")
+        console.log("I hate flat lists")
         if(this.state.isLoading){
           mainView = this.getLoadingScreen();
         }
