@@ -160,8 +160,20 @@ class ExpandedView extends React.Component {
     }
 
     getExpandedViewInformation(imageURL){
+      initialView = this.getInitialView(imageURL)
+      tags = this.getTags()
+      finalView = this.getFinalView()
         return(
           <View>
+            {initialView}
+            {tags}
+            {finalView}
+          </View>
+        )
+    }
+
+    getInitialView(imageURL){
+      return(<View>
             {this.getEditEventButtons()}
             {this.getURLImage(imageURL)}
             {this.getCostView()}
@@ -169,12 +181,15 @@ class ExpandedView extends React.Component {
             {this.getTimeView()}
             {this.getLocationView()}
             {this.getDescriptionView()}
-            {this.getTags()}
+      </View>)
+    }
+
+    getFinalView(){
+        return(<View>
             {this.getSource()}
             {this.getAuthorView()}
             {this.padBottom()}
-          </View>
-        )
+        </View>)
     }
 
     getEditEventButtons(){
@@ -267,22 +282,36 @@ class ExpandedView extends React.Component {
       for(i = 0; i < this.eventData.attributes.tags.length; i++){
         tags.push(this.eventData.attributes.tags[i].name)
       }
+      let tagView = tags.map((tag, key) => {
+      return <View key={key}>
+          <TouchableOpacity onPress={()=>this.setState({searchForTag: true, searchedTag: tag})}>
+              <Text style={{color: 'blue'}}>{tag}</Text>
+          </TouchableOpacity>
+        </View>}) 
      return(
              <View>
-             <Text style={Styles.header}>Tags</Text>
-             {/*<FlatList
-               data={tags}
-               renderItem={({item}) => 
-               this.getTagLink(item)
-               }
-               scrollEnabled='false'/>
-              */}
-               </View>)
+                <Text style={Styles.header}>Tags</Text>
+                {tagView}
+              </View>)
     }
     else{
       return null
     }
   }
+
+  getTagView(tags){
+    tagView = []
+    for(i = 0; i < tags.length; i++){
+      console.log(tagView)
+      tagView.push(<View>
+        <TouchableOpacity onPress={()=>this.setState({searchForTag: true, searchedTag: tags[i]})}>
+           <Text style={{color: 'blue'}}>{tags[i]}</Text>
+        </TouchableOpacity>
+      </View>)
+    }
+    return tagView
+  }
+
 
   getTagLink(tag){
     return(

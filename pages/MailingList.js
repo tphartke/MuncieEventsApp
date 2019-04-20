@@ -148,7 +148,9 @@ export default class MailingList extends React.Component {
                 />
                 <Text>Custom</Text>
             </View>
-            {customEventOptions}
+            <View>
+                {customEventOptions}
+            </View>
             <Text>{this.state.statusMessage}</Text>
             <CustomButton 
                     text="Update Settings" 
@@ -254,19 +256,16 @@ export default class MailingList extends React.Component {
     }
 
     getCustomEventOptions(){
-        return(
-            <View>
-                <FlatList
-                    extraData={this.state}
-                    style={Styles.embeddedSwitch}
-                    data={this.categories}
-                    renderItem={({item}) => 
-                        this.getCategorySwitch(item)
-                    }
-                    scrollEnabled='false'
+        let customEventView = this.categories.map((category, key) => {
+            isCategoryAlreadySelected = this.isInSelectedCategoryList(category[1])
+            return <View key={key} style={Styles.embeddedSwitch}>
+                <Switch
+                    value={isCategoryAlreadySelected}
+                    onValueChange={() => this.updateSelectedCategoryList(category)}
                 />
-            </View>
-        )
+                <Text style={{alignSelf:"center"}}>{category[0]}</Text>
+              </View>}) 
+        return customEventView
     }
 
     getCategorySwitch(category){
