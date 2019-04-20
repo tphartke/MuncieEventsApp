@@ -178,12 +178,15 @@ export default class MailingList extends React.Component {
     }
 
     updateToCustomFrequency(){
-        this.setState({customFrequency: this.updateSwitch(this.state.customFrequency), weekly: false, daily: false})
+        useCustomFrequency = this.updateSwitch(this.state.customFrequency);
+        this.setState({customFrequency: useCustomFrequency, weekly: false, daily: false})
     }
+
     updateToAllEvents(){
         this.category_ids = []
         this.setState({all_categories: this.updateSwitch(this.state.all_categories), customEvents: false})
     }
+    
     updateToCustomEvents(){
         this.setState({all_categories: false, customEvents: this.updateSwitch(this.state.customEvents)})
     }

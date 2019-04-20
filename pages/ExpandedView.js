@@ -63,7 +63,6 @@ class ExpandedView extends React.Component {
                       statusMessage: ""}
         this.eventData = null
         this.state={selectedPreviousScreen:false}
-
       }
 
     componentDidMount(){
@@ -317,7 +316,7 @@ class ExpandedView extends React.Component {
         <Text>
           {this.eventData.attributes.location } {"\n"}
           <TouchableOpacity onPress={()=>this.openAddress(this.eventData.attributes.address)}>
-          <Text style={{color: 'blue'}}>{this.getNullableAttribute(this.eventData.attributes.address)}</Text> {"\n"}
+          <Text style={{color: 'blue'}}>{this.getNullableAttribute(this.eventData.attributes.address)} {"\n"}</Text>
           </TouchableOpacity>
           {this.getNullableAttribute(this.eventData.attributes.location_details)}
         </Text> 

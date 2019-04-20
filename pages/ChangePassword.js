@@ -97,6 +97,7 @@ export default class ChangePassword extends React.Component {
       .then((responseJson) => this.checkStatus(responseJson))
       .then(this.setState({statusMessage: "Password changed successfully", confirmNewPassword: "", newPassword: "", passwordChanged: true}))
         .catch((error) =>{
+            console.log(error)
            this.setState({failedToLoad:true, passwordChanged: false})
         })
       }

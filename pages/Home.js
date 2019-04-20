@@ -26,6 +26,7 @@ export default class HomeScreen extends React.Component{
       }
 
       render(){
+        console.log("Test")
         if(this.state.isLoading){
           mainView = this.getLoadingScreen();
         }
@@ -63,6 +64,7 @@ export default class HomeScreen extends React.Component{
           </View>
         );
       }
+      
 
       async _startupCachingAsync(){
           key = "APIData"
