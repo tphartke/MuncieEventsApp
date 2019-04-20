@@ -52,13 +52,15 @@ export default class ChangePassword extends React.Component {
                     style={Styles.textBox}
                     placeholder="Enter new password"
                     value={this.state.newPassword}
-                    secureTextEntry={true}/>
+                    secureTextEntry={true}
+                    underlineColorAndroid="transparent"/>
                 <TextInput 
                     onChangeText={(confirmNewPassword) => this.setState({confirmNewPassword})}
                     style={Styles.textBox}
                     value={this.state.confirmNewPassword}
                     placeholder="Confirm new password"
-                    secureTextEntry={true}/>
+                    secureTextEntry={true}
+                    underlineColorAndroid="transparent"/>
                 <CustomButton 
                     text="Confirm" 
                     buttonStyle = {Styles.longButtonStyle}

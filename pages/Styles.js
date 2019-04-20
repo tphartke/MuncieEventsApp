@@ -205,7 +205,8 @@ export default StyleSheet.create({
     textArea: {
         height: 160, 
         borderColor: 'gray', 
-        borderWidth: 1
+        borderWidth: 1,
+        textAlignVertical: 'top'
     },
 
     formRow:{

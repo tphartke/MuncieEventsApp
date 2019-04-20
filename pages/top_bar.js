@@ -33,6 +33,7 @@ class TopBar extends React.Component {
             placeholder=' Search Muncie Events'
             value={this.state.text} 
             style={Styles.searchBar}
+            underlineColorAndroid="transparent"
             onChangeText={(text) => this.setState({text})}
             showLoading='true'
           />

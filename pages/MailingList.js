@@ -92,7 +92,6 @@ export default class MailingList extends React.Component {
         allCategories = this.state.all_categories
         customEvents = this.state.customEvents
 
-        console.log("CustomEvents: " + this.state.customEvents)
         if(this.state.customFrequency){
             customFrequencyOptions = this.getCustomFrequencyOptions()
         }
@@ -108,6 +107,7 @@ export default class MailingList extends React.Component {
                 onChangeText={(email) => this.setState({email})}
                 style={Styles.textBox}
                 placeholder="Email"
+                underlineColorAndroid="transparent"
             />
             <Text style={Styles.title}>Frequency</Text>
             <View style={{flexDirection: 'row'}}>

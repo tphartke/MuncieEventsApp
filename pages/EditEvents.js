@@ -1,5 +1,5 @@
 import React from 'react';  
-import {View, Platform, Text, Picker, TextInput, Modal, DatePickerAndroid, TimePickerAndroid, DatePickerIOS, FlatList, Switch, ScrollView, AsyncStorage} from 'react-native';
+import {View, Platform, Text, Picker, TextInput, Modal, DatePickerAndroid, TimePickerAndroid, DatePickerIOS, FlatList, Switch, ScrollView, AsyncStorage, TouchableOpacity} from 'react-native';
 import Styles from './Styles';
 import APICacher from '../APICacher'
 import CustomButton from './CustomButton';
@@ -71,7 +71,7 @@ export default class EditEvents extends React.Component {
   
   async _fetchTagData(){
       key = "Tags"
-      url = "https://api.muncieevents.com/v1/tags/future?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ"
+      url = "https://api.muncieevents.com/v1/tags?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ"
       await this._refreshData(key, url)
   
       this.tags = await this.APICacher._getJSONFromStorage(key)
@@ -147,6 +147,7 @@ export default class EditEvents extends React.Component {
                           style={[Styles.textBox]}
                           ref={input => this.filterInput = input}
                           placeholder="Filter tags"
+                          underlineColorAndroid="transparent"
                       />
                   </View>
                   <CustomButton
@@ -406,6 +407,7 @@ export default class EditEvents extends React.Component {
                               value={this.state.event}           
                               onChangeText={(event) => this.setState({event})}
                               style={[Styles.textBox, Styles.formEntry]}
+                              underlineColorAndroid="transparent"
                           />
                       </View>
                       <View style={Styles.formRow}>
@@ -432,6 +434,7 @@ export default class EditEvents extends React.Component {
                               value={this.state.location}                
                               onChangeText={(location) => this.setState({location})}
                               style={[Styles.textBox, Styles.formEntry]}
+                              underlineColorAndroid="transparent"
                           />
                       </View>
                       <View style={Styles.formRow}>
@@ -441,6 +444,7 @@ export default class EditEvents extends React.Component {
                               onChangeText={(locationDetails) => this.setState({locationDetails})}
                               style={[Styles.textBox, Styles.formEntry]}
                               placeholder = "upstairs, room 149, etc."
+                              underlineColorAndroid="transparent"
                           />
                       </View>
                       <View style ={Styles.formRow}>
@@ -450,6 +454,7 @@ export default class EditEvents extends React.Component {
                               value={this.state.address}               
                               onChangeText={(address) => this.setState({address})}
                               style={[Styles.textBox, Styles.formEntry]}
+                              underlineColorAndroid="transparent"
                           />
                       </View>
                       <View style={Styles.formRow}>
@@ -459,6 +464,7 @@ export default class EditEvents extends React.Component {
                               onChangeText={(description) => this.setState({description})}
                               style={[Styles.textArea, Styles.formEntry]}
                               multiline={true}
+                              underlineColorAndroid="transparent"
                           />
                       </View>
                       <View style={Styles.formRow}>
@@ -481,6 +487,7 @@ export default class EditEvents extends React.Component {
                               onChangeText={(cost) => this.setState({cost})}
                               style={[Styles.textBox, Styles.formEntry]}
                               placeholder = "Leave this blank if the event is free"
+                              underlineColorAndroid="transparent"
                           />
                       </View>
                       <View style = {Styles.formRow}>
@@ -490,6 +497,7 @@ export default class EditEvents extends React.Component {
                               onChangeText={(ageRestriction) => this.setState({ageRestriction})}
                               style={[Styles.textBox, Styles.formEntry]}
                               placeholder = "Leave this blank if there is no age restriction"
+                              underlineColorAndroid="transparent"
                           />
                       </View>
                       <View style={Styles.formRow}>
@@ -499,17 +507,13 @@ export default class EditEvents extends React.Component {
                               onChangeText={(source) => this.setState({source})}
                               style={[Styles.textBox, Styles.formEntry]}
                               placeholder = "Did you get this information from a website, newspaper, flyer, etc?"
+                              underlineColorAndroid="transparent"
                           />
                       </View>
                       <View style={Styles.formRow}>
                             <Text style={Styles.formLabel}>Images </Text>
-                            <Text style={Styles.formEntry}>If you would like to upload images for your event, please use the Muncie Events website.</Text>
-                            <CustomButton
-                                text="Visit MuncieEvents.com"
-                                buttonStyle = {Styles.longButtonStyle}
-                                textStyle = {Styles.longButtonTextStyle}
-                                onPress={() => this.goToWebsite()}
-                            />
+                            <Text style={Styles.formEntry}>If you would like to upload images for your event, please use the </Text>
+                            <TouchableOpacity onPress={()=>{this.goToWebsite()}}><Text style={{color: 'blue'}}>Muncie Events website.</Text></TouchableOpacity>
                         </View>
                       <View style={Styles.formRow}>
                           <CustomButton
@@ -597,7 +601,7 @@ export default class EditEvents extends React.Component {
       endTime = end[0]+':'+end[1]+endampm.toLowerCase()
   
       chosenDate = this.state.chosenDate.getFullYear() + '-' + ('0' + (this.state.chosenDate.getMonth()+1)).slice(-2) + '-' + ('0' + this.state.chosenDate.getDate()).slice(-2)
-
+      this.setState({isLoading: true})
       fetch(url,
       {method: "PATCH",
       headers: {
@@ -630,10 +634,10 @@ export default class EditEvents extends React.Component {
 
   handelAPIResponse(responseJson){
       try{
-          this.setState({statusMessage: responseJson.errors[0].detail})
+          this.setState({statusMessage: responseJson.errors[0].detail, isLoading: false})
       }
       catch(error){
-          this.setState({statusMessage: "Event successfully updated!", eventUpdated: true})
+          this.setState({statusMessage: "Event successfully updated!", eventUpdated: true, isLoading: false})
       }
   }
 

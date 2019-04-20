@@ -60,6 +60,7 @@ export default class Register extends React.Component {
                     onChangeText={(name) => this.setState({name})}
                     style={Styles.textBox}
                     placeholder="Name"
+                    underlineColorAndroid="transparent"
                 />
 
                 <Text>Email</Text>
@@ -67,6 +68,7 @@ export default class Register extends React.Component {
                     onChangeText={(email) => this.setState({email})}
                     style={Styles.textBox}
                     placeholder="Email"
+                    underlineColorAndroid="transparent"
                 />
   
                 <Text>Password</Text>
@@ -75,6 +77,7 @@ export default class Register extends React.Component {
                     style={Styles.textBox}
                     placeholder="Password"
                     secureTextEntry={true}
+                    underlineColorAndroid="transparent"
                 />
 
                 <Text>Confirm Password</Text>
@@ -83,6 +86,7 @@ export default class Register extends React.Component {
                     style={Styles.textBox}
                     placeholder="Retype Password"
                     secureTextEntry={true}
+                    underlineColorAndroid="transparent"
                 />
                 <Text>Join mailing list</Text>
                 <Switch

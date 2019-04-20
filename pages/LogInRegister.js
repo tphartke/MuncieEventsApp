@@ -91,11 +91,13 @@ export default class LogInRegister extends React.Component {
               onChangeText={(email) => this.setState({email})}
               style={Styles.textBox}
               placeholder="Email"
+              underlineColorAndroid="transparent"
           />          
           <TextInput
           onChangeText={(password) => this.setState({password})}
           style={Styles.textBox}
           placeholder="Password"
+          underlineColorAndroid="transparent"
           secureTextEntry={true}
           />
           

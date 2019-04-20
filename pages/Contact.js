@@ -65,6 +65,7 @@ export default class Contact extends React.Component {
         onChangeText={(name) => this.setState({name})}
         style={Styles.textBox}
         placeholder="Name"
+        underlineColorAndroid="transparent"
       />
 
       <Text>Email</Text>
@@ -72,6 +73,7 @@ export default class Contact extends React.Component {
         onChangeText={(email) => this.setState({email})}
         style={Styles.textBox}
         placeholder="Email"
+        underlineColorAndroid="transparent"
       />
 
       <Text>Message</Text>
@@ -80,6 +82,7 @@ export default class Contact extends React.Component {
       style={Styles.textArea}
       placeholder="Type message here..."
       multiline={true}
+      underlineColorAndroid="transparent"
       />
 
       <CustomButton 

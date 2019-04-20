@@ -39,6 +39,7 @@ export default class ForgotPassword extends React.Component {
                     onChangeText={(email) => this.setState({email})}
                     style={Styles.textBox}
                     placeholder="Name"
+                    underlineColorAndroid="transparent"
                 />
                 <CustomButton 
                     text="Send Recovery Email" 

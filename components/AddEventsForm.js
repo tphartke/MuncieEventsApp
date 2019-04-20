@@ -138,6 +138,7 @@ export default class AddEventsForm extends Component{
                             style={[Styles.textBox]}
                             ref={input => this.filterInput = input}
                             placeholder="Filter tags"
+                            underlineColorAndroid="transparent"
                         />
                     </View>
                     <CustomButton
@@ -501,6 +502,7 @@ export default class AddEventsForm extends Component{
                             <TextInput               
                                 onChangeText={(event) => this.setState({event})}
                                 style={[Styles.textBox, Styles.formEntry]}
+                                underlineColorAndroid="transparent"
                             />
                         </View>
                         <View style={Styles.formRow}>
@@ -527,6 +529,7 @@ export default class AddEventsForm extends Component{
                             <TextInput               
                                 onChangeText={(location) => this.setState({location})}
                                 style={[Styles.textBox, Styles.formEntry]}
+                                underlineColorAndroid="transparent"
                             />
                         </View>
                         <View style={Styles.formRow}>
@@ -535,6 +538,7 @@ export default class AddEventsForm extends Component{
                                 onChangeText={(locationDetails) => this.setState({locationDetails})}
                                 style={[Styles.textBox, Styles.formEntry]}
                                 placeholder = "upstairs, room 149, etc."
+                                underlineColorAndroid="transparent"
                             />
                         </View>
                         <View style ={Styles.formRow}>
@@ -542,6 +546,7 @@ export default class AddEventsForm extends Component{
                             <TextInput               
                                 onChangeText={(address) => this.setState({address})}
                                 style={[Styles.textBox, Styles.formEntry]}
+                                underlineColorAndroid="transparent"
                             />
                         </View>
                         <View style={Styles.formRow}>
@@ -550,6 +555,7 @@ export default class AddEventsForm extends Component{
                                 onChangeText={(description) => this.setState({description})}
                                 style={[Styles.textArea, Styles.formEntry]}
                                 multiline={true}
+                                underlineColorAndroid="transparent"
                             />
                         </View>
                         <View style={Styles.formRow}>
@@ -571,6 +577,7 @@ export default class AddEventsForm extends Component{
                                 onChangeText={(cost) => this.setState({cost})}
                                 style={[Styles.textBox, Styles.formEntry]}
                                 placeholder = "Leave this blank if the event is free"
+                                underlineColorAndroid="transparent"
                             />
                         </View>
                         <View style = {Styles.formRow}>
@@ -579,6 +586,7 @@ export default class AddEventsForm extends Component{
                                 onChangeText={(ageRestriction) => this.setState({ageRestriction})}
                                 style={[Styles.textBox, Styles.formEntry]}
                                 placeholder = "Leave this blank if there is no age restriction"
+                                underlineColorAndroid="transparent"
                             />
                         </View>
                         <View style={Styles.formRow}>
@@ -587,6 +595,7 @@ export default class AddEventsForm extends Component{
                                 onChangeText={(source) => this.setState({source})}
                                 style={[Styles.textBox, Styles.formEntry]}
                                 placeholder = "Did you get this information from a website, newspaper, flyer, etc?"
+                                underlineColorAndroid="transparent"
                             />
                         </View>
                         <View style={Styles.formRow}>

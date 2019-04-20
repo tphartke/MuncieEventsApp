@@ -207,11 +207,13 @@ export default class ProfileView extends React.Component {
                     onChangeText={(name) => this.setState({name})}
                     style={Styles.textBox}
                     value={this.state.name}
+                    underlineColorAndroid="transparent"
                 />          
                 <TextInput
                     onChangeText={(email) => this.setState({email})}
                     style={Styles.textBox}
                     value={this.state.email}
+                    underlineColorAndroid="transparent"
                 />
                 <CustomButton 
                     text="Update" 
