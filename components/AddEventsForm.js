@@ -612,6 +612,7 @@ export default class AddEventsForm extends Component{
                             />
                         </View>
                         <View>{this.state.statusMessage}</View>
+                        <Text>{'\n\n'}</Text>
                     </View>
             );
         }

@@ -37,7 +37,6 @@ export default class ProfileView extends React.Component {
         }
         else if(this.state.changePassword){
             contentView = (<View style={{flex:1}}>
-                              <View style={Styles.buttonBuffer}/>
                               <CustomButton 
                                   text="Go Back" 
                                   buttonStyle = {Styles.longButtonStyle}
@@ -83,7 +82,6 @@ export default class ProfileView extends React.Component {
       getMailingListView(){
         return(
               <View style={{flex:1}}>
-              <View style={Styles.buttonBuffer}/>
                   <CustomButton 
                       text="Go Back" 
                       buttonStyle = {Styles.longButtonStyle}

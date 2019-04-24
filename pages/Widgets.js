@@ -102,6 +102,7 @@ export default class Widgets extends React.Component {
         javaScriptEnabled = {true}
         injectedJavaScript={injectScript}
         onMessage = {this.onMessage}
+        scalesPageToFit={false}
       />
     )
   }
