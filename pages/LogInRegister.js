@@ -86,7 +86,8 @@ export default class LogInRegister extends React.Component {
           profileInfo = this.showProfileInfo();
       }
       return (
-        <View style={{flex:0.3}}>      
+        <View style={{flex:0.3}}>    
+          <View style={Styles.buttonBuffer}/>  
           <TextInput
               onChangeText={(email) => this.setState({email})}
               style={Styles.textBox}
@@ -159,7 +160,6 @@ export default class LogInRegister extends React.Component {
     getForgotPasswordSequence(){
       return(
         <View style={{flex:1}}>
-            <View style={Styles.buttonBuffer}/>
             <CustomButton
             text = "Go Back"
             buttonStyle={Styles.longButtonStyle}
