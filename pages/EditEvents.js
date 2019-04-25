@@ -524,6 +524,7 @@ export default class EditEvents extends React.Component {
                           />
                       </View>
                       <Text>{this.state.statusMessage}</Text>
+                      <Text>{'\n\n'}</Text>
                   </View>
           );
       }

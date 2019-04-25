@@ -1,10 +1,11 @@
 import React from 'react';
-import {Text, View, WebView, Linking} from 'react-native';
+import {Text, View, WebView, Linking, Platform} from 'react-native';
 import Styles from './Styles';
 import APICacher from '../APICacher';
 import LoadingScreen from '../components/LoadingScreen';
 import TopBar from './top_bar';
 import InternetError from '../components/InternetError';
+
 
 //This script is used to inject working links into the WebView, as the normal method can't be used due to a react native bug.
 const injectScript = `
@@ -102,7 +103,7 @@ export default class Widgets extends React.Component {
         javaScriptEnabled = {true}
         injectedJavaScript={injectScript}
         onMessage = {this.onMessage}
-        scalesPageToFit={false}
+        scalesPageToFit={Platform.OS == "android"}
       />
     )
   }

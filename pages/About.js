@@ -107,7 +107,7 @@ export default class About extends React.Component {
         javaScriptEnabled = {true}
         injectedJavaScript={injectScript}
         onMessage = {this.onMessage}
-        scalesPageToFit={false}
+        scalesPageToFit={Platform.OS == "android"}
       />
     )
   }
