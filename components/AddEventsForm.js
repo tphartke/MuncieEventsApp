@@ -15,7 +15,7 @@ export default class AddEventsForm extends Component{
             IOSModalVisible: false,
             tagModalVisable: false,
             chosenDate: new Date(),
-            startTime: null,
+            startTime: 0,
             endTime: null,
             selectedTagArray: [],
             filter: null,
@@ -221,7 +221,7 @@ export default class AddEventsForm extends Component{
             return(
                 <View>
                     <View style={Styles.formRow}>
-                        <Text style ={Styles.formLabel}>Start Time {isRequired}</Text>
+                        <Text style ={Styles.formLabel}>Start Time  {isRequired}</Text>
                         <CustomButton 
                             buttonStyle={Styles.mediumButtonStyle}
                             textStyle={Styles.mediumButtonTextStyle}
@@ -484,7 +484,7 @@ export default class AddEventsForm extends Component{
         }
         else if(this.state.eventSubmitted){
             return(<View style={Styles.centeredSingleItemText}>
-                        <Text>{this.state.statusMessage}</Text>
+                        {this.state.statusMessage}
                 </View>)
         }
         else{
@@ -629,14 +629,14 @@ export default class AddEventsForm extends Component{
 
     attemptEventSubmission(){
         if(this.requiredFieldsAreFilled()){
-            this.submitEvent()
+            this.submitEvent()            
         }
         else{
             statusMessage = (<Text>ERROR: One or more required fields not completed</Text>)
             this.setState({statusMessage: statusMessage})
         }
     }
-
+      
     requiredFieldsAreFilled(){
         chosenDate = this.state.chosenDate;
         startTime = this.state.startTime;
@@ -732,8 +732,8 @@ export default class AddEventsForm extends Component{
             this.setState({statusMessage: statusMessage})
         }
         catch(error){
-            statusMessage = (<View style={Styles.centeredSingleItemText}>
-                                <Text>Event successfully submitted!</Text>
+            statusMessage = (<View>
+                                <Text style={Styles.header}>Event successfully submitted!</Text>
                                 <TouchableOpacity onPress={()=>{this.resetForm()}}>
                                     <Text style={{color: 'blue'}}>Add another event</Text>
                                 </TouchableOpacity> 
