@@ -6,6 +6,7 @@ import APICacher from '../APICacher';
 import TopBar from './top_bar';
 import LoadingScreen from '../components/LoadingScreen';
 import InternetError from '../components/InternetError';
+import APIKey from '../APIKey'
 
 export default class SearchResults extends React.Component{
     constructor(props){
@@ -14,6 +15,7 @@ export default class SearchResults extends React.Component{
         failedToLoad: false}
         const {navigation} = this.props;
         this.searchInput = navigation.getParam('searchInput', 'No Results Found')
+        this.APIKey = new APIKey();
     }
 
     componentDidMount(){
@@ -75,7 +77,7 @@ export default class SearchResults extends React.Component{
 
     async _cacheSearchResults(){
         beginningSearchURL = 'https://api.muncieevents.com/v1/events/search?q='
-        endingSearchURL = '&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1'
+        endingSearchURL = '&apikey='+this.APIKey.getAPIKey()
         searchURL = beginningSearchURL + this.searchInput + endingSearchURL
         key = "SearchResults"
 

@@ -5,6 +5,7 @@ import CustomButton from './CustomButton';
 import LoadingScreen from '../components/LoadingScreen';
 import APICacher from '../APICacher'
 import InternetError from '../components/InternetError';
+import APIKey from '../APIKey'
 
 export default class MailingList extends React.Component {
     constructor(props){
@@ -33,6 +34,7 @@ export default class MailingList extends React.Component {
                         category_ids: []
                      })
         this.APICacher = new APICacher();
+        this.APIKey = new APIKey();
         categories = []
         this.category_ids = []
     }
@@ -324,7 +326,7 @@ export default class MailingList extends React.Component {
 
     async _fetchCategoryAndSubscriptionData(){
         key = "Categories"
-        url = "https://api.muncieevents.com/v1/categories?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ"
+        url = "https://api.muncieevents.com/v1/categories?apikey="+this.APIKey.getAPIKey()
         await this._refreshData(key, url)
         this.categories = await this.APICacher._getJSONFromStorage(key)
         this.categories = this.categories.map((category) => {return [category.attributes.name, category.id]})
@@ -349,7 +351,7 @@ export default class MailingList extends React.Component {
     }
 
     getMailingListInformation(){
-        fetch("https://api.muncieevents.com/v1/mailing-list/subscription?userToken=" + this.props.userToken + "&apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ")
+        fetch("https://api.muncieevents.com/v1/mailing-list/subscription?userToken=" + this.props.userToken + "&apikey="+this.APIKey.getAPIKey())
         .then((response) => response.json())
         .then((responseJson) => {
           this.determineUserSubscription(responseJson)
@@ -420,7 +422,7 @@ export default class MailingList extends React.Component {
 
     signUpToMailingList(){
         this.setState({isLoading: true})
-        fetch("https://api.muncieevents.com/v1/mailing-list/subscribe?userToken=" + this.state.userToken + "&apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ", 
+        fetch("https://api.muncieevents.com/v1/mailing-list/subscribe?userToken=" + this.state.userToken + "&apikey="+this.APIKey.getAPIKey(), 
           {method: "POST",
           headers: {
             Accept: 'application/vnd.api+json',
@@ -450,7 +452,7 @@ export default class MailingList extends React.Component {
 
     updateMailingList(){
         this.setState({isLoading: true})
-        fetch("https://api.muncieevents.com/v1/mailing-list/subscription?userToken=" + this.state.userToken + "&apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ", 
+        fetch("https://api.muncieevents.com/v1/mailing-list/subscription?userToken=" + this.state.userToken + "&apikey="+this.APIKey.getAPIKey(), 
           {method: "PUT",
           headers: {
             Accept: 'application/vnd.api+json',

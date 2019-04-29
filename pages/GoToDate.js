@@ -7,6 +7,7 @@ import APICacher from '../APICacher'
 import LoadingScreen from '../components/LoadingScreen';
 import TopBar from './top_bar';
 import InternetError from '../components/InternetError';
+import APIKey from '../APIKey'
 
 export default class GoToDate extends React.Component {
   constructor(props){
@@ -22,6 +23,7 @@ export default class GoToDate extends React.Component {
     this.dateSelected = false; 
     this.setDate = this.setDate.bind(this);
     this.APICacher = new APICacher();
+    this.APIKey = new APIKey();
   }
 
   componentDidMount(){
@@ -102,7 +104,7 @@ export default class GoToDate extends React.Component {
         else{
           formattedDate = this.getAndroidFormattedDate(date)
         }
-        url = 'https://api.muncieevents.com/v1/events?start='+formattedDate+'&end='+formattedDate+'&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1'
+        url = 'https://api.muncieevents.com/v1/events?start='+formattedDate+'&end='+formattedDate+'&apikey='+this.APIKey.getAPIKey()
         this.setState({searchURL: url, chosenDate: date});
     }
 

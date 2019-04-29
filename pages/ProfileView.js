@@ -8,6 +8,7 @@ import LoadingScreen from '../components/LoadingScreen';
 import ChangePassword from './ChangePassword'
 import InternetError from '../components/InternetError';
 import MailingList from './MailingList'
+import APIKey from '../APIKey'
 
 export default class ProfileView extends React.Component {
     constructor(props){
@@ -24,6 +25,7 @@ export default class ProfileView extends React.Component {
                       mailingList: false,
                       failedToLoad:false});
                       this.APICacher = new APICacher();
+                      this.APIKey = new APIKey();
       }
 
       render(){
@@ -95,14 +97,14 @@ export default class ProfileView extends React.Component {
       }
 
       componentDidMount(){
-        url = "https://api.muncieevents.com/v1/user/" + this.props.userid + "/events?apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1";
+        url = "https://api.muncieevents.com/v1/user/" + this.props.userid + "/events?apikey="+this.APIKey.getAPIKey();
         this.setState({userid: this.props.userid, token: this.props.token,
         usereventsurl: url});
         this._startupCachingAsync(url);
       }
 
       fetchUserData(userid){
-        fetch("https://api.muncieevents.com/v1/user/" + userid + "?apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1")        
+        fetch("https://api.muncieevents.com/v1/user/" + userid + "?apikey="+this.APIKey.getAPIKey())        
         .then((response) => response.json())
         .then((responseJson) => {
           console.log(responseJson)
@@ -129,7 +131,7 @@ export default class ProfileView extends React.Component {
       }
 
       updateUserData(){
-        fetch("https://api.muncieevents.com/v1/user/profile?userToken=" + this.state.token + "&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1", 
+        fetch("https://api.muncieevents.com/v1/user/profile?userToken=" + this.state.token + "&apikey="+this.APIKey.getAPIKey(), 
           {method: "PATCH",
           headers: {
             Accept: 'application/vnd.api+json',

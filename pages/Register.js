@@ -3,6 +3,7 @@ import {Text, View, TextInput, Switch} from 'react-native';
 import CustomButton from './CustomButton';
 import Styles from './Styles';
 import InternetError from '../components/InternetError';
+import APIKey from '../APIKey'
 
 
 export default class Register extends React.Component {
@@ -18,6 +19,7 @@ export default class Register extends React.Component {
                         failedToLoad: false
                     })
         dataSource = null
+        this.APIKey = new APIKey();
       }
 
     render (){
@@ -127,7 +129,7 @@ export default class Register extends React.Component {
       }
 
       fetchAPIData(){
-            fetch("https://api.muncieevents.com/v1/user/register?apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1", 
+            fetch("https://api.muncieevents.com/v1/user/register?apikey="+this.APIKey.getAPIKey(), 
               {method: "POST",
               headers: {
                   Accept: 'application/vnd.api+json',

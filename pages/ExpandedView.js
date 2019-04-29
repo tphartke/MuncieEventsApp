@@ -9,6 +9,7 @@ import EventList from '../EventList';
 import LoadingScreen from '../components/LoadingScreen';
 import EditEvents from './EditEvents';
 import APICacher from '../APICacher';
+import APIKey from "../APIKey"
 
 //All 3 scripts below are used as workarounds for a bug with WebViews not displaying in certain nested Views.
 //Once React Native fixes these bugs, the scriptings can be removed
@@ -68,6 +69,7 @@ class ExpandedView extends React.Component {
         this.eventData = null
         this.state={selectedPreviousScreen:false}
         this.APICacher = new APICacher();
+        this.APIKey = new APIKey();
       }
 
     componentDidMount(){
@@ -86,7 +88,7 @@ class ExpandedView extends React.Component {
         }
         else if(this.state.isSearching){
           renderedInfo = this.getLoadingScreen();
-          url = 'https://api.muncieevents.com/v1/events/future?withTags[]='+  this.state.searchedTag + '&apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ'
+          url = 'https://api.muncieevents.com/v1/events/future?withTags[]='+  this.state.searchedTag + '&apikey='+this.APIKey.getAPIKey()
           console.log(url)
           this._cacheSearchResultsAsync(url).catch(error =>  this.catchError())
         }
@@ -508,7 +510,7 @@ class ExpandedView extends React.Component {
   deleteEvent(){
       console.log("Deleting Event...")
       console.log(this.state.userToken)
-      fetch("https://api.muncieevents.com/v1/event/"+this.eventData.id+"?userToken=" + this.state.userToken +"&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1", 
+      fetch("https://api.muncieevents.com/v1/event/"+this.eventData.id+"?userToken=" + this.state.userToken +"&apikey="+this.APIKey.getAPIKey(), 
         {method: "DELETE",
         headers: {
             Accept: 'application/vnd.api+json',

@@ -4,6 +4,7 @@ import CustomButton from "./CustomButton";
 import Styles from './Styles';
 import TopBar from './top_bar';
 import InternetError from '../components/InternetError';
+import APIKey from '../APIKey'
 
 export default class Contact extends React.Component {
     constructor(props){
@@ -15,7 +16,9 @@ export default class Contact extends React.Component {
                      statusMessage: "",
                      failedToLoad:false
                     })
+       this.APIKey = new APIKey();
     }
+
 
   render() {
     if(this.state.failedToLoad){
@@ -119,7 +122,7 @@ export default class Contact extends React.Component {
   }
 
   fetchAPIData(){
-      fetch("https://api.muncieevents.com/v1/contact?apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1", 
+      fetch("https://api.muncieevents.com/v1/contact?apikey="+this.APIKey.getAPIKey(), 
       {method: "POST",
       headers: {
         Accept: 'application/vnd.api+json',

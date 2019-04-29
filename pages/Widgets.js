@@ -5,6 +5,7 @@ import APICacher from '../APICacher';
 import LoadingScreen from '../components/LoadingScreen';
 import TopBar from './top_bar';
 import InternetError from '../components/InternetError';
+import APIKey from '../APIKey'
 
 
 //This script is used to inject working links into the WebView, as the normal method can't be used due to a react native bug.
@@ -22,6 +23,7 @@ export default class Widgets extends React.Component {
   constructor(props){
     super(props);
     this.state ={isLoading: true, failedToLoad:false}
+    this.APIKey = new APIKey();
   }
 
   componentDidMount(){
@@ -72,7 +74,7 @@ export default class Widgets extends React.Component {
   async _getCachedDataAsync(){
     this.APICacher = new APICacher();
     key = "WidgetsData"
-    url = "https://api.muncieevents.com/v1/pages/widgets?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ"
+    url = "https://api.muncieevents.com/v1/pages/widgets?apikey="+this.APIKey.getAPIKey()
     hasAPIData = await this.APICacher._hasAPIData(key)
     if(hasAPIData){
       await this.APICacher._refreshJSONFromStorage(key, url)

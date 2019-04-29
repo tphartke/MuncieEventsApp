@@ -6,6 +6,7 @@ import CustomButton from '../pages/CustomButton';
 import LoadingScreen from "./LoadingScreen";
 import InternetError from './InternetError';
 import DateAndTimeParser from '../DateAndTimeParser'
+import APIKey from '../APIKey'
 
 export default class AddEventsForm extends Component{
     constructor(props){
@@ -37,6 +38,7 @@ export default class AddEventsForm extends Component{
         }
         this.tags=[]
         this.APICacher = new APICacher();
+        this.APIKey = new APIKey();
     }
 
     componentDidMount(){
@@ -53,7 +55,7 @@ export default class AddEventsForm extends Component{
 
     async _fetchCategoryData(){
         key = "Categories"
-        url = "https://api.muncieevents.com/v1/categories?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ"
+        url = "https://api.muncieevents.com/v1/categories?apikey="+this.APIKey.getAPIKey()
         await this._refreshData(key, url)
     
         this.categories = await this.APICacher._getJSONFromStorage(key)
@@ -63,7 +65,7 @@ export default class AddEventsForm extends Component{
     
     async _fetchTagData(){
         key = "Tags"
-        url = "https://api.muncieevents.com/v1/tags?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ"
+        url = "https://api.muncieevents.com/v1/tags?apikey="+this.APIKey.getAPIKey()
         await this._refreshData(key, url)
     
         this.tags = await this.APICacher._getJSONFromStorage(key)
@@ -678,10 +680,10 @@ export default class AddEventsForm extends Component{
         chosenDate = this.state.chosenDate
 
         if(userToken){
-            url = "https://api.muncieevents.com/v1/event?userToken=" + userToken + "&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1"
+            url = "https://api.muncieevents.com/v1/event?userToken=" + userToken + "&apikey="+this.APIKey.getAPIKey()
         }
         else{
-            url = "https://api.muncieevents.com/v1/event?apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1"
+            url = "https://api.muncieevents.com/v1/event?apikey="+this.APIKey.getAPIKey()
         }
 
         if(startTime){

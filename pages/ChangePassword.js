@@ -3,6 +3,7 @@ import {View, TextInput, Text} from 'react-native';
 import CustomButton from "./CustomButton";
 import Styles from './Styles';
 import InternetError from '../components/InternetError';
+import APIKey from '../APIKey'
 
 export default class ChangePassword extends React.Component {
     constructor(props){
@@ -16,6 +17,8 @@ export default class ChangePassword extends React.Component {
                     failedToLoad:false,
                     passwordChanged:false
         })
+        this.APIKey = new APIKey();
+
     }
 
     componentDidMount(){
@@ -85,7 +88,7 @@ export default class ChangePassword extends React.Component {
     }
 
     updatePassword(){
-        fetch("https://api.muncieevents.com/v1/user/password?userToken=" + this.state.userToken + "&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1", 
+        fetch("https://api.muncieevents.com/v1/user/password?userToken=" + this.state.userToken + "&apikey="+this.APIKey.getAPIKey(), 
           {method: "PATCH",
           headers: {
                     Accept: 'application/vnd.api+json',

@@ -6,6 +6,7 @@ import CustomButton from './CustomButton';
 import LoadingScreen from "../components/LoadingScreen";
 import InternetError from '../components/InternetError';
 import DateAndTimeParser from '../DateAndTimeParser'
+import APIKey from '../APIKey'
 
 export default class EditEvents extends React.Component {
     constructor(props){
@@ -39,6 +40,8 @@ export default class EditEvents extends React.Component {
     this.event = null
     this.tags=[]
     this.APICacher = new APICacher();
+    this.APIKey = new APIKey();
+
     }
 
 
@@ -61,7 +64,7 @@ export default class EditEvents extends React.Component {
 
   async _fetchCategoryData(){
       key = "Categories"
-      url = "https://api.muncieevents.com/v1/categories?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ"
+      url = "https://api.muncieevents.com/v1/categories?apikey="+this.APIKey.getAPIKey()
       await this._refreshData(key, url)
   
       this.categories = await this.APICacher._getJSONFromStorage(key)
@@ -71,7 +74,7 @@ export default class EditEvents extends React.Component {
   
   async _fetchTagData(){
       key = "Tags"
-      url = "https://api.muncieevents.com/v1/tags?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ"
+      url = "https://api.muncieevents.com/v1/tags?apikey="+this.APIKey.getAPIKey()
       await this._refreshData(key, url)
   
       this.tags = await this.APICacher._getJSONFromStorage(key)
@@ -591,7 +594,7 @@ export default class EditEvents extends React.Component {
     }
 
   submitEvent(){
-      url = "https://api.muncieevents.com/v1/event/" +this.state.id + "?userToken=" + this.state.userToken + "&apikey=3lC1cqrEx0QG8nJUBySDxIAUdbvHJiH1"
+      url = "https://api.muncieevents.com/v1/event/" +this.state.id + "?userToken=" + this.state.userToken + "&apikey="+this.APIKey.getAPIKey()
 
       start = this.state.startTime.toLocaleTimeString().split(':')
       startampm = start[2].split(' ')[1]

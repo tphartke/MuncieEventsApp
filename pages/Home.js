@@ -6,15 +6,17 @@ import APICacher from '../APICacher';
 import TopBar from './top_bar';
 import LoadingScreen from '../components/LoadingScreen';
 import InternetError from '../components/InternetError';
+import APIKey from '../APIKey'
 
 export default class HomeScreen extends React.Component{
   constructor(props){
     super(props);
-    this.state={url: 'https://api.muncieevents.com/v1/events/future?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ'};
+    this.state={url : ''};
     this.state = {isLoading: true,
                   failedToLoad: false};
     this._startupCachingAsync = this._startupCachingAsync.bind(this);
     this.APICacher = new APICacher();
+    this.APIKey = new APIKey();
   }  
 
       componentDidMount(){
@@ -50,7 +52,7 @@ export default class HomeScreen extends React.Component{
       getErrorView(){
         return(
           <InternetError onRefresh = {() => {
-            this.setState({isLoading:true, failedToLoad:false})
+            this.setState({isLoading:true, failedToLoad:false, url: 'https://api.muncieevents.com/v1/events/future?apikey=' + this.APIKey.getAPIKey()})
             this._startupCachingAsync().catch(error => this.catchError())
           }}/>
         );
@@ -67,7 +69,7 @@ export default class HomeScreen extends React.Component{
 
       async _startupCachingAsync(){
           key = "APIData"
-          url = "https://api.muncieevents.com/v1/events/future?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ"
+          url = "https://api.muncieevents.com/v1/events/future?apikey="+this.APIKey.getAPIKey()
           hasAPIData = await this.APICacher._hasAPIData(key)
           if(hasAPIData){
            await this.APICacher._refreshJSONFromStorage(key, url)

@@ -7,6 +7,7 @@ import APICacher from '../APICacher';
 import LoadingScreen from '../components/LoadingScreen';
 import TopBar from './top_bar';
 import InternetError from '../components/InternetError';
+import APIKey from '../APIKey'
 
 export default class AdvancedSearch extends React.Component {
   constructor(props){
@@ -25,6 +26,7 @@ export default class AdvancedSearch extends React.Component {
     this.categories=[]
     this.tags=[]
     this.APICacher = new APICacher();
+    this.APIKey = new APIKey();
   }
 
   componentDidMount(){
@@ -51,7 +53,7 @@ export default class AdvancedSearch extends React.Component {
 
   async _fetchCategoryData(){
     key = "Categories"
-    url = "https://api.muncieevents.com/v1/categories?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ"
+    url = "https://api.muncieevents.com/v1/categories?apikey="+this.APIKey.getAPIKey()
     await this._refreshData(key, url)
 
     this.categories = await this.APICacher._getJSONFromStorage(key)
@@ -61,7 +63,7 @@ export default class AdvancedSearch extends React.Component {
 
   async _fetchTagData(){
     key = "Tags"
-    url = "https://api.muncieevents.com/v1/tags/future?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ"
+    url = "https://api.muncieevents.com/v1/tags/future?apikey="+this.APIKey.getAPIKey()
     await this._refreshData(key, url)
 
     this.tags = await this.APICacher._getJSONFromStorage(key)
@@ -203,10 +205,10 @@ export default class AdvancedSearch extends React.Component {
 
   returnSearchResults(criteria){
     if(criteria == "tag"){
-      searchURL = 'https://api.muncieevents.com/v1/events/future?withTags[]=' + this.state.tagSelectedValue + "&apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ"
+      searchURL = 'https://api.muncieevents.com/v1/events/future?withTags[]=' + this.state.tagSelectedValue + "&apikey="+this.APIKey.getAPIKey()
     }
     else if(criteria == "category"){
-      searchURL = 'https://api.muncieevents.com/v1/events/category/' + this.state.categorySelectedValue + "?apikey=E7pQZbKGtPcOmKb6ednrQABtnW7vcGqJ"
+      searchURL = 'https://api.muncieevents.com/v1/events/category/' + this.state.categorySelectedValue + "?apikey="+this.APIKey.getAPIKey()
     }
     console.log(searchURL)
     this.state.url = searchURL;
