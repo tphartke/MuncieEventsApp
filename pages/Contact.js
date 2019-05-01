@@ -134,8 +134,6 @@ export default class Contact extends React.Component {
         body: this.state.message
       }),
   })
-    .then((response) => console.log(response))
-    .then((responseJSON) => console.log(responseJSON))
     .catch(error => this.setState({failedToLoad:true, statusMessage: "", messageSent:false}));
   }
 }

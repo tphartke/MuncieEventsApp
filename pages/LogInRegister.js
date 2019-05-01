@@ -228,7 +228,6 @@ export default class LogInRegister extends React.Component {
     }
 
     fetchAPILoginData(){
-      console.log("Fetching API login data...")
       fetch("https://api.muncieevents.com/v1/user/login?apikey="+this.APIKey.getAPIKey(), 
         {method: "POST",
         headers: {

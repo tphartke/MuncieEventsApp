@@ -89,7 +89,6 @@ class ExpandedView extends React.Component {
         else if(this.state.isSearching){
           renderedInfo = this.getLoadingScreen();
           url = 'https://api.muncieevents.com/v1/events/future?withTags[]='+  this.state.searchedTag + '&apikey='+this.APIKey.getAPIKey()
-          console.log(url)
           this._cacheSearchResultsAsync(url).catch(error =>  this.catchError())
         }
         else if(this.state.searchResultsHaveBeenFound){
@@ -329,7 +328,6 @@ class ExpandedView extends React.Component {
   getTagView(tags){
     tagView = []
     for(i = 0; i < tags.length; i++){
-      console.log(tagView)
       tagView.push(<View>
         <TouchableOpacity onPress={()=>this.setState({searchForTag: true, searchedTag: tags[i]})}>
            <Text style={{color: 'blue'}}>{tags[i]}</Text>
@@ -508,8 +506,6 @@ class ExpandedView extends React.Component {
   }
 
   deleteEvent(){
-      console.log("Deleting Event...")
-      console.log(this.state.userToken)
       fetch("https://api.muncieevents.com/v1/event/"+this.eventData.id+"?userToken=" + this.state.userToken +"&apikey="+this.APIKey.getAPIKey(), 
         {method: "DELETE",
         headers: {
@@ -518,8 +514,7 @@ class ExpandedView extends React.Component {
             },
     })
     .then((response) => response.json())
-    .then((responseJson) => {this.getStatus(responseJson)
-                              console.log(responseJson)})
+    .then((responseJson) => {this.getStatus(responseJson)})
   .catch((error)=>{
     console.log(error)
   });

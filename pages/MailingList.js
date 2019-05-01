@@ -292,7 +292,6 @@ export default class MailingList extends React.Component {
 
     getCategorySwitch(category){
         isCategoryAlreadySelected = this.isInSelectedCategoryList(category[1])
-        console.log(isCategoryAlreadySelected)
         return(
             <View style={{flexDirection: 'row'}}>
                 <Switch
@@ -319,7 +318,6 @@ export default class MailingList extends React.Component {
         else{
             selectedCategoryList.push(category[1])
         }
-        console.log(this.category_ids)
         this.category_ids = selectedCategoryList;
         this.setState({category_ids: this.category_ids})
     }
@@ -443,7 +441,6 @@ export default class MailingList extends React.Component {
               daily_sat: this.state.daily_sat,
           })
       })
-      .then((response) => console.log(response))
       .then((responseJson) => this.handelResponse("subscribe", responseJson))
         .catch((error) =>{
             this.setState({failedToLoad:true})
@@ -473,7 +470,6 @@ export default class MailingList extends React.Component {
               daily_sat: this.state.daily_sat,
           })
       })
-      .then((response) => console.log(response))
       .then((responseJson) => this.handelResponse("update", responseJson))
         .catch((error) =>{
             this.setState({failedToLoad:true})
@@ -489,7 +485,6 @@ export default class MailingList extends React.Component {
             'Content-Type': 'application/json',
             },
       })
-      .then((response) => console.log(response))
       .then((responseJson) => this.handelResponse("delete", responseJson))
         .catch((error) =>{
             this.setState({failedToLoad:true})

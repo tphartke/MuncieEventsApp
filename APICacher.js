@@ -2,14 +2,12 @@ import { AsyncStorage } from 'react-native';
 export default class APICacher{
 
     async _cacheJSONFromAPIAsync(key, url){
-        console.log("Beginning fetch for " + key + ", the url is: " + url)
         try{
             await fetch(url)
             .then((response) => response.json())
             .then((responseJson) => {
                 this._cacheStringAsync(key, JSON.stringify(responseJson.data))
             })
-            .then(console.log("Fetch completed for " + key))
         }
         catch(error){
             throw error;
@@ -28,7 +26,6 @@ export default class APICacher{
     }
 
     async _cacheStringAsync(key, string){
-        console.log("Caching the string with the key " + key)
         await AsyncStorage.setItem(key, string)
     }
 
@@ -85,10 +82,8 @@ export default class APICacher{
     }
 
     async _refreshJSONFromStorage(key, url){
-        console.log("Refreshing " + key)
         hasExpired = await this._hasExpired(key)
         if(hasExpired){
-            console.log("The data for " + key + " has expired!")
             try{
                 await this._cacheJSONFromAPIWithExpDate(key, url)
             }
@@ -100,8 +95,6 @@ export default class APICacher{
     }
 
     async _removeDataFromStorage(key){
-        console.log("Removing " + key + " from storage.")
         await AsyncStorage.removeItem(key)
-        .then(console.log(key + " has been removed."))
     }
 }

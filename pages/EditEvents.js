@@ -58,7 +58,6 @@ export default class EditEvents extends React.Component {
   }
 
   async _fetchTagAndCategoryData(){
-      console.log("Fetching tag and category data")
       await this._fetchCategoryData();
   }
 
@@ -119,7 +118,6 @@ export default class EditEvents extends React.Component {
           transparent={false}
           visible= {this.state.tagModalVisable}
           onRequestClose={() => {
-              console.log("Modal has been closed")
           }}>
               {tagFlatList}
           </Modal>
@@ -278,7 +276,6 @@ export default class EditEvents extends React.Component {
               transparent={false}
               visible= {this.state.IOSModalVisible}
               onRequestClose={() => {
-                  console.log("Modal has been closed")
           }}>
               <ScrollView style={{paddingTop: 10}}>
                   <Text style={Styles.title}>Date: {isRequired}</Text>
@@ -629,7 +626,6 @@ export default class EditEvents extends React.Component {
       })
   })
   .then((response) => response.json())
-  .then((responseJson) => console.log(responseJson))
   .then((responseJson) => this.handelAPIResponse(responseJson))
     .catch((error) =>{
        this.setState({failedToLoad:true})
@@ -715,7 +711,6 @@ getFormattedDate(chosenDate){
 }
 
 formatTimeForAPI(time){
-    console.log(time)
     splitTime = time.split(':')
     timeampm = splitTime[2].split(' ')[1]
     return splitTime[0]+':'+splitTime[1]+timeampm.toLowerCase()

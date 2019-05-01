@@ -210,7 +210,6 @@ export default class AdvancedSearch extends React.Component {
     else if(criteria == "category"){
       searchURL = 'https://api.muncieevents.com/v1/events/category/' + this.state.categorySelectedValue + "?apikey="+this.APIKey.getAPIKey()
     }
-    console.log(searchURL)
     this.state.url = searchURL;
     this.setState({
       isSearching: true

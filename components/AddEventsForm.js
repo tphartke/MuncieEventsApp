@@ -46,7 +46,6 @@ export default class AddEventsForm extends Component{
     }
 
     async _fetchTagAndCategoryData(){
-        console.log("Fetching tag and category data")
         await this._fetchCategoryData();
         await this._fetchTagData();
         utoken = await this.retrieveStoredToken();
@@ -110,7 +109,6 @@ export default class AddEventsForm extends Component{
             transparent={false}
             visible= {this.state.tagModalVisable}
             onRequestClose={() => {
-                console.log("Modal has been closed")
             }}>
                 {tagFlatList}
             </Modal>
@@ -312,7 +310,6 @@ export default class AddEventsForm extends Component{
                 transparent={false}
                 visible= {this.state.IOSModalVisible}
                 onRequestClose={() => {
-                    console.log("Modal has been closed")
             }}>
                 <ScrollView style={{paddingTop: 10}}>
                     <Text style={Styles.title}>Date {isRequired}</Text>
@@ -721,7 +718,6 @@ export default class AddEventsForm extends Component{
             })
         })
         .then((response) => response.json())
-        .then((responseJson) => console.log(responseJson))
         .then((responseJson) => this.handleAPIResponse(responseJson))
         .catch(error =>{
                         console.log(error)

@@ -143,8 +143,7 @@ export default class Register extends React.Component {
               })
           })
           .then((response) => response.json())
-          .then((responseJson) => {this.getStatus(responseJson)
-                                    console.log(responseJson)})
+          .then((responseJson) => {this.getStatus(responseJson)})
         .catch((error) =>{
             this.setState({failedToLoad:true})
         });

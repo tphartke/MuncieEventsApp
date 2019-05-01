@@ -107,7 +107,6 @@ export default class ProfileView extends React.Component {
         fetch("https://api.muncieevents.com/v1/user/" + userid + "?apikey="+this.APIKey.getAPIKey())        
         .then((response) => response.json())
         .then((responseJson) => {
-          console.log(responseJson)
           this.setState({
             email: responseJson.data.attributes.email,
             name: responseJson.data.attributes.name

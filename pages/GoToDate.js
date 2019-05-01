@@ -178,11 +178,9 @@ export default class GoToDate extends React.Component {
     }
 
     getIOSFormattedDate(date){
-      console.log("The nonformatted date is: " + date)
       day = date.getDate();
       month = date.getMonth()+1;
       year = date.getFullYear();
-      console.log("day: " + day + " month: " + month + " year: " + year)
       //pad month if needed for api
       if(date.getMonth()+1 < 10){
          month="0" + (date.getMonth()+1).toString();
