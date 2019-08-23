@@ -67,6 +67,7 @@ export default class APICacher{
     }
 
     async _getStringFromStorage(key){
+        data = null
         hasData = await this._hasAPIData(key)
         if(hasData){
             await AsyncStorage.getItem(key, (err, result) =>{

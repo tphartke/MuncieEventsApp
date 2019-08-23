@@ -8,6 +8,7 @@ import LoadingScreen from '../components/LoadingScreen';
 import InternetError from '../components/InternetError';
 import APIKey from '../APIKey'
 
+
 export default class HomeScreen extends React.Component{
   constructor(props){
     super(props);
@@ -20,10 +21,10 @@ export default class HomeScreen extends React.Component{
   }  
 
       componentDidMount(){
-        this._startupCachingAsync().catch(error => this.catchError())
+        this._startupCachingAsync().catch(error => this.catchError(error))
       }
 
-      catchError(){
+      catchError(error){
         this.setState({failedToLoad:true, isLoading: false})
       }
 
@@ -53,7 +54,7 @@ export default class HomeScreen extends React.Component{
         return(
           <InternetError onRefresh = {() => {
             this.setState({isLoading:true, failedToLoad:false, url: 'https://api.muncieevents.com/v1/events/future?apikey=' + this.APIKey.getAPIKey()})
-            this._startupCachingAsync().catch(error => this.catchError())
+            this._startupCachingAsync().catch(error => this.catchError(error))
           }}/>
         );
       }
