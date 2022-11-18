@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "expo": "^34.0.1",
-    "expo-cli": "^3.0.10",
+    "expo-cli": "^6.0.8",
     "lodash": "^4.17.15",
     "merge": "^1.2.1",
     "moment": "^2.22.2",
